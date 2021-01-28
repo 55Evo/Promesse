@@ -49,14 +49,7 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
     }
 
-    fun getAllPromises(email : String) : Set<Promise> {
-        val dbreadable : SQLiteDatabase = this.database.readableDatabase
-        //Execution requête
-
-        //Execution requête
-        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
-        val select = arrayOf(email)
-        val curs: Cursor = dbreadable.query("Promise", col, "Email = ?", select, null, null, null)
+    fun getPromise(curs: Cursor): Set<Promise>{
         var promiseList = HashSet<Promise>()
         try {
             while (curs.moveToNext()) {
@@ -83,5 +76,35 @@ class PromiseDataBase (context : Context){
         }
 
         return promiseList
+    }
+
+    fun getAllPromises(email : String) : Set<Promise> {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+
+        //Execution requête
+        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val select = arrayOf(email)
+        val curs: Cursor = dbreadable.query("Promise", col, "Email = ?", select, null, null, null)
+        return getPromise(curs)
+    }
+
+    fun getAllPromisesOfTheDay(email: String): Set<Promise> {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+
+        //Execution requête
+        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val select = arrayOf(email)
+        //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
+        //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
+        val curs: Cursor = dbreadable.query("Promise", col,
+            "((DATE(Date_Todo) = DATE('now','-1 day') AND State <> 'DONE') \n" +
+                "OR (DATE(Date_Todo) = DATE('now','-2 day') AND State <> 'DONE') \n" +
+                "OR (DATE(Date_Todo) = DATE('now','-3 day') AND State <> 'DONE') \n" +
+                "OR DATE(Date_Todo) = DATE('now')) " +
+                "AND Email = ?",
+            select, null, null, null)
+        return getPromise(curs)
     }
 }
