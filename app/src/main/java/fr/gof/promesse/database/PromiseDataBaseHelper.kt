@@ -42,7 +42,6 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
 
     //Creation base de données
     override fun onCreate(db: SQLiteDatabase?) {
-        print("Creation bdd")
         db?.execSQL(createAccount)
         db?.execSQL(createPromise)
         db?.execSQL(createSubtask)
