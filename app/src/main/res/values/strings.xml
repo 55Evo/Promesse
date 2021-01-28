@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Promesse</string>
+    <string name="textViewTitle">Titre</string>
+    <string name="editTextTitleHint">Titre de la promesse</string>
+    <string name="textViewDuration">Durée</string>
+    <string name="editTextDurationHint" >En jours</string>
+    <string name="textViewDate">Date</string>
+    <string name="editTextDateHint">Sélectionnez la date</string>
+    <string name="textViewPriority">Prioritaire</string>
+    <string name="textViewProfessionnal">Professionnelle</string>
+    <string name="textViewDescription">Description</string>
+    <string name="editTextDescriptionHint">Entrez une description ...</string>
+    <string name="buttonCancel">Annuler</string>
+    <string name="buttonValidate">Valider</string>
 </resources>
