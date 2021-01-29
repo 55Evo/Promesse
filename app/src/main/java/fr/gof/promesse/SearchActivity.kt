@@ -15,9 +15,9 @@ import fr.gof.promesse.model.State
 import fr.gof.promesse.model.User
 import java.util.*
 
-class SearchTab : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
 
-    var promiseDataBase = PromiseDataBase(this@SearchTab)
+    var promiseDataBase = PromiseDataBase(this@SearchActivity)
 
     lateinit var recyclerView : RecyclerView
     lateinit var _layoutManager : RecyclerView.LayoutManager
@@ -47,7 +47,7 @@ class SearchTab : AppCompatActivity() {
 
         recyclerView.setHasFixedSize(true)
         materialSearchBar = findViewById(R.id.searchBar)
-        materialSearchBar.setHint("Search")
+
         materialSearchBar.setCardViewElevation(10)
         loadSuggestList()
 
@@ -61,7 +61,6 @@ class SearchTab : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (materialSearchBar.text.length != 0){
                     val suggest = mutableListOf<String>()
-                    Log.d("TAG____________okkkkkkkkkk", listSuggestions.toString())
                     for (search in listSuggestions)  {
 
                         if (search.title.toLowerCase().contains(materialSearchBar.text.toLowerCase()))

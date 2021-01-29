@@ -13,9 +13,9 @@ import org.w3c.dom.Text
 
 
 class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-    lateinit var title : TextView
-    lateinit var date : TextView
-    lateinit var description : TextView
+    var title : TextView
+    var date : TextView
+    var description : TextView
 
     init{
         super.itemView

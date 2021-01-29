@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Promesse</string>
+    <string name="searchBarInt">Nom promesse...</string>
 </resources>

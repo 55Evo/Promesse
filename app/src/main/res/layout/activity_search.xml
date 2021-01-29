@@ -5,19 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchTab"
+    tools:context=".SearchActivity"
     android:id="@+id/relativeLayout">
 
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/searchBar"
         style="@style/MaterialSearchBarLight"
         android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_height="wrap_content"
-
-        app:mt_hint="Nom Promesse"
-
-
+        android:layout_alignParentTop="true"
+        app:mt_hint="@string/searchBarInt"
         app:mt_maxSuggestionsCount="10"
         app:mt_speechMode="false" />
 
