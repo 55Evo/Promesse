@@ -17,7 +17,7 @@ class PromiseDataBase (context : Context){
 
     //Création d'un compte
     fun createDefaultAccount() : User {
-        val user = User("default@test.fr", "Test Admin", "root", Mascot("Biscotte"))
+        val user = User("default@test.fr", "Monsieur", "root", Mascot("Biscotte"))
         return user
     }
 
