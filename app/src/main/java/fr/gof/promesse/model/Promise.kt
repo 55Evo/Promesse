@@ -5,7 +5,7 @@ import java.util.*
 
 data class Promise (val id : Int,
                     var title : String,
-                    var duration : Int,
+                    var duration : Int?,
                     var state : State,
                     var priority : Boolean,
                     var description : String,

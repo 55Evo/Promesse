@@ -12,4 +12,24 @@
     <string name="editTextDescriptionHint">Entrez une description ...</string>
     <string name="buttonCancel">Annuler</string>
     <string name="buttonValidate">Valider</string>
+    <string name="sunday">Dimanche</string>
+    <string name="monday">Lundi</string>
+    <string name="thusday">Mardi</string>
+    <string name="wednesday">Mercredi</string>
+    <string name="thurday">Jeudi</string>
+    <string name="friday">Vendredi</string>
+    <string name="saturday">Samedi</string>
+    <string name="january">Janvier</string>
+    <string name="february">Fevrier</string>
+    <string name="march">Mars</string>
+    <string name="april">Avril</string>
+    <string name="may">Mai</string>
+    <string name="june">Juin</string>
+    <string name="july">Juillet</string>
+    <string name="august">Août</string>
+    <string name="september">Septembre</string>
+    <string name="october">Octobre</string>
+    <string name="november">Novembre</string>
+    <string name="december">Decembre</string>
+    <string name="emptyField">Veuillez remplir ce champ</string>
 </resources>
