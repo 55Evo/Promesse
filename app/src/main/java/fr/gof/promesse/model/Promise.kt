@@ -26,4 +26,8 @@ data class Promise (val id : Int,
         }
     }
 
+    override fun toString(): String {
+        return title
+    }
+
 }
