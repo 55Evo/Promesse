@@ -111,12 +111,15 @@ class PromiseManagerActivity : AppCompatActivity() {
                 null
         )
         defaultUser.addPromise(promise, promiseDataBase)
-        //On change d'activité (vers MainActivity)
-        val intent = Intent(this, MainActivity::class.java)
+        //On change d'activité (vers SearchActivity)
+        val intent = Intent(this, SearchActivity::class.java)
         startActivity(intent)
         finish()
     }
     fun onClickButtonCancel (v : View) {
-        Toast.makeText(this@PromiseManagerActivity, "Cancel", Toast.LENGTH_SHORT).show()
+        //On change d'activité (vers SearchActivity)
+        val intent = Intent(this, SearchActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

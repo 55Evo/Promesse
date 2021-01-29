@@ -1,13 +1,17 @@
 package fr.gof.promesse.Adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+
 import androidx.recyclerview.widget.RecyclerView
+import fr.gof.promesse.PromiseManagerActivity
 import fr.gof.promesse.R
+import fr.gof.promesse.SearchActivity
 import fr.gof.promesse.model.Promise
 
 class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -29,6 +33,10 @@ class SearchAdapter(var context: Context, var listePromesses :  List<Promise>) :
         holder.date.setText(listePromesses.get(position).dateTodo.toString())
         holder.description.setText(listePromesses.get(position).description)
         itemView.setOnClickListener { v ->
+            //On change d'activité (vers SearchActivity)
+            val intent = Intent(context, PromiseManagerActivity::class.java)
+            context.startActivity(intent)
+
             Toast.makeText(context, listePromesses[position].toString()+" sélectionné !" , Toast.LENGTH_SHORT).show()
         }
     }

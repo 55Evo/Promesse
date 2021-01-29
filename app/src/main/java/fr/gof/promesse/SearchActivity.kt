@@ -1,15 +1,20 @@
 package fr.gof.promesse
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mancj.materialsearchbar.MaterialSearchBar
+import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
 import fr.gof.promesse.Adapter.SearchAdapter
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
@@ -17,6 +22,7 @@ import fr.gof.promesse.model.Sort
 import fr.gof.promesse.model.State
 import fr.gof.promesse.model.User
 import java.util.*
+
 
 class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
@@ -52,15 +58,19 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         materialSearchBar.setCardViewElevation(10)
         loadSuggestList()
 
+
+
         materialSearchBar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (materialSearchBar.text.length != 0){
+
                     val suggest = mutableListOf<String>()
                     for (search in listSuggestions)  {
 
@@ -73,6 +83,21 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
                 }
             }
+        })
+        materialSearchBar.setSuggestionsClickListener(object : SuggestionsAdapter.OnItemViewClickListener {
+            override fun OnItemDeleteListener(position: Int, v: View?) {
+            }
+
+            override fun OnItemClickListener(position: Int, v: View?) {
+
+                startResearch(materialSearchBar.lastSuggestions[position].toString())
+                hideKeyboard(this@SearchActivity)
+                var search = materialSearchBar.lastSuggestions[position].toString()
+                materialSearchBar.text = search
+                materialSearchBar.closeSearch()
+                //materialSearchBar.setPlaceHolder(search)
+            }
+
         })
         materialSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener {
             override fun onSearchStateChanged(enabled: Boolean) {
@@ -95,6 +120,18 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private fun startResearch(text: String) {
         adapter = SearchAdapter(this, defaultUser.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toList())
         recyclerView.adapter = adapter
+        hideKeyboard(this)
+    }
+
+    fun hideKeyboard(activity: Activity) {
+        val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        //Find the currently focused view, so we can grab the correct window token from it.
+        var view = activity.currentFocus
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = View(activity)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun loadSuggestList() {
