@@ -3,13 +3,8 @@ package fr.gof.promesse.database
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
-import fr.gof.promesse.model.Mascot
-import fr.gof.promesse.model.Promise
-import fr.gof.promesse.model.State
-import fr.gof.promesse.model.User
-import java.lang.Exception
+import fr.gof.promesse.model.*
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -82,23 +77,24 @@ class PromiseDataBase (context : Context){
     fun getAllPromises(email : String = "default@test.fr") : Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
-
-        //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         val curs: Cursor = dbreadable.query("Promise", col, "Email = ?", select, null, null, null)
         return getPromise(curs)
     }
-    @JvmOverloads
-    fun getAllPromisesNameLike(name : String = "default@test.fr") : Set<Promise> {
-        val dbreadable : SQLiteDatabase = this.database.readableDatabase
-        //Execution requête
 
+    @JvmOverloads
+    fun getAllPromisesNameLike(name : String, choiceOfSort : Sort, user: User) : Set<Promise> {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf("%$name%")
         val curs: Cursor = dbreadable.query("Promise", col, "Title LIKE ?", select, null, null, null)
-        return getPromise(curs)
+        return when(choiceOfSort){
+            Sort.DATE -> user.getPromisesSortedByDate(this, getPromise(curs))
+            Sort.NAME -> user.getPromisesSortedByName(this, getPromise(curs))
+            Sort.PRIORITY -> user.getPromisesSortedByPriority(this, getPromise(curs))
+        }
     }
 
     fun getAllPromisesOfTheDay(email: String): Set<Promise> {
