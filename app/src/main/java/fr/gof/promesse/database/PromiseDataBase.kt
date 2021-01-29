@@ -78,7 +78,8 @@ class PromiseDataBase (context : Context){
         return promiseList
     }
 
-    fun getAllPromises(email : String) : Set<Promise> {
+
+    fun getAllPromises(email : String = "default@test.fr") : Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
 
@@ -86,6 +87,17 @@ class PromiseDataBase (context : Context){
         val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         val curs: Cursor = dbreadable.query("Promise", col, "Email = ?", select, null, null, null)
+        return getPromise(curs)
+    }
+    @JvmOverloads
+    fun getAllPromisesNameLike(name : String = "default@test.fr") : Set<Promise> {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+
+        //Execution requête
+        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val select = arrayOf("%$name%")
+        val curs: Cursor = dbreadable.query("Promise", col, "Title LIKE ?", select, null, null, null)
         return getPromise(curs)
     }
 

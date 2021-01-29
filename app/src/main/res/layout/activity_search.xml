@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SearchTab"
+    android:id="@+id/relativeLayout">
+
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        android:id="@+id/searchBar"
+        style="@style/MaterialSearchBarLight"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+
+        app:mt_hint="Nom Promesse"
+
+
+        app:mt_maxSuggestionsCount="10"
+        app:mt_speechMode="false" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_search"
+        android:layout_width='match_parent'
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchBar"
+        />
+</RelativeLayout>
+
+
+<!--     app:mt_searchBarColor="@color/black" -->
+
+
