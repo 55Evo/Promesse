@@ -13,17 +13,9 @@ import org.w3c.dom.Text
 
 
 class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-    var title : TextView
-    var date : TextView
-    var description : TextView
-
-    init{
-        super.itemView
-        title=itemView.findViewById(R.id.title)
-        date = itemView.findViewById(R.id.date)
-        description = itemView.findViewById(R.id.description)
-        Log.d("TAG____________okkkkkkkkkk","jinitialise !!!!!!")
-    }
+    var title : TextView = itemView.findViewById(R.id.title)
+    var date : TextView = itemView.findViewById(R.id.date)
+    var description : TextView = itemView.findViewById(R.id.description)
 }
 
 class SearchAdapter(var context: Context, var listePromesses :  List<Promise>) : RecyclerView.Adapter<SearchViewHolder>(){
@@ -36,7 +28,7 @@ class SearchAdapter(var context: Context, var listePromesses :  List<Promise>) :
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.title.setText(listePromesses.get(position).title)
+        holder.title.text = listePromesses[position].title
         holder.date.setText(listePromesses.get(position).dateTodo.toString())
         holder.description.setText(listePromesses.get(position).description)
 

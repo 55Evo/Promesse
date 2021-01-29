@@ -2,7 +2,6 @@ package fr.gof.promesse.model
 
 import fr.gof.promesse.database.PromiseDataBase
 import java.util.*
-import java.util.Collections.sort
 
 data class User(var email: String, var name: String, var password: String, var mascot: Mascot){
 
@@ -62,4 +61,8 @@ data class User(var email: String, var name: String, var password: String, var m
         setSorted.addAll(setToSort)
         return setSorted
     }
+
+    fun getSearchResultsSorted(name : String, choiceOfSort : Sort, db: PromiseDataBase) : Set<Promise> =
+        db.getAllPromisesNameLike(name, choiceOfSort, this)
+
 }

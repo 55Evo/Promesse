@@ -4,29 +4,30 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MenuItem
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mancj.materialsearchbar.MaterialSearchBar
 import fr.gof.promesse.Adapter.SearchAdapter
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
+import fr.gof.promesse.model.Sort
 import fr.gof.promesse.model.State
 import fr.gof.promesse.model.User
 import java.util.*
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     var promiseDataBase = PromiseDataBase(this@SearchActivity)
-
     lateinit var recyclerView : RecyclerView
-    lateinit var _layoutManager : RecyclerView.LayoutManager
     lateinit var adapter : SearchAdapter
-
     lateinit var materialSearchBar : MaterialSearchBar
     lateinit var listSuggestions : Set<Promise>
-
     lateinit var defaultUser : User
+    var choiceOfSort : Sort = Sort.DATE
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -41,13 +42,13 @@ class SearchActivity : AppCompatActivity() {
         val promesse3 = Promise(-1, "Promesse3 priorité", 5, State.TODO, true, "Desc", true, Date(System.currentTimeMillis()), Date(System.currentTimeMillis()), null)
         defaultUser.addPromise(promesse3, promiseDataBase)
         Log.d("TAG","--------------------" +" coucouuuuuuuuuuuu")
+
         recyclerView  = findViewById(R.id.recycler_search)
-
         recyclerView.layoutManager = LinearLayoutManager(this)
-
         recyclerView.setHasFixedSize(true)
         materialSearchBar = findViewById(R.id.searchBar)
-
+        materialSearchBar.inflateMenu(R.menu.app_menu)
+        materialSearchBar.menu.setOnMenuItemClickListener(this as PopupMenu.OnMenuItemClickListener)
         materialSearchBar.setCardViewElevation(10)
         loadSuggestList()
 
@@ -70,9 +71,7 @@ class SearchActivity : AppCompatActivity() {
                         materialSearchBar.lastSuggestions = suggest
 
                     }
-                    Log.d("TAG____________okkkkkkkkkk", suggest.toString())
                 }
-
             }
         })
         materialSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener {
@@ -82,42 +81,38 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onSearchConfirmed(text: CharSequence?) {
                 startResearch(text.toString())
-
-
             }
 
             override fun onButtonClicked(buttonCode: Int) {
                 TODO("Not yet implemented")
             }
-
         })
-
 
         adapter = SearchAdapter(this,promiseDataBase.getAllPromises().toList())
         this.recyclerView.adapter = adapter
     }
 
     private fun startResearch(text: String) {
-            adapter = SearchAdapter(this, promiseDataBase.getAllPromisesNameLike(text).toList())
-             recyclerView.adapter = adapter
-        Log.d("TAG-je passe dans le startResearch",promiseDataBase.getAllPromisesNameLike(text).toList().toString())
-        Log.d("string",text)
-
+        adapter = SearchAdapter(this, defaultUser.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toList())
+        recyclerView.adapter = adapter
     }
 
     private fun loadSuggestList() {
-       listSuggestions = promiseDataBase.getAllPromises()
+        listSuggestions = promiseDataBase.getAllPromises()
         var liste = mutableListOf<String>()
         for (e in listSuggestions) liste.add(e.title)
-
-        Log.d("TAG-----------je suis dans loadSuggestList--",liste.toString())
-
-
         materialSearchBar.lastSuggestions = liste
-
-
-
-
-
     }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        when (item?.itemId){
+            R.id.menudate -> choiceOfSort = Sort.DATE
+            R.id.menupriority -> choiceOfSort = Sort.PRIORITY
+            R.id.menuname -> choiceOfSort = Sort.NAME
+        }
+        startResearch(materialSearchBar.text.toString())
+        return true
+    }
+
 }
+

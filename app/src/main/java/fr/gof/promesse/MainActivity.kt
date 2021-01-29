@@ -28,9 +28,9 @@ class MainActivity : AppCompatActivity() {
         val promesse3 = Promise(-1, "Promesse3 priorité", 5, State.TODO, true, "Desc", true, Date(System.currentTimeMillis()), Date(System.currentTimeMillis()), null)
         defaultUser.addPromise(promesse3, promiseDataBase)
         var s = ""
-        for(p in promiseDataBase.getAllPromisesNameLike("Promesse3")){
-            s+=(p.dateTodo.toString()+" "+p.title+"\n")
-        }
+//        for(p in promiseDataBase.getAllPromisesNameLike("Promesse3")){
+//            s+=(p.dateTodo.toString()+" "+p.title+"\n")
+//        }
         label.setText(s)
     }
 }

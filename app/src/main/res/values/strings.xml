@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Promesse</string>
     <string name="searchBarInt">Nom promesse...</string>
+    <string-array name="sortPromise">
+        <item>Date</item>
+        <item>Priorité</item>
+        <item>Nom</item>
+    </string-array>
 </resources>
