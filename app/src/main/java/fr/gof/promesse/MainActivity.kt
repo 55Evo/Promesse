@@ -2,6 +2,9 @@ package fr.gof.promesse
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.ListAdapter
+import android.widget.ListView
 import android.widget.TextView
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
@@ -18,10 +21,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         defaultUser = promiseDataBase.createDefaultAccount()
-        val label = findViewById<TextView>(R.id.test)
+        //val label = findViewById<TextView>(R.id.test)
         val promesse = Promise(-1, "Titre", 5, State.TODO, true, "Desc", true, Date(System.currentTimeMillis()), Date(System.currentTimeMillis()), null)
         defaultUser.addPromise(promesse, promiseDataBase)
-        println(defaultUser.getAllPromise(promiseDataBase).toString())
-        label.setText(defaultUser.getAllPromise(promiseDataBase).toString())
+        /*println(defaultUser.getAllPromise(promiseDataBase).toString())
+        label.setText(defaultUser.getAllPromise(promiseDataBase).toString())*/
+
+        val setPromesse = promiseDataBase.getAllPromises(defaultUser.email)
+        val listPromesse = mutableListOf<Promise>(promesse)
+        val arrayPromesse = Array<String>(listPromesse.size, {i-> ""})
+        for((i, promise) in listPromesse.withIndex()) {
+            arrayPromesse[i]= ("${promise.title}\n${promise.description}")
+        }
+
+        val adapter = ArrayAdapter(this, R.layout.listitem_view_promesse, arrayPromesse)
+
+        val listView: ListView = findViewById(R.id.listViewPromesse)
+        listView.adapter = adapter
+        listView.setOnItemLongClickListener()
     }
 }
