@@ -28,18 +28,18 @@ class MainActivity : AppCompatActivity() {
 
         val setPromesse = promiseDataBase.getAllPromises(defaultUser.email)
         val listPromesse = mutableListOf<Promise>(promesse, promesse2)
-        var arrayPromesse = Array<String>(listPromesse.size, {i-> ""})
-        //for((i, promise) in listPromesse.withIndex()) {
-          //       arrayPromesse[i]= ("${promise.title}\n${promise.description}")
-        //}
+        val listPromesseDescr = mutableListOf<String>()
+        for(promise in listPromesse) {
+          listPromesseDescr.add("${promise.title}\n${promise.description}")
+        }
 
-        val adapter = ArrayAdapter(this, R.layout.listitem_view_promesse, listPromesse)
+        val adapter = ArrayAdapter(this, R.layout.listitem_view_promesse, listPromesseDescr)
 
         val listView: ListView = findViewById(R.id.listViewPromesse)
         listView.adapter = adapter
         listView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, _, _, id ->
             listPromesse.removeAt(id.toInt())
-            
+            listPromesseDescr.removeAt(id.toInt())
             adapter.notifyDataSetChanged()
             true}
     }
