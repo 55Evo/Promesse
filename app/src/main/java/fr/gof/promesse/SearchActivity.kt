@@ -102,8 +102,8 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         })
 
-        adapter = SearchAdapter(this, promiseDataBase.getAllPromises().toList())
-        this.recyclerView.adapter = adapter
+       adapter = SearchAdapter(this, defaultUser.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toList())
+       this.recyclerView.adapter = adapter
     }
 
     private fun startResearch(text: String, relaunch : Boolean = true) {
