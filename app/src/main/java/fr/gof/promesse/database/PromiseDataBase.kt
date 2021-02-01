@@ -26,6 +26,16 @@ class PromiseDataBase (context : Context){
         return user
     }
 
+    fun deletePromise(promesse : Promise) {
+        //Ouverture
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+
+        dbwritable.delete("Promise","Promise.Id_Promise = ${promesse.id}", null)
+
+        //Fermeture
+        dbwritable.close()
+    }
+
     fun addPromise(email : String, promise : Promise) {
         //Ouverture
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
