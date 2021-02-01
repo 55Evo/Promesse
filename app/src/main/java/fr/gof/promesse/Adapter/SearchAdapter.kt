@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.PromiseManagerActivity
 import fr.gof.promesse.R
-import fr.gof.promesse.SearchActivity
 import fr.gof.promesse.model.Promise
 
 class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -24,7 +23,7 @@ class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     var globalDesc : String =""
     var shortDesc : String =""
-    var short = false
+    var isDeployed = false
 
 }
 class SearchAdapter(var context: Context, var listePromesses :  List<Promise>) : RecyclerView.Adapter<SearchViewHolder>(){
@@ -35,44 +34,50 @@ class SearchAdapter(var context: Context, var listePromesses :  List<Promise>) :
 
         return SearchViewHolder(itemView)
     }
-
-    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+    fun displayDescription(holder: SearchViewHolder,position: Int){
 
         holder.globalDesc ="Description :" +listePromesses.get(position).description
         if (holder.globalDesc.lastIndex > 20){
             holder.shortDesc = holder.globalDesc.substring(0,20)+"... "
             holder.description.setText(holder.shortDesc)
-            holder.short = true
+            holder.isDeployed = true
         }
         else{
             holder.description.setText(holder.globalDesc)
         }
         holder.title.text = listePromesses[position].title
         holder.date.setText(listePromesses.get(position).dateTodo.toString())
-
+    }
+    fun setColorWithPriority(position : Int, holder: SearchViewHolder){
         when(listePromesses[position].priority){
             true->holder.layout.setBackgroundResource(R.drawable.layout_border_important)
             false->holder.layout.setBackgroundResource(R.drawable.layout_border)
         }
         holder.layout.setPadding(20,20,20,20)
+    }
+    fun deployDescription(holder: SearchViewHolder){
+        if(holder.isDeployed)
+         {
+            holder.description.setText(holder.globalDesc)
+            holder.isDeployed = false
+        }
+        else{
+            holder.description.setText(holder.shortDesc)
+            holder.isDeployed = true
+        }
 
+    }
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
 
+        displayDescription(holder,position)
+        setColorWithPriority(position, holder)
 
         itemView.setOnClickListener { v ->
-            //On change d'activité (vers SearchActivity)
+            //quand je clique sur un item
             val intent = Intent(context, PromiseManagerActivity::class.java)
-            //context.startActivity(intent)
-            when(holder.short){
-                true-> {
-                    holder.description.setText(holder.globalDesc)
-                    holder.short = false
-                }
-                false->{
-                    holder.description.setText(holder.shortDesc)
-                    holder.short = true
-                }
-            }
-
+            // on check si on doit déploy ou rapetisser la description
+            deployDescription(holder)
+            // on affiche un toast
             Toast.makeText(context, listePromesses[position].toString()+" sélectionné !" , Toast.LENGTH_SHORT).show()
         }
     }

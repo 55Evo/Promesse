@@ -60,30 +60,21 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         materialSearchBar.setCardViewElevation(10)
         materialSearchBar.setPlaceHolder("Bonjour "+defaultUser.name+" !")
 
-
         loadSuggestList()
-
-
-
         materialSearchBar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (materialSearchBar.text.length != 0) {
 
                     val suggest = mutableListOf<String>()
                     for (search in listSuggestions) {
-
                         if (search.title.toLowerCase().contains(materialSearchBar.text.toLowerCase())) {
                             suggest.add(search.title);
                         }
                         materialSearchBar.lastSuggestions = suggest
-
                     }
                 }
             }
@@ -91,20 +82,10 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         materialSearchBar.setSuggestionsClickListener(object : SuggestionsAdapter.OnItemViewClickListener {
             override fun OnItemDeleteListener(position: Int, v: View?) {
             }
-
             override fun OnItemClickListener(position: Int, v: View?) {
-
-
                 //hideKeyboard(this@SearchActivity)
                 startResearch(materialSearchBar.lastSuggestions[position].toString())
-
-
-
-
-                Log.d("TAG", "--------------------" + " okkkkkk")
-
             }
-
         })
         materialSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener {
             override fun onSearchStateChanged(enabled: Boolean) {
@@ -116,7 +97,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             override fun onSearchConfirmed(text: CharSequence?) {
                 startResearch(text.toString())
             }
-
             override fun onButtonClicked(buttonCode: Int) {
                 TODO("Not yet implemented")
             }
