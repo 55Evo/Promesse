@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.PromiseManagerActivity
 import fr.gof.promesse.R
+import fr.gof.promesse.SearchActivity
 import fr.gof.promesse.model.Promise
 
 class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -74,11 +75,18 @@ class SearchAdapter(var context: Context, var listePromesses :  List<Promise>) :
 
         itemView.setOnClickListener { v ->
             //quand je clique sur un item
-            val intent = Intent(context, PromiseManagerActivity::class.java)
+
             // on check si on doit déploy ou rapetisser la description
             deployDescription(holder)
             // on affiche un toast
-            Toast.makeText(context, listePromesses[position].toString()+" sélectionné !" , Toast.LENGTH_SHORT).show()
+
+            Toast.makeText(context, listePromesses[position].title.toString()+" sélectionné !" , Toast.LENGTH_SHORT).show()
+        }
+        // quand on garde appuyé on arrive sur la page de modification de tache concernant notre promesse
+        itemView.setOnLongClickListener { v ->
+         val intent = Intent(context, PromiseManagerActivity::class.java)
+            context.startActivity(intent)
+            true
         }
     }
 
