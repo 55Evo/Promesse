@@ -1,5 +1,6 @@
 package fr.gof.promesse.model
 
+import java.io.Serializable
 import java.sql.Timestamp
 import java.util.*
 
@@ -12,7 +13,7 @@ data class Promise (val id : Int,
                     var professional : Boolean,
                     var dateCreation : Date,
                     var dateTodo : Date,
-                    var subtasks : MutableList<Subtask>?) : Comparable<Promise> {
+                    var subtasks : MutableList<Subtask>?) : Serializable, Comparable<Promise> {
 
     override operator fun compareTo(other: Promise): Int {
         return if(this.dateTodo == other.dateTodo){

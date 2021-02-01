@@ -5,6 +5,7 @@ import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,13 +22,20 @@ class PromiseManagerActivity : AppCompatActivity() {
     val promiseDataBase = PromiseDataBase(this@PromiseManagerActivity)
     private lateinit var textViewDate : TextView
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
-
+    lateinit var promise : Promise
     lateinit var date : Date
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.promise_manager_activity)
+
+
+        promise = getIntent().getSerializableExtra("Promise") as Promise ;
+        var test : EditText = findViewById(R.id.editTextTitle)
+        test.setText( promise.title )
+
+
         textViewDate = findViewById(R.id.textViewDatePicker)
         // Date Select Listener.
         date = Date(System.currentTimeMillis())
