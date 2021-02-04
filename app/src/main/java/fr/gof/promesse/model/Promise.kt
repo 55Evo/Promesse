@@ -13,7 +13,9 @@ data class Promise (val id : Int,
                     var professional : Boolean,
                     var dateCreation : Date,
                     var dateTodo : Date,
-                    var subtasks : MutableList<Subtask>?) : Serializable, Comparable<Promise> {
+                    var subtasks : MutableList<Subtask>?,
+                    var isChecked : Boolean = false,
+                    var isDescDeployed : Boolean = false) : Serializable, Comparable<Promise> {
 
     override operator fun compareTo(other: Promise): Int {
         return if(this.dateTodo == other.dateTodo){
