@@ -32,25 +32,15 @@ class MainActivity : AppCompatActivity() {
         listView.setHasFixedSize(true)
 
         defaultUser = promiseDataBase.createDefaultAccount()
-        //val label = findViewById<TextView>(R.id.test)
-        val promesse4 = Promise(-1, "Titre4", 5, State.TODO, false, "Descr4", true, Date(System.currentTimeMillis()), Date(System.currentTimeMillis()), mutableListOf(Subtask(0, "Sstache", false)))
-        //defaultUser.addPromise(promesse, promiseDataBase)
-        //defaultUser.addPromise(promesse2, promiseDataBase)
-        //defaultUser.addPromise(promesse3, promiseDataBase)
-        defaultUser.addPromise(promesse4, promiseDataBase)
-        /*println(defaultUser.getAllPromise(promiseDataBase).toString())
-        label.setText(defaultUser.getAllPromise(promiseDataBase).toString())*/
-
-        val promesse = Promise(-1, "faire l'amour", 5, State.DONE, true, "Ceci est la description de ce que faire l'amour signifie, \n cela signifie que pour réussir il faut aimer et pour aimer il faut avoir ", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
-        defaultUser.addPromise(promesse, promiseDataBase)
-        val promessee = Promise(-1, "passer le permis", 5, State.DONE, true, "avoir le permis quelle belle ambition mais on ne sait pas si elle se réalisera un jour tellement tu n'es pas doué mon pauvre... on va quand meme essayer meme si cela sera dur", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
-        defaultUser.addPromise(promessee, promiseDataBase)
-        val promesse1 = Promise(-1, "faire dodo", 5, State.TODO, false, "Dormir un bien grand mot bien plus grand que le mot sage par exemple", true, Date(System.currentTimeMillis()), Date(System.currentTimeMillis()), null)
-        defaultUser.addPromise(promesse1, promiseDataBase)
-        val promesse2 = Promise(-1, "faire des enfants", 5, State.TODO, false, "avoir des enfants s'en occuper.. Cela nest pas donne a tout le monde beaucoup les abandonnent", true, Date(System.currentTimeMillis()), Date(System.currentTimeMillis() + 200), null)
-        defaultUser.addPromise(promesse2, promiseDataBase)
-        val promesse3 = Promise(-1, "faire des études", 5, State.TODO, true, "faire des etudes je ne connais pas j'ai toujours ete chaumeur", true, Date(System.currentTimeMillis()), Date(System.currentTimeMillis()), null)
-        defaultUser.addPromise(promesse3, promiseDataBase)
+//        for(i in 0..20){
+//            var promesse = Promise(-1, "promesse numero $i", 5, State.DONE, false, "description numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
+//            defaultUser.addPromise(promesse, promiseDataBase)
+//        }
+//
+//        for(i in 0..20){
+//            var promesse = Promise(-1, "promesse priorite numero $i", 5, State.DONE, true, "description priorité numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
+//            defaultUser.addPromise(promesse, promiseDataBase)
+//        }
 
         val setPromesse = defaultUser.getAllPromise(promiseDataBase)
         //val listPromesse = mutableListOf<Promise>(promesse, promesse2)
