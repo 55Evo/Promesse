@@ -59,15 +59,16 @@ class PromiseDataBase (context : Context){
         val id = dbwritable.insert("Promise", null, values)
 
         //Ajout des sous-tâches
-        for(sub in promise.subtasks!!) {
-            println("oo???")
-            val subvalues = ContentValues()
-            subvalues.put("Id_Promise", id)
-            subvalues.put("Title", sub.title)
-            subvalues.put("Done", sub.done)
-            dbwritable.insert("Subtask", null, subvalues)
+        if(promise.subtasks != null) {
+            for (sub in promise.subtasks!!) {
+                println("oo???")
+                val subvalues = ContentValues()
+                subvalues.put("Id_Promise", id)
+                subvalues.put("Title", sub.title)
+                subvalues.put("Done", sub.done)
+                dbwritable.insert("Subtask", null, subvalues)
+            }
         }
-
         //Fermeture
         dbwritable.close()
     }

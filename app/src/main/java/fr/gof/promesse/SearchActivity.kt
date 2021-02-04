@@ -38,7 +38,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         defaultUser = promiseDataBase.createDefaultAccount()
-        val label = findViewById<TextView>(R.id.test)
         val promesse = Promise(-1, "faire l'amour", 5, State.DONE, true, "Ceci est la description de ce que faire l'amour signifie, \n cela signifie que pour réussir il faut aimer et pour aimer il faut avoir ", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
         defaultUser.addPromise(promesse, promiseDataBase)
         val promessee = Promise(-1, "passer le permis", 5, State.DONE, true, "avoir le permis quelle belle ambition mais on ne sait pas si elle se réalisera un jour tellement tu n'es pas doué mon pauvre... on va quand meme essayer meme si cela sera dur", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
@@ -102,7 +101,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         })
 
-       adapter = SearchAdapter(this, defaultUser.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toList())
+       adapter = SearchAdapter(this, defaultUser.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList())
        this.recyclerView.adapter = adapter
     }
 
@@ -114,7 +113,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         valeurActuelle = text
-        adapter = SearchAdapter(this, defaultUser.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toList())
+        adapter = SearchAdapter(this, defaultUser.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toMutableList())
         recyclerView.adapter = adapter
         hideKeyboard(this)
 

@@ -6,13 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listViewPromesse"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="200dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="179dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
