@@ -32,7 +32,6 @@
             android:orientation="vertical">
 
 
-
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
@@ -61,6 +60,14 @@
                 android:text="ceci est une description"
                 android:textStyle="italic" />
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/deleteButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            app:srcCompat="@android:drawable/ic_menu_delete" />
 
     </LinearLayout>
 
