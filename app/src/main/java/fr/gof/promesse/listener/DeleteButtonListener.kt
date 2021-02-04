@@ -2,6 +2,7 @@ package fr.gof.promesse.listener
 
 import android.app.Activity
 import android.content.DialogInterface
+import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import fr.gof.promesse.Adapter.PromiseAdapter
@@ -43,6 +44,10 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var listPromesses : Mu
 
         }
         adapter.inSelection = false
+        Handler().postDelayed({
+            adapter.notifyDataSetChanged()
+        }, 400)
+
         v?.visibility = View.INVISIBLE
     }
 
