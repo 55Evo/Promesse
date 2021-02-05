@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
+import fr.gof.promesse.R
 import fr.gof.promesse.model.*
 import java.lang.Exception
 import fr.gof.promesse.model.*
@@ -18,9 +20,31 @@ class PromiseDataBase (context : Context){
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     //Création d'un compte
-    fun createDefaultAccount() : User {
-        val user = User("default@test.fr", "Monsieur", "root", Mascot("Biscotte"))
-        return user
+    fun createDefaultAccount(mascot : Mascot) : User {
+//        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+//        val user = User("default@test.fr", "Monsieur", "root",mascot)
+//        val values = ContentValues()
+//        values.put("Email", user.email)
+//        values.put("Mascot", mascot.name)
+//        values.put("Name", user.name)
+//        values.put("Password",user.password )
+//        dbwritable.insert("Account", null, values)
+//        dbwritable.close()
+//        return user
+        return utils.user
+    }
+
+    fun updateMascot(mascot : Mascot){
+
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Mascot", mascot.name)
+        dbwritable.update("Account", values,"Account.Email = '${utils.user.email}'", null)
+        dbwritable.close()
+
+        utils.user.mascot = mascot
+
+
     }
 
     fun deletePromise(promesse : Promise) {

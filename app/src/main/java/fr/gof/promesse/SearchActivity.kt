@@ -17,9 +17,8 @@ import fr.gof.promesse.Adapter.PromiseAdapter
 import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
-import fr.gof.promesse.model.Promise
-import fr.gof.promesse.model.Sort
-import fr.gof.promesse.model.User
+import fr.gof.promesse.model.*
+import java.util.*
 
 
 class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
@@ -39,17 +38,17 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        defaultUser = promiseDataBase.createDefaultAccount()
+        utils.user = promiseDataBase.createDefaultAccount(Mascot("Super mascotte", R.drawable.mascot1))
 
-//        for(i in 0..20){
-//            var promesse = Promise(-1, "promesse numero $i", 5, State.DONE, false, "description numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
-//            defaultUser.addPromise(promesse, promiseDataBase)
-//        }
-//
-//        for(i in 0..20){
-//            var promesse = Promise(-1, "promesse priorite numero $i", 5, State.DONE, true, "description priorité numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
-//            defaultUser.addPromise(promesse, promiseDataBase)
-//        }
+        for(i in 0..20){
+            var promesse = Promise(-1, "promesse numero $i", 5, State.DONE, false, "description numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
+            utils.user.addPromise(promesse, promiseDataBase)
+        }
+
+        for(i in 0..20){
+            var promesse = Promise(-1, "promesse priorite numero $i", 5, State.DONE, true, "description priorité numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
+            utils.user.addPromise(promesse, promiseDataBase)
+        }
 
         recyclerView  = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -59,7 +58,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         materialSearchBar.inflateMenu(R.menu.app_menu)
         materialSearchBar.menu.setOnMenuItemClickListener(this as PopupMenu.OnMenuItemClickListener)
         materialSearchBar.setCardViewElevation(10)
-        materialSearchBar.setPlaceHolder("Bonjour "+defaultUser.name+" !")
+        materialSearchBar.setPlaceHolder("Bonjour "+utils.user.name+" !")
 
         loadSuggestList()
         materialSearchBar.addTextChangeListener(object : TextWatcher {
@@ -102,7 +101,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         })
 
-        listPromesses = defaultUser.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
+        listPromesses = utils.user.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))
 
         deleteListner = DeleteButtonListener(adapter, listPromesses, this)
@@ -118,7 +117,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
 
         valeurActuelle = text
-        listPromesses = defaultUser.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toMutableList()
+        listPromesses = utils.user.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toMutableList()
         deleteListner.listPromesses = listPromesses
         deleteButton.visibility = View.INVISIBLE
 

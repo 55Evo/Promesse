@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import fr.gof.promesse.database.PromiseDataBase
+import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import java.util.*
@@ -105,7 +106,7 @@ class PromiseManagerActivity : AppCompatActivity() {
             editTextTitle.error = getString(R.string.emptyField)
             return
         }
-        val defaultUser = promiseDataBase.createDefaultAccount()
+        val defaultUser = promiseDataBase.createDefaultAccount(Mascot("Super Mascotte", R.drawable.mascot1))
         val promise = Promise(
                 -1,
                 editTextTitle.text.toString(),
