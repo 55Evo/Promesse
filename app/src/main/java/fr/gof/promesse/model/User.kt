@@ -70,4 +70,8 @@ data class User(var email: String, var name: String, var password: String, var m
         db.updatePromise(email, promise)
     }
 
+    fun deletePromise(promise : Promise, db : PromiseDataBase) {
+        db.deletePromise(promise)
+    }
+
 }

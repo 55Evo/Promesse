@@ -58,8 +58,6 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
             }
         }
 
-
-
         override fun onClick(v: View?) {
             val position = adapterPosition
 

@@ -104,7 +104,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         listPromesses = utils.user.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))
 
-        deleteListner = DeleteButtonListener(adapter, listPromesses, this)
+        deleteListner = DeleteButtonListener(adapter, this, promiseDataBase)
         deleteButton.setOnClickListener(deleteListner)
         this.recyclerView.adapter = adapter
     }
@@ -118,7 +118,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         valeurActuelle = text
         listPromesses = utils.user.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toMutableList()
-        deleteListner.listPromesses = listPromesses
         deleteButton.visibility = View.INVISIBLE
 
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))

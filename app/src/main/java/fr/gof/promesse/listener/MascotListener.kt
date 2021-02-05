@@ -16,7 +16,6 @@ import fr.gof.promesse.model.Mascot
 class MascotListener(var listMascot: ArrayList<Mascot>, var context: Activity): MascotAdapter.OnItemClickListener {
     override fun onItemClick(position: Int, adapter: MascotAdapter, database: PromiseDataBase) {
         var nommascotte : Mascot = listMascot[position]
-        Log.d("ttttttttttttttttt", nommascotte.name)
         database.updateMascot(nommascotte)
 
         val toast = Toast.makeText(
@@ -26,7 +25,7 @@ class MascotListener(var listMascot: ArrayList<Mascot>, var context: Activity): 
         )
         toast.show()
 
-        val myIntent = Intent( context, SearchActivity::class.java)
+        val myIntent = Intent( context, MainActivity::class.java)
 
         context.startActivity(myIntent)
     }
