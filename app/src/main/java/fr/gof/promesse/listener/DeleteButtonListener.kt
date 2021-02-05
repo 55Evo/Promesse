@@ -4,18 +4,21 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.os.Handler
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fr.gof.promesse.Adapter.PromiseAdapter
 import fr.gof.promesse.R
+import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
 
-class DeleteButtonListener (var adapter : PromiseAdapter, var listPromesses : MutableList<Promise>, var context : Activity): View.OnClickListener {
+class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity, val promiseDataBase : PromiseDataBase): View.OnClickListener {
     override fun onClick(v: View?) {
-
+        var listPromesses = adapter.promiseList
         val it = listPromesses.iterator()
         while (it.hasNext()) {
             var p = it.next()
+            println( "Salut")
             if (p.isChecked) {
                 //If the item has subtasks, but ask confirmation
                 if (p.subtasks != null) {
@@ -39,6 +42,8 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var listPromesses : Mu
                 //If the item has no subtasks, directly delete
                 else {
                     val pos = listPromesses.indexOf(p)
+
+                    utils.user.deletePromise(p, promiseDataBase)
                     it.remove()
                     adapter.notifyItemRemoved(pos)
                     adapter.notifyItemRangeChanged(pos, listPromesses.size)

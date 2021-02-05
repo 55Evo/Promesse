@@ -19,11 +19,11 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var deleteListener: DeleteButtonListener
     lateinit var recyclerView: RecyclerView
     val promiseDataBase = PromiseDataBase(this@MainActivity)
 
     lateinit var adapter : PromiseAdapter
-    lateinit var defaultUser : User
     lateinit var listPromesse : MutableList<Promise>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,12 +35,12 @@ class MainActivity : AppCompatActivity() {
         llm.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = llm
         utils.user = promiseDataBase.createDefaultAccount(Mascot("Super mascotte",R.drawable.mascot1))
-        for(i in 0..20){
+        for(i in 0..1){
             var promesse = Promise(-1, "promesse numero $i", 5, State.DONE, false, "description numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
             utils.user.addPromise(promesse, promiseDataBase)
         }
 
-        for(i in 0..20){
+        for(i in 0..1){
             var promesse = Promise(-1, "promesse priorite numero $i", 5, State.DONE, true, "description priorité numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
             utils.user.addPromise(promesse, promiseDataBase)
         }
@@ -51,15 +51,17 @@ class MainActivity : AppCompatActivity() {
 
         val del = findViewById<FloatingActionButton>(R.id.deleteButton)
         recyclerView.adapter = adapter
-        del.setOnClickListener(DeleteButtonListener(adapter, listPromesse, this))
+        deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
+        del.setOnClickListener(deleteListener)
 
     }
 
     override fun onResume() {
         super.onResume()
         println("resume onResume MainActivity")
-        listPromesse = defaultUser.getAllPromise(promiseDataBase).toMutableList()
+        listPromesse = utils.user.getAllPromise(promiseDataBase).toMutableList()
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this))
+        deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
     }
