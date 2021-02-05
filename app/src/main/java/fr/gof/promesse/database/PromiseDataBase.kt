@@ -139,8 +139,6 @@ class PromiseDataBase (context : Context){
     fun getAllPromisesOfTheDay(email: String): Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
-
-        //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
@@ -153,5 +151,24 @@ class PromiseDataBase (context : Context){
                 "AND Email = ?",
             select, null, null, null)
         return getPromise(curs, dbreadable)
+    }
+
+    fun updatePromise(email : String, promise: Promise) {
+
+        val dbwritable : SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+
+        values.put("Title", promise.title)
+        values.put("Duration", promise.duration)
+        values.put("State", promise.state.toString())
+        values.put("Priority", if(promise.priority) 1 else 0)
+        values.put("Professional", if(promise.professional) 1 else 0)
+        values.put("Date_Creation", dateFormat.format(promise.dateCreation))
+        values.put("Date_Todo", dateFormat.format(promise.dateTodo))
+        values.put("Description", promise.description)
+
+        dbwritable.update("Promise", values,"Email = '$email' AND Id_Promise = '${promise.id}'", null)
+        dbwritable.close()
+
     }
 }

@@ -66,4 +66,8 @@ data class User(var email: String, var name: String, var password: String, var m
     fun getSearchResultsSorted(name : String, choiceOfSort : Sort, db: PromiseDataBase) : Set<Promise> =
         db.getAllPromisesNameLike(name, choiceOfSort, this)
 
+    fun updatePromise(promise: Promise, db: PromiseDataBase) {
+        db.updatePromise(email, promise)
+    }
+
 }
