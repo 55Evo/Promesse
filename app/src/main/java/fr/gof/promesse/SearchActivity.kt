@@ -156,5 +156,10 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         return true
     }
 
+    override fun onResume() {
+        adapter.notifyDataSetChanged()
+        super.onResume()
+    }
+
 }
 

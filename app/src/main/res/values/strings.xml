@@ -38,4 +38,6 @@
     <string name="november">Novembre</string>
     <string name="december">Decembre</string>
     <string name="emptyField">Veuillez remplir ce champ</string>
+    <string name="titleEditPromise">Modifier la promesse</string>
+    <string name="titleCreatePromise">Créer une promesse</string>
 </resources>
