@@ -10,15 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fr.gof.promesse.Adapter.PromiseAdapter
+import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
-import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
-import fr.gof.promesse.model.State
-import fr.gof.promesse.model.User
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         mascotView.setImageResource(utils.user.mascot.image)
         recyclerView.layoutManager = llm
 
-        listPromesse = utils.user.getAllPromise(promiseDataBase).toMutableList()
+        listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
 
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this))
 
@@ -54,8 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        println("resume onResume MainActivity")
-        listPromesse = utils.user.getAllPromise(promiseDataBase).toMutableList()
+        listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this))
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
@@ -66,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, PromiseManagerActivity::class.java)
         startActivity(intent)
     }
+
     fun onClickMascot(v:View){
         var bubble : TextView = findViewById(R.id.mascotBubbleTextView)
         bubble.text = "Coucou c'est moi "+utils.user.mascot.name + " !"

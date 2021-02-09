@@ -4,20 +4,16 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import fr.gof.promesse.Adapter.MascotAdapter
-import fr.gof.promesse.Adapter.PromiseAdapter
+import fr.gof.promesse.adapter.MascotAdapter
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.MascotListener
-import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.model.Mascot
-import fr.gof.promesse.model.User
 
 
 class ChooseMascotActivity : AppCompatActivity() {
     val promiseDataBase = PromiseDataBase(this)
 
     lateinit var adapter : MascotAdapter
-    lateinit var defaultUser : User
     lateinit var recyclerView: RecyclerView
     private val listMascot: List<Mascot> = listOf(
         Mascot("Jacou le Hibou", R.drawable.mascot1, R.drawable.mascot_afficher_1),
