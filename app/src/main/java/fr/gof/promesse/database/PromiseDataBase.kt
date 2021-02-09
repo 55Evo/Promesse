@@ -160,7 +160,7 @@ class PromiseDataBase (context : Context){
         }
     }
 
-    fun getAllPromisesOfTheDay(email: String): Set<Promise> {
+    fun getAllPromisesOfTheDay(email: String): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")

@@ -19,35 +19,22 @@ class ChooseMascotActivity : AppCompatActivity() {
     lateinit var adapter : MascotAdapter
     lateinit var defaultUser : User
     lateinit var recyclerView: RecyclerView
-    private var listMascot: ArrayList<Mascot>? = null
-    private val listMascotImages = intArrayOf(
-        R.drawable.mascot1,
-        R.drawable.mascot2,
-        R.drawable.mascot3,
-        R.drawable.mascot4
+    private val listMascot: List<Mascot> = listOf(
+        Mascot("Jacou le Hibou", R.drawable.mascot1, R.drawable.mascot_afficher_1),
+        Mascot("Raymond Le Crayon", R.drawable.mascot2, R.drawable.mascot_afficher_2),
+        Mascot("Eustache la Vache", R.drawable.mascot3, R.drawable.mascot_afficher_3)
     )
-    private val imageNameList =
-        arrayOf("Hibou moche", "Oiseau Bg", "Requin chopeur", "mascotte JO ")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mascot)
         recyclerView= findViewById(R.id.recycler_mascot)
         recyclerView.setHasFixedSize(true)
-        listMascot = createListMascot()
 
-
-        adapter = MascotAdapter(this, listMascot!!,MascotListener(listMascot!!, this ) , promiseDataBase)
-        recyclerView!!.adapter = adapter
-        recyclerView!!.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+        adapter = MascotAdapter(this, listMascot,MascotListener(listMascot, this) , promiseDataBase)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private fun createListMascot(): ArrayList<Mascot> {
-        val listMascot: ArrayList<Mascot> = ArrayList()
-        for (i in 0 until 4) {
-            val mascotModel = Mascot(imageNameList[i], listMascotImages[i])
-            listMascot.add(mascotModel)
-        }
-        return listMascot
-    }
+
 }

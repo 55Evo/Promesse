@@ -1,8 +1,10 @@
 package fr.gof.promesse
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -28,7 +30,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     lateinit var recyclerView : RecyclerView
     lateinit var adapter : PromiseAdapter
     lateinit var materialSearchBar : MaterialSearchBar
-    lateinit var listSuggestions : Set<Promise>
+    lateinit var listSuggestions : MutableSet<Promise>
     lateinit var defaultUser : User
     var choiceOfSort : Sort = Sort.NAME
     var valeurActuelle : String =""
@@ -38,17 +40,9 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        utils.user = promiseDataBase.createDefaultAccount(Mascot("Super mascotte", R.drawable.mascot1))
+        utils.user = promiseDataBase.createDefaultAccount(Mascot("Super mascotte", R.drawable.mascot1, R.drawable.mascot_afficher_1))
 
-        for(i in 0..20){
-            var promesse = Promise(-1, "promesse numero $i", 5, State.DONE, false, "description numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
-            utils.user.addPromise(promesse, promiseDataBase)
-        }
 
-        for(i in 0..20){
-            var promesse = Promise(-1, "promesse priorite numero $i", 5, State.DONE, true, "description priorité numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
-            utils.user.addPromise(promesse, promiseDataBase)
-        }
 
         recyclerView  = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -81,6 +75,10 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         })
         materialSearchBar.setSuggestionsClickListener(object : SuggestionsAdapter.OnItemViewClickListener {
             override fun OnItemDeleteListener(position: Int, v: View?) {
+                listSuggestions.remove(listSuggestions.elementAt(position))
+                var list = getTitleOfListSuggestion()
+                if(listSuggestions.size>20) materialSearchBar.lastSuggestions = list.subList(0,20)
+                else materialSearchBar.lastSuggestions = list
             }
             override fun OnItemClickListener(position: Int, v: View?) {
                 //hideKeyboard(this@SearchActivity)
@@ -138,11 +136,16 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun loadSuggestList() {
-        listSuggestions = promiseDataBase.getAllPromises()
+    private fun getTitleOfListSuggestion() : MutableList<String>{
         var liste = mutableListOf<String>()
         for (e in listSuggestions) liste.add(e.title)
-        materialSearchBar.lastSuggestions = liste
+        return liste
+    }
+    private fun loadSuggestList() {
+        listSuggestions = promiseDataBase.getAllPromises() as MutableSet<Promise>
+        var list = getTitleOfListSuggestion()
+        if(listSuggestions.size>20) materialSearchBar.lastSuggestions = list.subList(0,20)
+        else materialSearchBar.lastSuggestions = list
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -158,6 +161,10 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onResume() {
         adapter.notifyDataSetChanged()
         super.onResume()
+    }
+    fun onAddButtonClicked (v : View) {
+        val intent = Intent(this, PromiseManagerActivity::class.java)
+        startActivity(intent)
     }
 
 }

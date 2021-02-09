@@ -13,7 +13,7 @@ import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Mascot
 
 
-class MascotListener(var listMascot: ArrayList<Mascot>, var context: Activity): MascotAdapter.OnItemClickListener {
+class MascotListener(var listMascot: List<Mascot>, var context: Activity): MascotAdapter.OnItemClickListener {
     override fun onItemClick(position: Int, adapter: MascotAdapter, database: PromiseDataBase) {
         var nommascotte : Mascot = listMascot[position]
         database.updateMascot(nommascotte)

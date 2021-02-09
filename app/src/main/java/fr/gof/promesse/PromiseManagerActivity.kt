@@ -123,7 +123,7 @@ class PromiseManagerActivity : AppCompatActivity() {
             editTextTitle.error = getString(R.string.emptyField)
             return
         }
-        val defaultUser = promiseDataBase.createDefaultAccount(Mascot("Super Mascotte", R.drawable.mascot1))
+        val defaultUser = promiseDataBase.createDefaultAccount(Mascot("Super Mascotte", R.drawable.mascot1, R.drawable.mascot_afficher_1))
         val promiseNm = promise
         if (promiseNm != null) { //Update promise
             promiseNm.title = editTextTitle.text.toString()
