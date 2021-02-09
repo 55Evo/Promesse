@@ -1,4 +1,4 @@
-package fr.gof.promesse.Adapter
+package fr.gof.promesse.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +11,7 @@ import fr.gof.promesse.model.Promise
 
 class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listener : OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>() {
 
-    public var inSelection = false
+    var inSelection = false
 
     override fun getItemCount() = promiseList.size
 
@@ -19,7 +19,7 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
     override fun onBindViewHolder(holder: PromiseViewHolder, position: Int) {
         val promise = promiseList[position]
         holder.description.text = promise.description
-        holder.date.text = promise.dateTodo.toString()
+        holder.date.text = promise.getDateToDoToString()
         holder.titre.text = promise.title
         holder.checkBox.isChecked = promise.isChecked
         holder.checkBox.isVisible = inSelection
@@ -29,7 +29,7 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.layoutsearchitems, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.promise_item, parent, false)
         return PromiseViewHolder(itemView)
     }
 

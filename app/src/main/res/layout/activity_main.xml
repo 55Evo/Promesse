@@ -15,7 +15,7 @@
         android:layout_marginBottom="20dp"
         android:clickable="true"
         android:onClick="onAddButtonClicked"
-        app:backgroundTint="@color/blue_200"
+        app:backgroundTint="@color/bubble_border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/recyclerViewPromesse"
         app:srcCompat="@android:drawable/ic_input_add" />
@@ -36,7 +36,7 @@
         android:id="@+id/recyclerViewPromesse"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="230dp"
         android:background="@android:color/transparent"
         android:backgroundTint="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent">
@@ -69,6 +69,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@android:color/transparent"
         android:onClick="onClickSearchButton"
+        android:tint="@color/bubble_border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_magnify_black_48dp" />

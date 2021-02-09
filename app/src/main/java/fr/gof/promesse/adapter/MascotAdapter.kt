@@ -1,5 +1,5 @@
 
-package fr.gof.promesse.Adapter
+package fr.gof.promesse.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Mascot
-import java.util.*
 
-class MascotAdapter(public var context: Context, var listMascot: List<Mascot>,val listener : MascotAdapter.OnItemClickListener,val database : PromiseDataBase) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
+class MascotAdapter(var context: Context, var listMascot: List<Mascot>,val listener : OnItemClickListener, val database : PromiseDataBase) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
 
 //    private val inflater: LayoutInflater
 //    private val imageModelArrayList: ArrayList<Mascot>
@@ -24,7 +23,6 @@ class MascotAdapter(public var context: Context, var listMascot: List<Mascot>,va
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val promise = listMascot[position]
         holder.mascotView.setImageResource(listMascot[position].image_drawable)
         holder.name.text = (listMascot[position].name)
     }
@@ -39,7 +37,6 @@ class MascotAdapter(public var context: Context, var listMascot: List<Mascot>,va
 
          init {
              itemView.setOnClickListener(this)
-
          }
 
          override fun onClick(v: View?) {
