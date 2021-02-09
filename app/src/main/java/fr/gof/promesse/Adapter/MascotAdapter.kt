@@ -13,7 +13,7 @@ import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Mascot
 import java.util.*
 
-class MascotAdapter(public var context: Context, var listMascot: ArrayList<Mascot>,val listener : MascotAdapter.OnItemClickListener,val database : PromiseDataBase) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
+class MascotAdapter(public var context: Context, var listMascot: List<Mascot>,val listener : MascotAdapter.OnItemClickListener,val database : PromiseDataBase) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
 
 //    private val inflater: LayoutInflater
 //    private val imageModelArrayList: ArrayList<Mascot>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fond_ecran"
     tools:context=".MainActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -36,8 +37,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="200dp"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <ImageView
+        android:id="@+id/imageViewMascot"
+        android:layout_width="167dp"
+        android:layout_height="185dp"
+        android:onClick="onClickMascot"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewPromesse"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/mascot1" />
+
+    <TextView
+        android:id="@+id/mascotBubbleTextView"
+        android:layout_width="169dp"
+        android:layout_height="68dp"
+        android:background="@drawable/layout_bubble"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewPromesse"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewMascot"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/searchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/transparent"
+        android:onClick="onClickSearchButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_magnify_black_48dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,4 +10,7 @@
     <color name="green">#4CAF50</color>
     <color name="dark_blue">#3F51B5</color>
     <color name ="dark_green">#2F6C32</color>
+    <color name ="bubble">#F7F7F7</color>
+    <color name ="bubble_border">#D4D4D4</color>
+    <color name="grey_blue">#98B9DE</color>
 </resources>
