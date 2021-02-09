@@ -40,9 +40,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        utils.user = promiseDataBase.createDefaultAccount(Mascot("Super mascotte", R.drawable.mascot1, R.drawable.mascot_afficher_1))
-
-
 
         recyclerView  = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)

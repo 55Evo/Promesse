@@ -41,17 +41,6 @@ class MainActivity : AppCompatActivity() {
         mascotView.setImageResource(utils.user.mascot.image)
         recyclerView.layoutManager = llm
 
-        utils.user = promiseDataBase.createDefaultAccount(Mascot("Super mascotte",R.drawable.mascot1, R.drawable.mascot_afficher_1))
-        for(i in 0..1){
-            var promesse = Promise(-1, "promesse numero $i", 5, State.DONE, false, "description numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
-            utils.user.addPromise(promesse, promiseDataBase)
-        }
-
-        for(i in 0..1){
-            var promesse = Promise(-1, "promesse priorite numero $i", 5, State.DONE, true, "description priorité numero $i blablablablablablablablablablablablablablablablablabalblabkablababbjbfjksdbfhjdgbfjhsbvfhjsdvfhjsqdhjqvhsvfdsf", true, Date(System.currentTimeMillis()), Date(1611788399000), null)
-            utils.user.addPromise(promesse, promiseDataBase)
-        }
-
         listPromesse = utils.user.getAllPromise(promiseDataBase).toMutableList()
 
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this))
