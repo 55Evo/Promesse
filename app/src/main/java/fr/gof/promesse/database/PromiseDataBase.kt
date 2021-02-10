@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
+import fr.gof.promesse.R
 import fr.gof.promesse.model.*
 import java.lang.Exception
 import fr.gof.promesse.model.*
@@ -18,9 +20,31 @@ class PromiseDataBase (context : Context){
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     //Création d'un compte
-    fun createDefaultAccount() : User {
-        val user = User("default@test.fr", "Monsieur", "root", Mascot("Biscotte"))
-        return user
+    fun createDefaultAccount(mascot : Mascot) : User {
+//        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+//        val user = User("default@test.fr", "Monsieur", "root",mascot)
+//        val values = ContentValues()
+//        values.put("Email", user.email)
+//        values.put("Mascot", mascot.name)
+//        values.put("Name", user.name)
+//        values.put("Password",user.password )
+//        dbwritable.insert("Account", null, values)
+//        dbwritable.close()
+//        return user
+        return utils.user
+    }
+
+    fun updateMascot(mascot : Mascot){
+
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Mascot", mascot.name)
+        dbwritable.update("Account", values,"Account.Email = '${utils.user.email}'", null)
+        dbwritable.close()
+
+        utils.user.mascot = mascot
+
+
     }
 
     fun deletePromise(promesse : Promise) {
@@ -136,10 +160,8 @@ class PromiseDataBase (context : Context){
         }
     }
 
-    fun getAllPromisesOfTheDay(email: String): Set<Promise> {
+    fun getAllPromisesOfTheDay(email: String): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
-        //Execution requête
-
         //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
@@ -153,5 +175,24 @@ class PromiseDataBase (context : Context){
                 "AND Email = ?",
             select, null, null, null)
         return getPromise(curs, dbreadable)
+    }
+
+    fun updatePromise(email : String, promise: Promise) {
+
+        val dbwritable : SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+
+        values.put("Title", promise.title)
+        values.put("Duration", promise.duration)
+        values.put("State", promise.state.toString())
+        values.put("Priority", if(promise.priority) 1 else 0)
+        values.put("Professional", if(promise.professional) 1 else 0)
+        values.put("Date_Creation", dateFormat.format(promise.dateCreation))
+        values.put("Date_Todo", dateFormat.format(promise.dateTodo))
+        values.put("Description", promise.description)
+
+        dbwritable.update("Promise", values,"Email = '$email' AND Id_Promise = '${promise.id}'", null)
+        dbwritable.close()
+
     }
 }
