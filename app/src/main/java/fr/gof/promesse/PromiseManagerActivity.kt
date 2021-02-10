@@ -14,6 +14,7 @@ import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
+import java.text.DateFormat
 import java.util.*
 
 
@@ -26,6 +27,7 @@ class PromiseManagerActivity : AppCompatActivity() {
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
     var promise : Promise ?= null
     lateinit var date : Date
+    val dfl = DateFormat.getDateInstance(DateFormat.FULL);
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +37,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         if (intent.getSerializableExtra("Promise") != null) {
             promise = intent.getSerializableExtra("Promise") as Promise
         }
-
+        textViewDate = findViewById(R.id.textViewDatePicker)
 
         val promiseNm = promise
         if (promiseNm != null) {
@@ -51,15 +53,14 @@ class PromiseManagerActivity : AppCompatActivity() {
             priority.isChecked = promiseNm.priority
             var professional : Switch = findViewById(R.id.switchProfessional)
             professional.isChecked = promiseNm.professional
+            textViewDate.text = promiseNm.getDateToDoToString()
         } else {
             titleBar.setText(R.string.titleCreatePromise)
-            date = Date(System.currentTimeMillis())
+            textViewDate.text = getDateToString(Date(System.currentTimeMillis()))
         }
+        // Date Select Listener
+        //calendar.time = date
 
-        textViewDate = findViewById(R.id.textViewDatePicker)
-        // Date Select Listener.
-        calendar.time = date
-        updateDate()
 
     }
 
@@ -67,14 +68,11 @@ class PromiseManagerActivity : AppCompatActivity() {
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, day)
-        updateDate()
-    }
-
-    fun updateDate() {
-        textViewDate.text = promise?.getDateToDoToString()
+        textViewDate.text = getDateToString(calendar.time)
     }
 
 
+    fun getDateToString(date : Date) = dfl.format(date)
 
     fun onClickDate (v : View) {
         // Create DatePickerDialog (Spinner Mode):
