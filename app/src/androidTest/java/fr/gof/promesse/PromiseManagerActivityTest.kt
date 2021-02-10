@@ -6,10 +6,12 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.PickerActions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
@@ -45,7 +47,6 @@ class PromiseManagerActivityTest {
 
     @Test
     fun addPromiseSuccess() {
-        val promiseDataBase = PromiseDataBase(instrumentationContext)
         // Type text and then press the button.
         onView(withId(R.id.buttonAdd))
                 .perform(click())
@@ -68,6 +69,7 @@ class PromiseManagerActivityTest {
     }
     @Test
     fun addPromiseMissingField() {
+
         // Type text and then press the button.
         onView(withId(R.id.buttonAdd))
                 .perform(click())
@@ -85,5 +87,43 @@ class PromiseManagerActivityTest {
         onView(withId(R.id.buttonSave)).perform(click())
         onView(withId(R.id.editTextTitle)).check(matches(hasErrorText("Veuillez remplir ce champ")))
 
+    }
+    @Test
+    fun removePromise() {
+        // Type text and then press the button.
+        onView(withId(R.id.buttonAdd))
+                .perform(click())
+        onView(withId(R.id.editTextTitle))
+                .perform(typeText(promiseToAdd.title), closeSoftKeyboard())
+        onView(withId(R.id.buttonSave)).perform(click())
+        onView(withId(R.id.recyclerViewPromesse)).perform(RecyclerViewActions.actionOnItemAtPosition<PromiseAdapter.PromiseViewHolder>(0, longClick()))
+        onView(withId(R.id.deleteButton))
+                .perform(click())
+    }
+    @Test
+    fun editPromise() {
+        // Type text and then press the button.
+        onView(withId(R.id.buttonAdd))
+                .perform(click())
+        onView(withId(R.id.editTextTitle))
+                .perform(typeText(promiseToAdd.title), closeSoftKeyboard())
+        onView(withId(R.id.buttonSave)).perform(click())
+        onView(withId(R.id.recyclerViewPromesse)).perform(RecyclerViewActions.actionOnItemAtPosition<PromiseAdapter.PromiseViewHolder>(0, click()))
+        onView(withId(R.id.recyclerViewPromesse)).perform(RecyclerViewActions.actionOnItemAtPosition<PromiseAdapter.PromiseViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.buttonEdit)))
+        onView(withId(R.id.editTextTitle))
+                .perform(typeText("Edited!"), closeSoftKeyboard())
+    }
+    @Test
+    fun editPromiseMissingField() {
+        // Type text and then press the button.
+        onView(withId(R.id.buttonAdd))
+                .perform(click())
+        onView(withId(R.id.editTextTitle))
+                .perform(typeText(promiseToAdd.title), closeSoftKeyboard())
+        onView(withId(R.id.buttonSave)).perform(click())
+        onView(withId(R.id.recyclerViewPromesse)).perform(RecyclerViewActions.actionOnItemAtPosition<PromiseAdapter.PromiseViewHolder>(0, click()))
+        onView(withId(R.id.recyclerViewPromesse)).perform(RecyclerViewActions.actionOnItemAtPosition<PromiseAdapter.PromiseViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.buttonEdit)))
+        onView(withId(R.id.editTextTitle))
+                .perform(replaceText(""), closeSoftKeyboard())
     }
 }
