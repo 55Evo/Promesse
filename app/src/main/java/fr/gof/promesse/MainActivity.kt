@@ -1,20 +1,25 @@
 package fr.gof.promesse
 
+import SwipeToDone
+import SwipeToReport
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fr.gof.promesse.adapter.PromiseAdapter
-import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
+import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.model.Promise
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,8 +50,33 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
         del.setOnClickListener(deleteListener)
+        enableSwipeToDone();
+        enableSwipeToReport();
+    }
+
+    private fun enableSwipeToDone() {
+        val swipeToDone: SwipeToDone = object : SwipeToDone(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
+                val position = viewHolder.adapterPosition
+                Log.d("je swipe de droite à gauche", "ca marche !!!!!!!!!!")
+            }
+        }
+        val itemDone = ItemTouchHelper(swipeToDone)
+        itemDone.attachToRecyclerView(recyclerView)
 
     }
+    // je sépare au cas ou on ai pas besoin de reporter une tache
+    private fun enableSwipeToReport(){
+        val swipeToReport: SwipeToReport = object : SwipeToReport(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
+                val position = viewHolder.adapterPosition
+                Log.d("je swipe de gauche à droite", "ca marche !!!!!!!!!!!!!")
+            }
+        }
+        val itemReport = ItemTouchHelper(swipeToReport)
+        itemReport.attachToRecyclerView(recyclerView)
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -57,12 +87,12 @@ class MainActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
-    fun onAddButtonClicked (v : View) {
+    fun onAddButtonClicked(v: View) {
         val intent = Intent(this, PromiseManagerActivity::class.java)
         startActivity(intent)
     }
 
-    fun onClickMascot(v:View){
+    fun onClickMascot(v: View){
         var bubble : TextView = findViewById(R.id.mascotBubbleTextView)
         bubble.text = "Coucou c'est moi "+utils.user.mascot.name + " !"
         bubble.visibility = View.VISIBLE
@@ -72,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-    fun onClickSearchButton(v : View){
+    fun onClickSearchButton(v: View){
         val intent = Intent(this, SearchActivity::class.java)
         startActivity(intent)
     }
