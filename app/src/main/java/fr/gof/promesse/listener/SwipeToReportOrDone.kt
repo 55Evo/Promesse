@@ -28,15 +28,12 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     private val iconHeightReport : Int
 
 
-    private var direction : String = ""
-
     init {
         mClearPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         reportDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_report_24) as Drawable
         doneDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_done_24) as Drawable
         iconWidthReport = reportDrawable.intrinsicWidth
         iconHeightReport = reportDrawable.intrinsicHeight
-
         iconWidthDone = doneDrawable.intrinsicWidth
         iconHeightDone = doneDrawable.intrinsicHeight
 
@@ -53,18 +50,11 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         return false
     }
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-        direction = if (dX> 0) {
-            "RIGHT"
-        }
-        else {
-            "LEFT"
-        }
         if (dX<0){ // left case
                 leftTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
        else{ //right treatment
                 rightTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-
             }
 
     }
