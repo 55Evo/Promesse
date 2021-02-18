@@ -6,7 +6,7 @@
     android:layout_margin="0dp"
     android:background="@android:color/transparent"
     app:cardBackgroundColor="@android:color/transparent"
-    app:cardElevation="28dp">
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:id="@+id/linearlayoutitem"
@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:background="@android:color/transparent"
             android:orientation="horizontal">
 
             <ImageView
@@ -83,12 +84,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:background="@android:color/transparent"
             android:orientation="horizontal">
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@android:color/transparent" />
 
             <Button
                 android:id="@+id/buttonEdit"
