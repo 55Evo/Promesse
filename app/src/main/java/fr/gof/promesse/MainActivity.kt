@@ -43,6 +43,11 @@ class MainActivity : AppCompatActivity() {
 
         val del = findViewById<FloatingActionButton>(R.id.deleteButton)
         recyclerView.adapter = adapter
+//        isDone(listPromesse[0], adapter)
+//        isDone(listPromesse[1], adapter)
+//        for(p : Promise in listPromesse) {
+//            println(p.state.toString())
+//        }
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
         del.setOnClickListener(deleteListener)
 
@@ -77,4 +82,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun isDone(p : Promise, a : PromiseAdapter) {
+        utils.user.setToDone(p, promiseDataBase)
+        a.notifyDataSetChanged()
+    }
 }

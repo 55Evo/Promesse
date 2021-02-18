@@ -22,12 +22,18 @@ data class User(var email: String, var name: String, var password: String, var m
     //Tirer par priorité puis par date
     fun getPromisesSortedByPriority(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
-            if (p1.priority && p2.priority) {
-                p1.compareTo(p2)
-            } else if (p1.priority && !p2.priority) {
-                -1
-            } else {
+            if(p1.state ==  State.DONE && p2.state != State.DONE)
                 1
+            else if(p2.state ==  State.DONE && p1.state != State.DONE)
+                -1
+            else {
+                if (p1.priority && p2.priority) {
+                    p1.compareTo(p2)
+                } else if (p1.priority && !p2.priority) {
+                    -1
+                } else {
+                    1
+                }
             }
         }
         setSorted.addAll(setToSort)
@@ -42,12 +48,18 @@ data class User(var email: String, var name: String, var password: String, var m
     //Trier par nom puis par date
     fun getPromisesSortedByName(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
-            if (p1.title == p2.title) {
-                p1.compareTo(p2)
-            } else if (p1.title < p2.title) {
-                -1
-            } else {
+            if(p1.state ==  State.DONE && p2.state != State.DONE)
                 1
+            else if(p2.state ==  State.DONE && p1.state != State.DONE)
+                -1
+            else {
+                if (p1.title == p2.title) {
+                    p1.compareTo(p2)
+                } else if (p1.title < p2.title) {
+                    -1
+                } else {
+                    1
+                }
             }
         }
         setSorted.addAll(setToSort)
@@ -57,7 +69,13 @@ data class User(var email: String, var name: String, var password: String, var m
     //Trier par date
     fun getPromisesSortedByDate(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
-            p1.compareTo(p2)
+            if(p1.state ==  State.DONE && p2.state != State.DONE)
+                1
+            else if(p2.state ==  State.DONE && p1.state != State.DONE)
+                -1
+            else {
+                p1.compareTo(p2)
+            }
         }
         setSorted.addAll(setToSort)
         return setSorted
@@ -74,4 +92,8 @@ data class User(var email: String, var name: String, var password: String, var m
         db.deletePromise(promise)
     }
 
+    fun setToDone(promise : Promise, db : PromiseDataBase) {
+        promise.state = State.DONE
+        db.updatePromise(email, promise)
+    }
 }
