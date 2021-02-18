@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
 import fr.gof.promesse.model.Promise
+import fr.gof.promesse.model.State
 
 class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listener : OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>() {
 
@@ -25,7 +26,8 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
         holder.checkBox.isVisible = inSelection
         holder.description.maxLines = if (promise.isDescDeployed) 10 else 2
         holder.layoutButtonEdit.visibility = if (promise.isDescDeployed) View.VISIBLE else View.GONE
-        holder.layout.setBackgroundResource( if (promise.priority) R.drawable.layout_border_important else R.drawable.layout_border)
+        holder.layout.setBackgroundResource( if (promise.priority){ if(promise.state== State.DONE) R.drawable.layout_border_important_done else R.drawable.layout_border_important } else { if(promise.state == State.DONE) R.drawable.layout_border_done else R.drawable.layout_border })
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseViewHolder {

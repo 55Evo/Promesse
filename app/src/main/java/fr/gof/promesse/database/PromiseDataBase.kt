@@ -171,7 +171,7 @@ class PromiseDataBase (context : Context){
             "((DATE(Date_Todo) = DATE('now','-1 day') AND State <> 'DONE') \n" +
                 "OR (DATE(Date_Todo) = DATE('now','-2 day') AND State <> 'DONE') \n" +
                 "OR (DATE(Date_Todo) = DATE('now','-3 day') AND State <> 'DONE') \n" +
-                "OR DATE(Date_Todo) = DATE('now')) " +
+                "OR DATE(Date_Todo) = DATE('now') AND State <> 'DONE') " +
                 "AND Email = ?",
             select, null, null, null)
         return getPromise(curs, dbreadable)
@@ -195,4 +195,5 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
 
     }
+
 }
