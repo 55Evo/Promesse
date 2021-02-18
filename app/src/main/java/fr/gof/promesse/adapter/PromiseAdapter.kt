@@ -7,6 +7,7 @@ import android.widget.*
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
+import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
 
 class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listener : OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>() {
@@ -31,6 +32,11 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.promise_item, parent, false)
         return PromiseViewHolder(itemView)
+    }
+
+    fun restoreItem(promise: Promise, position: Int, dataBase: PromiseDataBase) {
+        promiseList.add(position,promise)
+        dataBase.updateDate(promise)
     }
 
 
