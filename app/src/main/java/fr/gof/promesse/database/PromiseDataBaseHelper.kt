@@ -5,6 +5,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import fr.gof.promesse.R
 
+/**
+ * Promise data base helper
+ *
+ * @constructor
+ *
+ * @param context
+ */
 class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.string.app_name.toString(), null, R.integer.database_version) {
 
     val createAccount = "CREATE TABLE Account(\n" +

@@ -12,7 +12,16 @@ import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Mascot
 
-class MascotAdapter(var context: Context, var listMascot: List<Mascot>,val listener : OnItemClickListener, val database : PromiseDataBase) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
+/**
+ * Mascot adapter
+ *
+ * @property context
+ * @property listMascot
+ * @property listener
+ * @property database
+ * @constructor Create empty Mascot adapter
+ */
+class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val listener : OnItemClickListener, val database : PromiseDataBase) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
 
 //    private val inflater: LayoutInflater
 //    private val imageModelArrayList: ArrayList<Mascot>
@@ -31,7 +40,14 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>,val liste
         return listMascot.size
     }
 
-     inner class MyViewHolder(itemView: View) :  View.OnClickListener, RecyclerView.ViewHolder(itemView) {
+    /**
+     * My view holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
+    inner class MyViewHolder(itemView: View) :  View.OnClickListener, RecyclerView.ViewHolder(itemView) {
         var mascotView: ImageView = itemView.findViewById(R.id.mascotView)
          var name: TextView = itemView.findViewById(R.id.mascotName)
 
@@ -48,7 +64,19 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>,val liste
     }
 
 
+    /**
+     * On item click listener
+     *
+     * @constructor Create empty On item click listener
+     */
     interface OnItemClickListener {
+        /**
+         * On item click
+         *
+         * @param position
+         * @param adapter
+         * @param database
+         */
         fun onItemClick(position: Int, adapter : MascotAdapter, database : PromiseDataBase)
     }
 }

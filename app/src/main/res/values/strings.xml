@@ -23,4 +23,8 @@
     <string name="titleCreatePromise">Créer une promesse</string>
     <string name="searchbarPlaceholder">Bonjour %1$s !</string>
     <string name="titleMascotSelection">Selectionnez votre mascotte</string>
+    <string name="channel_name">notification channel</string>
+    <string name="channel_description">notification channel description</string>
+    <string name="notificationTitle">Promesses à faire !</string>
+    <string name="notificationContent">Attention vous devez faire les promesses</string>
 </resources>

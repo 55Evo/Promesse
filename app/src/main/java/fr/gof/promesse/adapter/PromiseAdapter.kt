@@ -9,9 +9,17 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
 import fr.gof.promesse.model.Promise
 
-class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listener : OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>() {
+/**
+ * Promise adapter
+ *
+ * @property promiseList
+ * @property listener
+ * @constructor Create empty Promise adapter
+ */
+class PromiseAdapter  (var promiseList : MutableList<Promise>, val listener : OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>() {
 
     var inSelection = false
+    var nbPromisesChecked = 0
 
     override fun getItemCount() = promiseList.size
 
@@ -34,7 +42,13 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
     }
 
 
-    // HOLDER
+    /**
+     * Promise view holder
+     *
+     * @constructor
+     *
+     * @param view
+     */// HOLDER
     inner class PromiseViewHolder (view : View): RecyclerView.ViewHolder(view),
             View.OnClickListener,
             View.OnLongClickListener {
@@ -50,22 +64,24 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
             view.setOnClickListener(this)
             view.setOnLongClickListener(this)
             buttonEdit.setOnClickListener(this)
-            checkBox.setOnCheckedChangeListener{_, isChecked ->
-                if (view.parent != null) {
-                    promiseList[(view.parent as RecyclerView).getChildAdapterPosition(view)].isChecked = isChecked
-                }
-
-            }
+            checkBox.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
-            val position = adapterPosition
+            if(v is CheckBox){
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onItemCheckedChanged(position, this@PromiseAdapter)
+                }
+            } else {
+                val position = adapterPosition
 
-            if (position != RecyclerView.NO_POSITION) {
-                if (v is Button) {
-                    listener.onItemButtonEditClick(position, this@PromiseAdapter)
-                } else {
-                    listener.onItemClick(position, this@PromiseAdapter)
+                if (position != RecyclerView.NO_POSITION) {
+                    if (v is Button) {
+                        listener.onItemButtonEditClick(position, this@PromiseAdapter)
+                    } else {
+                        listener.onItemClick(position, this@PromiseAdapter)
+                    }
                 }
             }
         }
@@ -79,11 +95,36 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
         }
     }
 
-    //Interface des events de la liste
+    /**
+     * On item click listener
+     *
+     * @constructor Create empty On item click listener
+     *///Interface des events de la liste
     interface OnItemClickListener {
+        /**
+         * On item click
+         *
+         * @param position
+         * @param adapter
+         */
         fun onItemClick(position: Int, adapter : PromiseAdapter)
+
+        /**
+         * On item long click
+         *
+         * @param position
+         * @param adapter
+         */
         fun onItemLongClick(position: Int, adapter : PromiseAdapter)
+
+        /**
+         * On item button edit click
+         *
+         * @param position
+         * @param promiseAdapter
+         */
         fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter)
+        fun onItemCheckedChanged(position: Int, promiseAdapter: PromiseAdapter)
     }
 
 
