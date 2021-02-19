@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         //enableSwipeToDone();
         //enableSwipeToReport();
         enableSwipeToDoneOrReport()
-        enableSwipeUpDown()
+       enableSwipeUpDown()
     }
     private fun enableSwipeUpDown(){
         val swipeupDown: SwipeupDown = object : SwipeupDown(this) {
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                     recyclerView.scrollToPosition(position)
                     adapter.notifyItemRangeChanged(position, listPromesse.size)
                 }
-                snackbar.setActionTextColor(Color.YELLOW);
+                snackbar.setActionTextColor(Color.GREEN);
                 snackbar.show();
             }
 
