@@ -11,10 +11,8 @@ import android.widget.TextView
 
 import androidx.appcompat.app.AppCompatActivity
 import fr.gof.promesse.database.PromiseDataBase
-import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
-import fr.gof.promesse.model.User
 import java.text.DateFormat
 import java.util.*
 
@@ -127,7 +125,6 @@ class PromiseManagerActivity : AppCompatActivity() {
             editTextTitle.error = getString(R.string.emptyField)
             return
         }
-        val defaultUser = promiseDataBase.createDefaultAccount(Mascot("Super Mascotte", R.drawable.mascot1, R.drawable.mascot_afficher_1))
         val promiseNm = promise
         if (promiseNm != null) {
             updatePromise(
@@ -136,8 +133,7 @@ class PromiseManagerActivity : AppCompatActivity() {
                 editTextDuration,
                 switchPriority,
                 switchProfessional,
-                editTextDescription,
-                defaultUser
+                editTextDescription
             )
         } else { //creation nouvelle promesse
             val promise = Promise(
@@ -152,7 +148,7 @@ class PromiseManagerActivity : AppCompatActivity() {
                     calendar.time,
                     null
             )
-            defaultUser.addPromise(promise, promiseDataBase)
+            utils.user.addPromise(promise, promiseDataBase)
         }
         finish()
     }
@@ -163,8 +159,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         editTextDuration: TextView,
         switchPriority: Switch,
         switchProfessional: Switch,
-        editTextDescription: TextView,
-        defaultUser: User
+        editTextDescription: TextView
     ) {
         promiseNm.title = editTextTitle.text.toString()
         promiseNm.duration =
@@ -174,7 +169,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         promiseNm.professional = switchProfessional.isChecked
         promiseNm.dateTodo = calendar.time
         promiseNm.description = editTextDescription.text.toString()
-        defaultUser.updatePromise(promiseNm, promiseDataBase)
+        utils.user.updatePromise(promiseNm, promiseDataBase)
     }
 
     /**

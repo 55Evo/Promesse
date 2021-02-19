@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import fr.gof.promesse.model.*
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,23 +22,20 @@ class PromiseDataBase (context : Context){
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     /**
-     * Create default account
+     * Create account
      *
-     * @param mascot
+     * @param user
      * @return
      */
-    fun createDefaultAccount(mascot : Mascot) : User {
-//        val dbwritable: SQLiteDatabase = this.database.writableDatabase
-//        val user = User("default@test.fr", "Monsieur", "root",mascot)
-//        val values = ContentValues()
-//        values.put("Email", user.email)
-//        values.put("Mascot", mascot.name)
-//        values.put("Name", user.name)
-//        values.put("Password",user.password )
-//        dbwritable.insert("Account", null, values)
-//        dbwritable.close()
-//        return user
-        return utils.user
+    fun createAccount(user : User) {
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Email", user.email)
+        values.put("Mascot", user.mascot.name)
+        values.put("Name", user.name)
+        values.put("Password",user.password )
+        dbwritable.insert("Account", null, values)
+        dbwritable.close()
     }
 
     /**
@@ -263,4 +259,59 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
 
     }
+
+    fun emailExist(email : String): Boolean {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email")
+        val select = arrayOf(email)
+
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Email = ?",
+                select, null, null, null)
+        //Si il y en a, retourne true
+        return curs.count != 0
+    }
+
+    fun userIsEmpty(): Boolean {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email")
+
+        val curs: Cursor = dbreadable.query("Account", col,
+                null,
+                null, null, null, null)
+        //Si il y en a, retourne false
+        return curs.count == 0
+    }
+
+    fun checkPassword(email: String, password: String): Boolean {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email")
+        val select = arrayOf(email, password)
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Email = ? AND Password = ?",
+                select, null, null, null)
+        //Si il y en a, retourne true
+        return curs.count != 0
+    }
+
+    fun getUser(email: String): User {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email", "Name", "Mascot")
+        val select = arrayOf(email)
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Email = ? ",
+                select, null, null, null)
+        curs.moveToFirst()
+        //Si il y en a, retourne true
+        return User(email,
+                curs.getString(curs.getColumnIndexOrThrow("Name")),
+                "",
+                Mascot.valueOf(curs.getString(curs.getColumnIndexOrThrow("Mascot")))
+                )
+    }
+
 }

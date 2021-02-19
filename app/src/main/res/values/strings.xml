@@ -27,4 +27,18 @@
     <string name="channel_description">notification channel description</string>
     <string name="notificationTitle">Promesses à faire !</string>
     <string name="notificationContent">Attention vous devez faire les promesses</string>
+    <string name="titleSignup">S\'inscrire</string>
+    <string name="confirmPassword">Confirmation mot de passe</string>
+    <string name="password">Mot de passe</string>
+    <string name="email">Email</string>
+    <string name="pawordDoesntMatch">Les mots de passe de correspondent pas</string>
+    <string name="name">Nom</string>
+    <string name="alreadyExist">Cet email existe déjà !</string>
+    <string name="alreadyAnAcount">Vous avez déjà un compte ?</string>
+    <string name="titleSignin">Se connecter</string>
+    <string name="iHaveNoAccount">Je n\'ai pas de compte</string>
+    <string name="unknownEmail">Cet email n\'existe pas</string>
+    <string name="wrongPassword">Mot de passe incorrect</string>
+    <string name="invalidFormat">Format invalide</string>
+    <string name="passwordTooShort">Le mot de passe est trop court</string>
 </resources>

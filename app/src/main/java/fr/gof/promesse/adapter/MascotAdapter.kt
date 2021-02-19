@@ -33,7 +33,7 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.mascotView.setImageResource(listMascot[position].image_drawable)
-        holder.name.text = (listMascot[position].name)
+        holder.name.text = (listMascot[position].nom)
     }
 
     override fun getItemCount(): Int {
