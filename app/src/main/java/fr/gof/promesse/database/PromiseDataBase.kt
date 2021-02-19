@@ -4,22 +4,30 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
-import fr.gof.promesse.R
-import fr.gof.promesse.model.*
-import java.lang.Exception
 import fr.gof.promesse.model.*
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
+/**
+ * Promise data base
+ *
+ * @constructor
+ *
+ * @param context
+ */
 class PromiseDataBase (context : Context){
 
     val database = PromiseDataBaseHelper(context)
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-    //Création d'un compte
+    /**
+     * Create default account
+     *
+     * @param mascot
+     * @return
+     */
     fun createDefaultAccount(mascot : Mascot) : User {
 //        val dbwritable: SQLiteDatabase = this.database.writableDatabase
 //        val user = User("default@test.fr", "Monsieur", "root",mascot)
@@ -34,6 +42,11 @@ class PromiseDataBase (context : Context){
         return utils.user
     }
 
+    /**
+     * Update mascot
+     *
+     * @param mascot
+     */
     fun updateMascot(mascot : Mascot){
 
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
@@ -53,7 +66,11 @@ class PromiseDataBase (context : Context){
 
     }
 
-
+    /**
+     * Delete promise
+     *
+     * @param promesse
+     */
     fun deletePromise(promesse : Promise) {
         //Ouverture
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
@@ -71,24 +88,19 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
     }
 
+    /**
+     * Add promise
+     *
+     * @param email
+     * @param promise
+     */
     fun addPromise(email : String, promise : Promise) {
         //Ouverture
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
-
         //Ajout des valeurs
         val values = ContentValues()
-        values.put("Email", email)
-        values.put("Title", promise.title)
-        values.put("Duration", promise.duration)
-        values.put("State", promise.state.toString())
-        values.put("Priority", if(promise.priority) 1 else 0)
-        values.put("Professional", if(promise.professional) 1 else 0)
-        values.put("Date_Creation", dateFormat.format(promise.dateCreation))
-        values.put("Date_Todo", dateFormat.format(promise.dateTodo))
-        values.put("Description", promise.description)
-
+        promiseToValues(values, email, promise)
         val id = dbwritable.insert("Promise", null, values)
-
         //Ajout des sous-tâches
         if(promise.subtasks != null) {
             for (sub in promise.subtasks!!) {
@@ -104,6 +116,29 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
     }
 
+    private fun promiseToValues(
+        values: ContentValues,
+        email: String,
+        promise: Promise
+    ) {
+        values.put("Email", email)
+        values.put("Title", promise.title)
+        values.put("Duration", promise.duration)
+        values.put("State", promise.state.toString())
+        values.put("Priority", if (promise.priority) 1 else 0)
+        values.put("Professional", if (promise.professional) 1 else 0)
+        values.put("Date_Creation", dateFormat.format(promise.dateCreation))
+        values.put("Date_Todo", dateFormat.format(promise.dateTodo))
+        values.put("Description", promise.description)
+    }
+
+    /**
+     * Get promise
+     *
+     * @param curs
+     * @param dbreadable
+     * @return
+     */
     fun getPromise(curs: Cursor, dbreadable: SQLiteDatabase): Set<Promise>{
         var promiseList = HashSet<Promise>()
         try {
@@ -144,6 +179,12 @@ class PromiseDataBase (context : Context){
     }
 
 
+    /**
+     * Get all promises
+     *
+     * @param email
+     * @return
+     */
     fun getAllPromises(email : String = "default@test.fr") : Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
@@ -153,6 +194,14 @@ class PromiseDataBase (context : Context){
         return getPromise(curs, dbreadable)
     }
 
+    /**
+     * Get all promises name like
+     *
+     * @param name
+     * @param choiceOfSort
+     * @param user
+     * @return
+     */
     @JvmOverloads
     fun getAllPromisesNameLike(name : String, choiceOfSort : Sort, user: User) : Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
@@ -167,6 +216,12 @@ class PromiseDataBase (context : Context){
         }
     }
 
+    /**
+     * Get all promises of the day
+     *
+     * @param email
+     * @return
+     */
     fun getAllPromisesOfTheDay(email: String): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
@@ -184,6 +239,12 @@ class PromiseDataBase (context : Context){
         return getPromise(curs, dbreadable)
     }
 
+    /**
+     * Update promise
+     *
+     * @param email
+     * @param promise
+     */
     fun updatePromise(email : String, promise: Promise) {
 
         val dbwritable : SQLiteDatabase = this.database.writableDatabase
@@ -202,5 +263,4 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
 
     }
-
 }

@@ -10,6 +10,11 @@ import fr.gof.promesse.listener.MascotListener
 import fr.gof.promesse.model.Mascot
 
 
+/**
+ * Choose mascot activity
+ *
+ * @constructor Create empty Choose mascot activity
+ */
 class ChooseMascotActivity : AppCompatActivity() {
     val promiseDataBase = PromiseDataBase(this)
 

@@ -14,10 +14,16 @@ import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
+import fr.gof.promesse.model.User
 import java.text.DateFormat
 import java.util.*
 
 
+/**
+ * Promise manager activity
+ *
+ * @constructor Create empty Promise manager activity
+ */
 class PromiseManagerActivity : AppCompatActivity() {
 
     private val dateSetListener = OnDateSetListener { view, year, monthOfYear, dayOfMonth -> setDate(year, monthOfYear, dayOfMonth)}
@@ -41,29 +47,39 @@ class PromiseManagerActivity : AppCompatActivity() {
 
         val promiseNm = promise
         if (promiseNm != null) {
-            titleBar.setText(R.string.titleEditPromise)
-            var title : EditText = findViewById(R.id.editTextTitle)
-            title.setText(promiseNm.title)
-            var duration : EditText = findViewById(R.id.editTextDuration)
-            duration.setText(promise?.duration.toString())
-            date = promiseNm.dateTodo
-            var description : EditText = findViewById(R.id.editTextDescription)
-            description.setText(promiseNm.description)
-            var priority : Switch = findViewById(R.id.switchPriority)
-            priority.isChecked = promiseNm.priority
-            var professional : Switch = findViewById(R.id.switchProfessional)
-            professional.isChecked = promiseNm.professional
-            textViewDate.text = promiseNm.getDateToDoToString()
+            setPromiseInFields(titleBar, promiseNm)
         } else {
             titleBar.setText(R.string.titleCreatePromise)
             textViewDate.text = getDateToString(Date(System.currentTimeMillis()))
         }
-        // Date Select Listener
-        //calendar.time = date
-
-
     }
 
+    private fun setPromiseInFields(
+        titleBar: TextView,
+        promiseNm: Promise
+    ) {
+        titleBar.setText(R.string.titleEditPromise)
+        val title: EditText = findViewById(R.id.editTextTitle)
+        title.setText(promiseNm.title)
+        val duration: EditText = findViewById(R.id.editTextDuration)
+        duration.setText(promise?.duration.toString())
+        date = promiseNm.dateTodo
+        val description: EditText = findViewById(R.id.editTextDescription)
+        description.setText(promiseNm.description)
+        val priority: Switch = findViewById(R.id.switchPriority)
+        priority.isChecked = promiseNm.priority
+        val professional: Switch = findViewById(R.id.switchProfessional)
+        professional.isChecked = promiseNm.professional
+        textViewDate.text = promiseNm.getDateToDoToString()
+    }
+
+    /**
+     * Set date
+     *
+     * @param year
+     * @param month
+     * @param day
+     */
     fun setDate(year : Int, month : Int, day : Int) {
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
@@ -72,8 +88,18 @@ class PromiseManagerActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Get date to string
+     *
+     * @param date
+     */
     fun getDateToString(date : Date) = dfl.format(date)
 
+    /**
+     * On click date
+     *
+     * @param v
+     */
     fun onClickDate (v : View) {
         // Create DatePickerDialog (Spinner Mode):
         val date = Date(System.currentTimeMillis())
@@ -85,6 +111,11 @@ class PromiseManagerActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * On click button validate
+     *
+     * @param v
+     */
     fun onClickButtonValidate (v : View) {
         //Recuperation des éléments
         val editTextTitle : TextView = findViewById(R.id.editTextTitle)
@@ -98,14 +129,16 @@ class PromiseManagerActivity : AppCompatActivity() {
         }
         val defaultUser = promiseDataBase.createDefaultAccount(Mascot("Super Mascotte", R.drawable.mascot1, R.drawable.mascot_afficher_1))
         val promiseNm = promise
-        if (promiseNm != null) { //Update promise
-            promiseNm.title = editTextTitle.text.toString()
-            promiseNm.duration = if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString().toInt()
-            promiseNm.priority = switchPriority.isChecked
-            promiseNm.professional = switchProfessional.isChecked
-            promiseNm.dateTodo = calendar.time
-            promiseNm.description = editTextDescription.text.toString()
-            defaultUser.updatePromise(promiseNm, promiseDataBase)
+        if (promiseNm != null) {
+            updatePromise(
+                promiseNm,
+                editTextTitle,
+                editTextDuration,
+                switchPriority,
+                switchProfessional,
+                editTextDescription,
+                defaultUser
+            )
         } else { //creation nouvelle promesse
             val promise = Promise(
                     -1,
@@ -121,9 +154,34 @@ class PromiseManagerActivity : AppCompatActivity() {
             )
             defaultUser.addPromise(promise, promiseDataBase)
         }
-
         finish()
     }
+
+    private fun updatePromise(
+        promiseNm: Promise,
+        editTextTitle: TextView,
+        editTextDuration: TextView,
+        switchPriority: Switch,
+        switchProfessional: Switch,
+        editTextDescription: TextView,
+        defaultUser: User
+    ) {
+        promiseNm.title = editTextTitle.text.toString()
+        promiseNm.duration =
+            if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString()
+                .toInt()
+        promiseNm.priority = switchPriority.isChecked
+        promiseNm.professional = switchProfessional.isChecked
+        promiseNm.dateTodo = calendar.time
+        promiseNm.description = editTextDescription.text.toString()
+        defaultUser.updatePromise(promiseNm, promiseDataBase)
+    }
+
+    /**
+     * On click button cancel
+     *
+     * @param v
+     */
     fun onClickButtonCancel (v : View) {
         finish()
     }
