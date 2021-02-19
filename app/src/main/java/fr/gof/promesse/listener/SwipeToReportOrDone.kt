@@ -6,7 +6,6 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,10 +16,9 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     private val mClearPaint: Paint = Paint()
     private val mBackground: ColorDrawable = ColorDrawable()
     private val backgroundColorReport: Int = ContextCompat.getColor(mContext, R.color.light_red)
-    private val backgroundColorDone: Int = ContextCompat.getColor(mContext,R.color.light_green)
+    private val backgroundColorDone: Int = ContextCompat.getColor(mContext, R.color.light_green)
     private var reportDrawable: Drawable
     private var doneDrawable : Drawable
-
     private val iconWidthDone: Int
     private val iconHeightDone: Int
 
@@ -41,21 +39,24 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
 
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        val dragFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        val dragFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT //ItemTouchHelper.UP or ItemTouchHelper.DOWN //or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
-        return makeMovementFlags(dragFlags,swipeFlags)
+        return makeMovementFlags(dragFlags, swipeFlags)
     }
 
+
+
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, viewHolder1: RecyclerView.ViewHolder): Boolean {
-        return false
+            return true;
     }
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         if (dX<0){ // left case
-                leftTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+               leftTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
-       else{ //right treatment
+       else if (dX>0){ //right treatment
                 rightTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
+
 
     }
 
@@ -121,6 +122,9 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
         return 0.7f
     }
+    
+
+
 
 
 }

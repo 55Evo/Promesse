@@ -1,14 +1,13 @@
 package fr.gof.promesse
 
 import SwipeToReportOrDone
+import SwipeupDown
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -47,18 +46,46 @@ class MainActivity : AppCompatActivity() {
         mascotView.setImageResource(utils.user.mascot.image)
         recyclerView.layoutManager = llm
         layout = findViewById(R.id.ConstraintLayout)
+
         listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
+
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this))
+
         val del = findViewById<FloatingActionButton>(R.id.deleteButton)
         recyclerView.adapter = adapter
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
         del.setOnClickListener(deleteListener)
+        //enableSwipeToDone();
+        //enableSwipeToReport();
         enableSwipeToDoneOrReport()
+        enableSwipeUpDown()
     }
+    private fun enableSwipeUpDown(){
+        val swipeupDown: SwipeupDown = object : SwipeupDown(this) {
+            override fun onMove(recyclerView: RecyclerView, source: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                if (source.itemViewType != target.itemViewType) {
+                    return false
+                }
+                // Notify the adapter of the move
+                adapter.onItemMove(source.adapterPosition, target.adapterPosition)
+                return true
+            }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+            }
+
+        }
+        val itemReport = ItemTouchHelper(swipeupDown)
+        itemReport.attachToRecyclerView(recyclerView)
+    }
 
     private fun enableSwipeToDoneOrReport(){
         val swipeToReportOrDone: SwipeToReportOrDone = object : SwipeToReportOrDone(this) {
+
+
+
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
                 var promise = listPromesse.get(position)
@@ -98,6 +125,7 @@ class MainActivity : AppCompatActivity() {
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
             }
+
         }
         val itemReport = ItemTouchHelper(swipeToReportOrDone)
         itemReport.attachToRecyclerView(recyclerView)
@@ -133,3 +161,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+
+
+
+
+
