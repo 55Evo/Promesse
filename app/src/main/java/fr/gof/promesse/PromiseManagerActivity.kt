@@ -11,7 +11,6 @@ import android.widget.TextView
 
 import androidx.appcompat.app.AppCompatActivity
 import fr.gof.promesse.database.PromiseDataBase
-import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import java.text.DateFormat
@@ -96,7 +95,6 @@ class PromiseManagerActivity : AppCompatActivity() {
             editTextTitle.error = getString(R.string.emptyField)
             return
         }
-        val defaultUser = promiseDataBase.createDefaultAccount(Mascot("Super Mascotte", R.drawable.mascot1, R.drawable.mascot_afficher_1))
         val promiseNm = promise
         if (promiseNm != null) { //Update promise
             promiseNm.title = editTextTitle.text.toString()
@@ -105,7 +103,7 @@ class PromiseManagerActivity : AppCompatActivity() {
             promiseNm.professional = switchProfessional.isChecked
             promiseNm.dateTodo = calendar.time
             promiseNm.description = editTextDescription.text.toString()
-            defaultUser.updatePromise(promiseNm, promiseDataBase)
+            utils.user.updatePromise(promiseNm, promiseDataBase)
         } else { //creation nouvelle promesse
             val promise = Promise(
                     -1,
@@ -119,7 +117,7 @@ class PromiseManagerActivity : AppCompatActivity() {
                     calendar.time,
                     null
             )
-            defaultUser.addPromise(promise, promiseDataBase)
+            utils.user.addPromise(promise, promiseDataBase)
         }
 
         finish()

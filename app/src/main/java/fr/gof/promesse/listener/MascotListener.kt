@@ -16,6 +16,7 @@ class MascotListener(var listMascot: List<Mascot>, var context: Activity): Masco
         val myIntent = Intent( context, MainActivity::class.java)
 
         context.startActivity(myIntent)
+        context.finish()
     }
 
 }

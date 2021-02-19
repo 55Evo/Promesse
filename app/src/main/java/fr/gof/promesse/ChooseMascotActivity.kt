@@ -16,9 +16,9 @@ class ChooseMascotActivity : AppCompatActivity() {
     lateinit var adapter : MascotAdapter
     lateinit var recyclerView: RecyclerView
     private val listMascot: List<Mascot> = listOf(
-        Mascot("Jacou le Hibou", R.drawable.mascot1, R.drawable.mascot_afficher_1),
-        Mascot("Raymond Le Crayon", R.drawable.mascot2, R.drawable.mascot_afficher_2),
-        Mascot("Eustache la Vache", R.drawable.mascot3, R.drawable.mascot_afficher_3)
+        Mascot.JACOU,
+        Mascot.RAYMOND,
+        Mascot.EUSTACHE
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -32,7 +32,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     lateinit var recyclerView : RecyclerView
     lateinit var adapter : PromiseAdapter
     lateinit var materialSearchBar : MaterialSearchBar
-    lateinit var listSuggestions : MutableSet<Promise>
     var choiceOfSort : Sort = Sort.NAME
     var valeurActuelle : String = ""
     lateinit var deleteButton : FloatingActionButton
@@ -41,7 +40,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
         recyclerView  = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
