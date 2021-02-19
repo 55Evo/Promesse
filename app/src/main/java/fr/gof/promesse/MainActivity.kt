@@ -21,6 +21,7 @@ import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
 import fr.gof.promesse.model.Promise
+import fr.gof.promesse.model.State
 import java.util.*
 
 import fr.gof.promesse.services.Notifications
@@ -98,13 +99,15 @@ class MainActivity : AppCompatActivity() {
                 val position = viewHolder.adapterPosition
                 var promise = listPromesse.get(position)
                 var date = promise.dateTodo
-                var message : String = ""
+                var message = ""
                 when(i){ // promise done
                     16 -> {
-                        message = "Promesse terminée !"
+                        message = getString(R.string.promiseDone)
+                        promise.state = State.DONE
+                        utils.user.updatePromise(promise, promiseDataBase)
                     }
-                    32 -> { // add 1 day to the date to do toi report it
-                        message = "Promesse reportée !"
+                    32 -> { // add 1 day to the date to do to postpone it
+                        message = getString(R.string.promisePostponed)
                         promise.dateTodo = Date(System.currentTimeMillis() + 86400000)
                         promiseDataBase.updateDate(promise)
                     }
@@ -119,13 +122,15 @@ class MainActivity : AppCompatActivity() {
             private fun snackbarUndo(message: String, i: Int, promise: Promise, date: Date, position: Int) {
                 val snackbar = Snackbar
                         .make(layout, message, Snackbar.LENGTH_LONG)
-                snackbar.setAction("annuler") {
+                snackbar.setAction(getString(R.string.cancel)) {
                     if (i == 32) {
                         promise.dateTodo = date
                         adapter.restoreItem(promise, position, promiseDataBase)
                     } else {
                         // j'enlève le done
                         adapter.restoreItem(promise, position, promiseDataBase)
+                        promise.state = State.TODO
+                        utils.user.updatePromise(promise, promiseDataBase)
                     }
                     recyclerView.scrollToPosition(position)
                     adapter.notifyItemRangeChanged(position, listPromesse.size)

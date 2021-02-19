@@ -89,7 +89,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:onClick="onClickCancel"
-                android:text="@string/buttonCancel" />
+                android:text="@string/cancel" />
 
             <Button
                 android:id="@+id/buttonValidate"

@@ -16,7 +16,7 @@
     <string name="textViewProfessionnal">Professionnelle</string>
     <string name="textViewDescription">Description</string>
     <string name="editTextDescriptionHint">Entrez une description ...</string>
-    <string name="buttonCancel">Annuler</string>
+    <string name="cancel">Annuler</string>
     <string name="buttonValidate">Valider</string>
     <string name="emptyField">Veuillez remplir ce champ</string>
     <string name="titleEditPromise">Modifier la promesse</string>
@@ -41,4 +41,6 @@
     <string name="wrongPassword">Mot de passe incorrect</string>
     <string name="invalidFormat">Format invalide</string>
     <string name="passwordTooShort">Le mot de passe est trop court</string>
+    <string name="promiseDone">Promesse terminée !</string>
+    <string name="promisePostponed">Promesse reportée !</string>
 </resources>
