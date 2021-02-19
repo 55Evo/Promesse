@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import fr.gof.promesse.model.*
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
