@@ -15,4 +15,8 @@
     <color name ="bubble">#F7F7F7</color>
     <color name ="bubble_border">#D4D4D4</color>
     <color name="grey_blue">#98B9DE</color>
+    <color name="light_red">#DCA599</color>
+    <color name="dark_red">#F22B00</color>
+    <color name="light_green">#ACEC48</color>
+
 </resources>

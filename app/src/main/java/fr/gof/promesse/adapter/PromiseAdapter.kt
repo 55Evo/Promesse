@@ -1,16 +1,17 @@
 package fr.gof.promesse.adapter
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
+import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
+import java.util.*
 import fr.gof.promesse.model.State
 
-class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listener : OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>() {
+
+class PromiseAdapter(public var promiseList: MutableList<Promise>, val listener: OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>(), IItemTouchHelperAdapter {
 
     var inSelection = false
 
@@ -35,6 +36,19 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
         return PromiseViewHolder(itemView)
     }
 
+    fun restoreItem(promise: Promise, position: Int, dataBase: PromiseDataBase) {
+        promiseList.add(position, promise)
+        dataBase.updateDate(promise)
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        Collections.swap(promiseList, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
+    }
+    override fun onItemDismiss(position: Int) {
+        promiseList.removeAt(position)
+        notifyItemRemoved(position)
+    }
 
     // HOLDER
     inner class PromiseViewHolder (view : View): RecyclerView.ViewHolder(view),
@@ -52,7 +66,7 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
             view.setOnClickListener(this)
             view.setOnLongClickListener(this)
             buttonEdit.setOnClickListener(this)
-            checkBox.setOnCheckedChangeListener{_, isChecked ->
+            checkBox.setOnCheckedChangeListener{ _, isChecked ->
                 if (view.parent != null) {
                     promiseList[(view.parent as RecyclerView).getChildAdapterPosition(view)].isChecked = isChecked
                 }
@@ -83,11 +97,27 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
 
     //Interface des events de la liste
     interface OnItemClickListener {
-        fun onItemClick(position: Int, adapter : PromiseAdapter)
-        fun onItemLongClick(position: Int, adapter : PromiseAdapter)
+        fun onItemClick(position: Int, adapter: PromiseAdapter)
+        fun onItemLongClick(position: Int, adapter: PromiseAdapter)
         fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter)
     }
 
 
 
+}
+interface IItemTouchHelperAdapter {
+    /**
+     * Called when item is moved
+     *
+     * @param fromPosition The starting point of the item being operated
+     * @param toPosition The end point of the item being operated
+     */
+    fun onItemMove(fromPosition: Int, toPosition: Int)
+
+    /**
+     * Called when item is skid
+     *
+     * @param position The position of the item being skided
+     */
+    fun onItemDismiss(position: Int)
 }

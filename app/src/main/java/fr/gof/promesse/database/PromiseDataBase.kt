@@ -41,11 +41,18 @@ class PromiseDataBase (context : Context){
         values.put("Mascot", mascot.name)
         dbwritable.update("Account", values,"Account.Email = '${utils.user.email}'", null)
         dbwritable.close()
-
         utils.user.mascot = mascot
+    }
 
+    fun updateDate(promise : Promise){
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Date_Todo",dateFormat.format(promise.dateTodo))
+        dbwritable.update("Promise", values,"Promise.Email = '${utils.user.email}' and Promise.Id_Promise = ${promise.id}", null)
+        dbwritable.close()
 
     }
+
 
     fun deletePromise(promesse : Promise) {
         //Ouverture
