@@ -1,22 +1,21 @@
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
+import kotlin.math.roundToInt
 
 abstract class SwipeToReportOrDone internal constructor(var mContext: Context) : ItemTouchHelper.Callback() {
     private val mClearPaint: Paint = Paint()
     private val mBackground: ColorDrawable = ColorDrawable()
-    private val backgroundColorReport: Int = ContextCompat.getColor(mContext, R.color.light_red)
-    private val backgroundColorDone: Int = ContextCompat.getColor(mContext, R.color.light_green)
+    private val backgroundColorReport: String = "DE8282"
+    private val backgroundColorDone: String = "A1C26C"
     private var reportDrawable: Drawable
     private var doneDrawable : Drawable
     private val iconWidthDone: Int
@@ -89,8 +88,9 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     }
 
     private fun setBackgroundDone(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
-        mBackground.color = backgroundColorDone
-        mBackground.setBounds(itemView.right - 50 + dX.toInt(), itemView.top + 15, itemView.right, itemView.bottom - 15)
+        giveColor (backgroundColorDone, false, dX.toInt())
+
+        mBackground.setBounds(itemView.right - 50 + dX.toInt(), itemView.top + 4, itemView.right+15, itemView.bottom - 4)
         mBackground.draw(c)
         val doneIconTop = itemView.top + (itemHeight - iconHeightDone) / 2
         val doneIconMargin = (itemHeight - iconHeightDone) / 4
@@ -100,10 +100,22 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         doneDrawable.setBounds(doneIconLeft, doneIconTop, doneIconRight, deleteIconBottom)
         doneDrawable.draw(c)
     }
-
+    private fun giveColor (colorString : String, isRight : Boolean, dX : Int){
+        var minus : Int = -1000
+        if (isRight) minus = 1000
+        var calcul = Integer.toHexString(dX *255/ (minus))
+        if (calcul.length < 2){
+            calcul = "0$calcul"
+        }
+            if (dX<=-1000 || (dX >=1000)){
+                calcul = "FF"
+            }
+        mBackground.color = Color.parseColor("#$calcul$colorString")
+        }
     private fun setBackgroundReport(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
-        mBackground.color = backgroundColorReport
-        mBackground.setBounds(itemView.left + dX.toInt() + 50, itemView.top + 15, itemView.left, itemView.bottom - 15)
+        giveColor (backgroundColorReport, true, dX.toInt())
+
+        mBackground.setBounds(itemView.left + dX.toInt() + 50, itemView.top + 4, itemView.left-15, itemView.bottom - 4)
         mBackground.draw(c)
         val reportIconTop = itemView.top + (itemHeight - iconHeightReport) / 2
         val reportIconMargin = (itemHeight - iconHeightReport) / 4

@@ -20,7 +20,6 @@ import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
-import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.model.Promise
 import java.util.*
 
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         //enableSwipeToDone();
         //enableSwipeToReport();
         enableSwipeToDoneOrReport()
-        enableSwipeUpDown()
+       enableSwipeUpDown()
     }
     private fun enableSwipeUpDown(){
         val swipeupDown: SwipeupDown = object : SwipeupDown(this) {
@@ -123,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                     recyclerView.scrollToPosition(position)
                     adapter.notifyItemRangeChanged(position, listPromesse.size)
                 }
-                snackbar.setActionTextColor(Color.YELLOW);
+                snackbar.setActionTextColor(Color.GREEN);
                 snackbar.show();
             }
 
