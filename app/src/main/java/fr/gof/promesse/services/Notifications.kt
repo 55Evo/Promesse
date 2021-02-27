@@ -16,8 +16,9 @@ import fr.gof.promesse.SearchActivity
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
-import utils.NOTIFICATION_CHANNEL_ID
+import fr.gof.promesse.model.User
 import java.util.*
+
 
 /**
  * Notifications
@@ -27,12 +28,16 @@ import java.util.*
 class Notifications : JobService() {
 
     private val promiseDataBase = PromiseDataBase(this)
-    private val notificationId = 1
-    val context = this
+    private val notificationId = utils.NOTIFICATION_CHANNEL_ID.toInt()
+    var context : Context = this
     lateinit var listPromises : MutableList<Promise>
+    lateinit var email : String
 
 
     override fun onStartJob(params: JobParameters?): Boolean {
+        if (params != null) {
+            this.email = params.extras.getString("email").toString()
+        }
         createNotificationChannel()
         updateListPromises()
         var promisesToDo : MutableList<Promise> = mutableListOf()
@@ -51,11 +56,14 @@ class Notifications : JobService() {
         return true
     }
 
-    fun scheduleJob(context: Context) {
+    fun scheduleJob(context: Context, user: User) {
         val serviceComponent = ComponentName(context, Notifications::class.java)
+        val bundle = PersistableBundle()
+        bundle.putString("email", user.email)
         val jobInbo = JobInfo.Builder(0, serviceComponent)
                 .setMinimumLatency(1000) // Temps d'attente minimal avant déclenchement
                 .setOverrideDeadline(2000) // Temps d'attente maximal avant déclenchement
+                .setExtras(bundle)
                 .build()
         val jobScheduler: JobScheduler = context.getSystemService(JobScheduler::class.java)
         jobScheduler.schedule(jobInbo)
@@ -66,7 +74,7 @@ class Notifications : JobService() {
      *
      * @param promises
      */
-    fun sendNotification(promises : MutableList<Promise>){
+    fun sendNotification(promises: MutableList<Promise>){
         val intent = Intent(context, SearchActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -77,7 +85,7 @@ class Notifications : JobService() {
         }
         val notifContent = context.getString(R.string.notificationContent) + " $titles" + "aujourd'hui !"
 
-        var builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+        var builder = NotificationCompat.Builder(context, utils.NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(context.getString(R.string.notificationTitle))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -95,7 +103,7 @@ class Notifications : JobService() {
             val name = getString(R.string.channel_name)
             val descriptionText = getString(R.string.channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(utils.NOTIFICATION_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
             val notificationManager: NotificationManager =
@@ -105,10 +113,10 @@ class Notifications : JobService() {
     }
 
     private fun updateListPromises(){
-        listPromises = promiseDataBase.getAllPromises(utils.user.email).toMutableList()
+        listPromises = promiseDataBase.getAllPromises(email).toMutableList()
     }
 
-    private fun dateNearToNow(date : Date) : Boolean {
+    private fun dateNearToNow(date: Date) : Boolean {
         val now = Date(System.currentTimeMillis())
         return date.day == now.day
     }
