@@ -141,6 +141,7 @@ class PromiseManagerActivityTest {
                 .perform(typeText("Edited!"), closeSoftKeyboard())
     }
 
+
     /**
      * Edit promise missing field
      *

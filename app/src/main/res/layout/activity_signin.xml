@@ -31,12 +31,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
-                android:textColorHint="@color/colorAccent"/>
+                android:textColorHint="@color/colorAccent" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,12 +48,14 @@
             android:id="@+id/password"
 
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
                 android:hint="@string/password"
-                android:textColorHint="@color/colorAccent"/>
+                android:inputType="textPassword"
+                android:textColorHint="@color/colorAccent" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
