@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -45,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        notifications.scheduleJob(this)
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.recyclerViewPromesse)
         recyclerView.setHasFixedSize(true)
@@ -67,7 +67,8 @@ class MainActivity : AppCompatActivity() {
         //enableSwipeToDone();
         //enableSwipeToReport();
         enableSwipeToDoneOrReport()
-       enableSwipeUpDown()
+        enableSwipeUpDown()
+        notifications.scheduleJob(this, utils.user)
     }
     private fun enableSwipeUpDown(){
         val swipeupDown: SwipeupDown = object : SwipeupDown(this) {
@@ -169,7 +170,7 @@ class MainActivity : AppCompatActivity() {
      * @param v
      */
     fun onClickMascot(v: View){
-        var bubble : TextView = findViewById(R.id.mascotBubbleTextView)
+       var bubble : TextView = findViewById(R.id.mascotBubbleTextView)
         bubble.text = "Coucou c'est moi "+utils.user.mascot.name + " !"
         bubble.visibility = View.VISIBLE
         Handler().postDelayed({

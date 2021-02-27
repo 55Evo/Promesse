@@ -182,7 +182,7 @@ class PromiseDataBase (context : Context){
      * @param email
      * @return
      */
-    fun getAllPromises(email : String = "default@test.fr") : Set<Promise> {
+    fun getAllPromises(email : String) : Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")

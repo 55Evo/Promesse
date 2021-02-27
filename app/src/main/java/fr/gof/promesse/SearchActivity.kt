@@ -52,7 +52,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this)
 
-        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises().toList()
+        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
 
         materialSearchBar.addTextChangeListener(object : TextWatcher {
@@ -72,7 +72,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                         materialSearchBar.lastSuggestions = suggest
                     }
                 } else {
-                    customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises().toList()
+                    customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
                     materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
                 }
             }
@@ -146,7 +146,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
-        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises().toList()
+        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
         materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),utils.user.name))
     }
