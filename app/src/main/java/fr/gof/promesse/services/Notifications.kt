@@ -40,14 +40,9 @@ class Notifications : JobService() {
         }
         createNotificationChannel()
         updateListPromises()
-        var promisesToDo : MutableList<Promise> = mutableListOf()
-        for(promise : Promise in listPromises){
-            if(promise.state == State.TODO && dateNearToNow(promise.dateTodo)){
-                promisesToDo.add(promise)
-            }
-        }
-        if(promisesToDo.size > 0){
-            sendNotification(promisesToDo)
+
+        if(listPromises.size > 0){
+            sendNotification(listPromises)
         }
         return true
     }
@@ -113,7 +108,7 @@ class Notifications : JobService() {
     }
 
     private fun updateListPromises(){
-        listPromises = promiseDataBase.getAllPromises(email).toMutableList()
+        listPromises = promiseDataBase.getAllPromisesOfTheDay(email).toMutableList()
     }
 
     private fun dateNearToNow(date: Date) : Boolean {
