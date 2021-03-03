@@ -42,5 +42,5 @@
     <string name="invalidFormat">Format invalide</string>
     <string name="passwordTooShort">Le mot de passe est trop court</string>
     <string name="promiseDone">Promesse terminée !</string>
-    <string name="promisePostponed">Promesse reportée !</string>
+    <string name="promisePostponed">Promesse reportée à demain !</string>
 </resources>

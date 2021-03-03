@@ -64,10 +64,8 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
         del.setOnClickListener(deleteListener)
-        //enableSwipeToDone();
-        //enableSwipeToReport();
         enableSwipeToDoneOrReport()
-        enableSwipeUpDown()
+        //enableSwipeUpDown()
         notifications.scheduleJob(this, utils.user)
     }
     private fun enableSwipeUpDown(){
