@@ -4,6 +4,23 @@ import java.io.Serializable
 import java.text.DateFormat
 import java.util.*
 
+/**
+ * Promise
+ *
+ * @property id
+ * @property title
+ * @property duration
+ * @property state
+ * @property priority
+ * @property description
+ * @property professional
+ * @property dateCreation
+ * @property dateTodo
+ * @property subtasks
+ * @property isChecked
+ * @property isDescDeployed
+ * @constructor Create empty Promise
+ */
 data class Promise (val id : Int,
                     var title : String,
                     var duration : Int?,
@@ -36,8 +53,16 @@ data class Promise (val id : Int,
     }
     val dfl = DateFormat.getDateInstance(DateFormat.FULL);
 
+    /**
+     * Get date to do to string
+     *
+     */
     fun getDateToDoToString() = dfl.format(dateTodo)
 
+    /**
+     * Get date creation to string
+     *
+     */
     fun getDateCreationToString() = dfl.format(dateCreation)
 
 

@@ -12,6 +12,14 @@ import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
 
+/**
+ * Delete button listener
+ *
+ * @property adapter
+ * @property context
+ * @property promiseDataBase
+ * @constructor Create empty Delete button listener
+ */
 class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity, val promiseDataBase : PromiseDataBase): View.OnClickListener {
     override fun onClick(v: View?) {
         var listPromesses = adapter.promiseList
@@ -25,23 +33,15 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
             }
         }
         if(hasSubtasks) {
-            val dialogBuilder = AlertDialog.Builder(context)
-            dialogBuilder.setMessage("Attention, au moins une promesse possède des sous-tâches. " +
-                    "Êtes-vous sûr(e) de vouloir la supprimer ?")
-                    .setCancelable(true)
-                    .setPositiveButton("Oui", DialogInterface.OnClickListener { _, _ ->
-                        deletePromises(listPromesses, promiseDataBase)
-                    })
-                    .setNegativeButton("Non", DialogInterface.OnClickListener { dialog, _ ->
-                        dialog.cancel()
-                    })
-            val alert = dialogBuilder.create()
-            alert.setTitle("Suppression de promesses")
-            alert.show()
+            displayPopup(listPromesses)
         }
         else {
             deletePromises(listPromesses, promiseDataBase)
         }
+        updateView(v)
+    }
+
+    private fun updateView(v: View?) {
         adapter.inSelection = false
         Handler().postDelayed({
             adapter.notifyDataSetChanged()
@@ -49,13 +49,36 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
 
         v?.visibility = View.GONE
         if (context is MainActivity) {
-            val addButton : FloatingActionButton = context.findViewById(R.id.buttonAdd)
+            val addButton: FloatingActionButton = context.findViewById(R.id.buttonAdd)
             addButton?.visibility = View.VISIBLE
         }
+    }
 
+    private fun displayPopup(listPromesses: MutableList<Promise>) {
+        val dialogBuilder = AlertDialog.Builder(context)
+        dialogBuilder.setMessage(
+            "Attention, au moins une promesse possède des sous-tâches. " +
+                    "Êtes-vous sûr(e) de vouloir la supprimer ?"
+        )
+            .setCancelable(true)
+            .setPositiveButton("Oui", DialogInterface.OnClickListener { _, _ ->
+                deletePromises(listPromesses, promiseDataBase)
+            })
+            .setNegativeButton("Non", DialogInterface.OnClickListener { dialog, _ ->
+                dialog.cancel()
+            })
+        val alert = dialogBuilder.create()
+        alert.setTitle("Suppression de promesses")
+        alert.show()
     }
 
 
+    /**
+     * Delete promises
+     *
+     * @param listPromesses
+     * @param promiseDataBase
+     */
     fun deletePromises(listPromesses : MutableList<Promise>, promiseDataBase : PromiseDataBase) {
         val it = listPromesses.iterator()
         while(it.hasNext()) {

@@ -32,7 +32,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     lateinit var recyclerView : RecyclerView
     lateinit var adapter : PromiseAdapter
     lateinit var materialSearchBar : MaterialSearchBar
-    lateinit var listSuggestions : MutableSet<Promise>
     var choiceOfSort : Sort = Sort.NAME
     var valeurActuelle : String = ""
     lateinit var deleteButton : FloatingActionButton
@@ -41,7 +40,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
         recyclerView  = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
@@ -54,7 +52,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this)
 
-        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises().toList()
+        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
 
         materialSearchBar.addTextChangeListener(object : TextWatcher {
@@ -74,7 +72,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                         materialSearchBar.lastSuggestions = suggest
                     }
                 } else {
-                    customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises().toList()
+                    customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
                     materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
                 }
             }
@@ -95,7 +93,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         })
 
         listPromesses = utils.user.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))
+        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
 
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
         deleteButton.setOnClickListener(deleteListener)
@@ -113,7 +111,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         listPromesses = utils.user.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toMutableList()
         deleteButton.visibility = View.INVISIBLE
 
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))
+        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         hideKeyboard(this)
@@ -144,11 +142,11 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     override fun onResume() {
         super.onResume()
         listPromesses = utils.user.getAllPromise(promiseDataBase).toMutableList()
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))
+        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
-        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises().toList()
+        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
         materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),utils.user.name))
     }

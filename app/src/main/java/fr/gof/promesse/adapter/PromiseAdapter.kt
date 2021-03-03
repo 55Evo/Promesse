@@ -1,17 +1,31 @@
 package fr.gof.promesse.adapter
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.content.Context
+import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
+import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
+import fr.gof.promesse.model.State
+import java.util.*
 
-class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listener : OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>() {
+
+/**
+ * Promise adapter
+ *
+ * @property promiseList
+ * @property listener
+ * @constructor Create empty Promise adapter
+ */
+class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItemClickListener, val context : Context): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>(), IItemTouchHelperAdapter {
 
     var inSelection = false
+    var nbPromisesChecked = 0
+    var lastPosition =  -1
 
     override fun getItemCount() = promiseList.size
 
@@ -25,7 +39,19 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
         holder.checkBox.isVisible = inSelection
         holder.description.maxLines = if (promise.isDescDeployed) 10 else 2
         holder.layoutButtonEdit.visibility = if (promise.isDescDeployed) View.VISIBLE else View.GONE
-        holder.layout.setBackgroundResource( if (promise.priority) R.drawable.layout_border_important else R.drawable.layout_border)
+        holder.layout.setBackgroundResource(if (promise.priority) {
+            if (promise.state == State.DONE) R.drawable.layout_border_important_done else R.drawable.layout_border_important
+        } else {
+            if (promise.state == State.DONE) R.drawable.layout_border_done else R.drawable.layout_border
+        })
+
+
+        if (holder.adapterPosition > lastPosition) {
+            val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+            (holder as PromiseViewHolder).startAnimation(animation)
+            lastPosition = holder.adapterPosition
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseViewHolder {
@@ -33,9 +59,28 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
         return PromiseViewHolder(itemView)
     }
 
+    fun restoreItem(promise: Promise, position: Int, dataBase: PromiseDataBase) {
+        promiseList.add(position, promise)
+        dataBase.updateDate(promise)
+    }
 
-    // HOLDER
-    inner class PromiseViewHolder (view : View): RecyclerView.ViewHolder(view),
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        Collections.swap(promiseList, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
+    }
+    override fun onItemDismiss(position: Int) {
+        promiseList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    /**
+     * Promise view holder
+     *
+     * @constructor
+     *
+     * @param view
+     */// HOLDER
+    inner class PromiseViewHolder(view: View): RecyclerView.ViewHolder(view),
             View.OnClickListener,
             View.OnLongClickListener {
         var titre : TextView = view.findViewById(R.id.title)
@@ -50,22 +95,24 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
             view.setOnClickListener(this)
             view.setOnLongClickListener(this)
             buttonEdit.setOnClickListener(this)
-            checkBox.setOnCheckedChangeListener{_, isChecked ->
-                if (view.parent != null) {
-                    promiseList[(view.parent as RecyclerView).getChildAdapterPosition(view)].isChecked = isChecked
-                }
-
-            }
+            checkBox.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
-            val position = adapterPosition
+            if(v is CheckBox){
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onItemCheckedChanged(position, this@PromiseAdapter)
+                }
+            } else {
+                val position = adapterPosition
 
-            if (position != RecyclerView.NO_POSITION) {
-                if (v is Button) {
-                    listener.onItemButtonEditClick(position, this@PromiseAdapter)
-                } else {
-                    listener.onItemClick(position, this@PromiseAdapter)
+                if (position != RecyclerView.NO_POSITION) {
+                    if (v is Button) {
+                        listener.onItemButtonEditClick(position, this@PromiseAdapter)
+                    } else {
+                        listener.onItemClick(position, this@PromiseAdapter)
+                    }
                 }
             }
         }
@@ -77,15 +124,61 @@ class PromiseAdapter  (public var promiseList : MutableList<Promise>, val listen
             }
             return true
         }
+
+        fun startAnimation(animation: Animation) {
+            super.itemView.startAnimation(animation)
+
+        }
     }
 
-    //Interface des events de la liste
+    /**
+     * On item click listener
+     *
+     * @constructor Create empty On item click listener
+     *///Interface des events de la liste
     interface OnItemClickListener {
-        fun onItemClick(position: Int, adapter : PromiseAdapter)
-        fun onItemLongClick(position: Int, adapter : PromiseAdapter)
+        /**
+         * On item click
+         *
+         * @param position
+         * @param adapter
+         */
+        fun onItemClick(position: Int, adapter: PromiseAdapter)
+
+        /**
+         * On item long click
+         *
+         * @param position
+         * @param adapter
+         */
+        fun onItemLongClick(position: Int, adapter: PromiseAdapter)
+
+        /**
+         * On item button edit click
+         *
+         * @param position
+         * @param promiseAdapter
+         */
         fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter)
+        fun onItemCheckedChanged(position: Int, promiseAdapter: PromiseAdapter)
     }
 
 
 
+}
+interface IItemTouchHelperAdapter {
+    /**
+     * Called when item is moved
+     *
+     * @param fromPosition The starting point of the item being operated
+     * @param toPosition The end point of the item being operated
+     */
+    fun onItemMove(fromPosition: Int, toPosition: Int)
+
+    /**
+     * Called when item is skid
+     *
+     * @param position The position of the item being skided
+     */
+    fun onItemDismiss(position: Int)
 }

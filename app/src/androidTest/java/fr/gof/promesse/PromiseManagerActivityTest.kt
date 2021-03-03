@@ -12,7 +12,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import fr.gof.promesse.adapter.PromiseAdapter
-import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import org.junit.Before
@@ -21,6 +20,11 @@ import org.junit.Test
 import java.util.*
 
 
+/**
+ * Promise manager activity test
+ *
+ * @constructor Create empty Promise manager activity test
+ */
 @LargeTest
 class PromiseManagerActivityTest {
 
@@ -35,6 +39,10 @@ class PromiseManagerActivityTest {
     var activityRule = ActivityScenarioRule(MainActivity::class.java)
     lateinit var instrumentationContext: Context
 
+    /**
+     * Init valid string
+     *
+     */
     @Before
     fun initValidString() {
 
@@ -45,6 +53,10 @@ class PromiseManagerActivityTest {
         instrumentationContext = InstrumentationRegistry.getInstrumentation().context
     }
 
+    /**
+     * Add promise success
+     *
+     */
     @Test
     fun addPromiseSuccess() {
         // Type text and then press the button.
@@ -67,6 +79,11 @@ class PromiseManagerActivityTest {
 
 
     }
+
+    /**
+     * Add promise missing field
+     *
+     */
     @Test
     fun addPromiseMissingField() {
 
@@ -88,6 +105,11 @@ class PromiseManagerActivityTest {
         onView(withId(R.id.editTextTitle)).check(matches(hasErrorText("Veuillez remplir ce champ")))
 
     }
+
+    /**
+     * Remove promise
+     *
+     */
     @Test
     fun removePromise() {
         // Type text and then press the button.
@@ -100,6 +122,11 @@ class PromiseManagerActivityTest {
         onView(withId(R.id.deleteButton))
                 .perform(click())
     }
+
+    /**
+     * Edit promise
+     *
+     */
     @Test
     fun editPromise() {
         // Type text and then press the button.
@@ -113,6 +140,12 @@ class PromiseManagerActivityTest {
         onView(withId(R.id.editTextTitle))
                 .perform(typeText("Edited!"), closeSoftKeyboard())
     }
+
+
+    /**
+     * Edit promise missing field
+     *
+     */
     @Test
     fun editPromiseMissingField() {
         // Type text and then press the button.

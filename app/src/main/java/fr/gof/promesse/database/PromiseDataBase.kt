@@ -4,36 +4,46 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
-import fr.gof.promesse.R
-import fr.gof.promesse.model.*
-import java.lang.Exception
 import fr.gof.promesse.model.*
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
+/**
+ * Promise data base
+ *
+ * @constructor
+ *
+ * @param context
+ */
 class PromiseDataBase (context : Context){
 
     val database = PromiseDataBaseHelper(context)
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-    //Création d'un compte
-    fun createDefaultAccount(mascot : Mascot) : User {
-//        val dbwritable: SQLiteDatabase = this.database.writableDatabase
-//        val user = User("default@test.fr", "Monsieur", "root",mascot)
-//        val values = ContentValues()
-//        values.put("Email", user.email)
-//        values.put("Mascot", mascot.name)
-//        values.put("Name", user.name)
-//        values.put("Password",user.password )
-//        dbwritable.insert("Account", null, values)
-//        dbwritable.close()
-//        return user
-        return utils.user
+    /**
+     * Create account
+     *
+     * @param user
+     * @return
+     */
+    fun createAccount(user : User) {
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Email", user.email)
+        values.put("Mascot", user.mascot.name)
+        values.put("Name", user.name)
+        values.put("Password",user.password )
+        dbwritable.insert("Account", null, values)
+        dbwritable.close()
     }
 
+    /**
+     * Update mascot
+     *
+     * @param mascot
+     */
     fun updateMascot(mascot : Mascot){
 
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
@@ -41,12 +51,23 @@ class PromiseDataBase (context : Context){
         values.put("Mascot", mascot.name)
         dbwritable.update("Account", values,"Account.Email = '${utils.user.email}'", null)
         dbwritable.close()
-
         utils.user.mascot = mascot
+    }
 
+    fun updateDate(promise : Promise){
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Date_Todo",dateFormat.format(promise.dateTodo))
+        dbwritable.update("Promise", values,"Promise.Email = '${utils.user.email}' and Promise.Id_Promise = ${promise.id}", null)
+        dbwritable.close()
 
     }
 
+    /**
+     * Delete promise
+     *
+     * @param promesse
+     */
     fun deletePromise(promesse : Promise) {
         //Ouverture
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
@@ -64,24 +85,19 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
     }
 
+    /**
+     * Add promise
+     *
+     * @param email
+     * @param promise
+     */
     fun addPromise(email : String, promise : Promise) {
         //Ouverture
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
-
         //Ajout des valeurs
         val values = ContentValues()
-        values.put("Email", email)
-        values.put("Title", promise.title)
-        values.put("Duration", promise.duration)
-        values.put("State", promise.state.toString())
-        values.put("Priority", if(promise.priority) 1 else 0)
-        values.put("Professional", if(promise.professional) 1 else 0)
-        values.put("Date_Creation", dateFormat.format(promise.dateCreation))
-        values.put("Date_Todo", dateFormat.format(promise.dateTodo))
-        values.put("Description", promise.description)
-
+        promiseToValues(values, email, promise)
         val id = dbwritable.insert("Promise", null, values)
-
         //Ajout des sous-tâches
         if(promise.subtasks != null) {
             for (sub in promise.subtasks!!) {
@@ -97,6 +113,29 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
     }
 
+    private fun promiseToValues(
+        values: ContentValues,
+        email: String,
+        promise: Promise
+    ) {
+        values.put("Email", email)
+        values.put("Title", promise.title)
+        values.put("Duration", promise.duration)
+        values.put("State", promise.state.toString())
+        values.put("Priority", if (promise.priority) 1 else 0)
+        values.put("Professional", if (promise.professional) 1 else 0)
+        values.put("Date_Creation", dateFormat.format(promise.dateCreation))
+        values.put("Date_Todo", dateFormat.format(promise.dateTodo))
+        values.put("Description", promise.description)
+    }
+
+    /**
+     * Get promise
+     *
+     * @param curs
+     * @param dbreadable
+     * @return
+     */
     fun getPromise(curs: Cursor, dbreadable: SQLiteDatabase): Set<Promise>{
         var promiseList = HashSet<Promise>()
         try {
@@ -137,7 +176,13 @@ class PromiseDataBase (context : Context){
     }
 
 
-    fun getAllPromises(email : String = "default@test.fr") : Set<Promise> {
+    /**
+     * Get all promises
+     *
+     * @param email
+     * @return
+     */
+    fun getAllPromises(email : String) : Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
@@ -146,6 +191,14 @@ class PromiseDataBase (context : Context){
         return getPromise(curs, dbreadable)
     }
 
+    /**
+     * Get all promises name like
+     *
+     * @param name
+     * @param choiceOfSort
+     * @param user
+     * @return
+     */
     @JvmOverloads
     fun getAllPromisesNameLike(name : String, choiceOfSort : Sort, user: User) : Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
@@ -160,6 +213,12 @@ class PromiseDataBase (context : Context){
         }
     }
 
+    /**
+     * Get all promises of the day
+     *
+     * @param email
+     * @return
+     */
     fun getAllPromisesOfTheDay(email: String): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
@@ -171,12 +230,18 @@ class PromiseDataBase (context : Context){
             "((DATE(Date_Todo) = DATE('now','-1 day') AND State <> 'DONE') \n" +
                 "OR (DATE(Date_Todo) = DATE('now','-2 day') AND State <> 'DONE') \n" +
                 "OR (DATE(Date_Todo) = DATE('now','-3 day') AND State <> 'DONE') \n" +
-                "OR DATE(Date_Todo) = DATE('now')) " +
+                "OR DATE(Date_Todo) = DATE('now') AND State <> 'DONE') " +
                 "AND Email = ?",
             select, null, null, null)
         return getPromise(curs, dbreadable)
     }
 
+    /**
+     * Update promise
+     *
+     * @param email
+     * @param promise
+     */
     fun updatePromise(email : String, promise: Promise) {
 
         val dbwritable : SQLiteDatabase = this.database.writableDatabase
@@ -195,4 +260,59 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
 
     }
+
+    fun emailExist(email : String): Boolean {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email")
+        val select = arrayOf(email)
+
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Email = ?",
+                select, null, null, null)
+        //Si il y en a, retourne true
+        return curs.count != 0
+    }
+
+    fun userIsEmpty(): Boolean {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email")
+
+        val curs: Cursor = dbreadable.query("Account", col,
+                null,
+                null, null, null, null)
+        //Si il y en a, retourne false
+        return curs.count == 0
+    }
+
+    fun checkPassword(email: String, password: String): Boolean {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email")
+        val select = arrayOf(email, password)
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Email = ? AND Password = ?",
+                select, null, null, null)
+        //Si il y en a, retourne true
+        return curs.count != 0
+    }
+
+    fun getUser(email: String): User {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email", "Name", "Mascot")
+        val select = arrayOf(email)
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Email = ? ",
+                select, null, null, null)
+        curs.moveToFirst()
+        //Si il y en a, retourne true
+        return User(email,
+                curs.getString(curs.getColumnIndexOrThrow("Name")),
+                "",
+                Mascot.valueOf(curs.getString(curs.getColumnIndexOrThrow("Mascot")))
+                )
+    }
+
 }

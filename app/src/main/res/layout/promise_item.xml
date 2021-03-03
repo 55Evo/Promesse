@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="0dp"
+    android:layout_margin="5dp"
     android:background="@android:color/transparent"
     app:cardBackgroundColor="@android:color/transparent"
-    app:cardElevation="28dp">
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:id="@+id/linearlayoutitem"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="4dp"
         android:background="@drawable/layout_border"
         android:orientation="vertical">
 
@@ -20,9 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:background="@android:color/transparent"
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/logo"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:src="@drawable/ic_baseline_assignment_24" />_
@@ -83,12 +85,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:background="@android:color/transparent"
             android:orientation="horizontal">
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@android:color/transparent" />
 
             <Button
                 android:id="@+id/buttonEdit"

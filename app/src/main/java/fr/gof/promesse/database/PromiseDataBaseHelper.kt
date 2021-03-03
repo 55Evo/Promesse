@@ -5,6 +5,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import fr.gof.promesse.R
 
+/**
+ * Promise data base helper
+ *
+ * @constructor
+ *
+ * @param context
+ */
 class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.string.app_name.toString(), null, R.integer.database_version) {
 
     val createAccount = "CREATE TABLE Account(\n" +
@@ -35,7 +42,7 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
             "   Id_Promise INT NOT NULL,\n" +
             "   FOREIGN KEY(Id_Promise) REFERENCES Promise(Id_Promise)\n" +
             ");"
-    val insertDefaultUser = "INSERT INTO Account (Email, Password, Name, Mascot) VALUES ('default@test.fr', 'Test Admin', 'root', 'Biscotte')"
+
     val dropAccount = "DROP TABLE IF EXISTS Account;"
     val dropPromise = "DROP TABLE IF EXISTS Promise;"
     val dropSubtask = "DROP TABLE IF EXISTS Subtask;"
@@ -45,7 +52,6 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
         db?.execSQL(createAccount)
         db?.execSQL(createPromise)
         db?.execSQL(createSubtask)
-        db?.execSQL(insertDefaultUser)
     }
 
     //Suppression des anciennes tables et création de nouvelles

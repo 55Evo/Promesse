@@ -8,6 +8,13 @@ import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Mascot
 
 
+/**
+ * Mascot listener
+ *
+ * @property listMascot
+ * @property context
+ * @constructor Create empty Mascot listener
+ */
 class MascotListener(var listMascot: List<Mascot>, var context: Activity): MascotAdapter.OnItemClickListener {
     override fun onItemClick(position: Int, adapter: MascotAdapter, database: PromiseDataBase) {
         var nommascotte : Mascot = listMascot[position]
@@ -16,6 +23,7 @@ class MascotListener(var listMascot: List<Mascot>, var context: Activity): Masco
         val myIntent = Intent( context, MainActivity::class.java)
 
         context.startActivity(myIntent)
+        context.finish()
     }
 
 }

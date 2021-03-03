@@ -1,6 +1,5 @@
 package fr.gof.promesse.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +7,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
 import fr.gof.promesse.R
-import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
 
 
+/**
+ * Custom suggestion adapter
+ *
+ * @property listener
+ * @constructor
+ *
+ * @param inflater
+ */
 class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSuggestionAdapter.OnItemClickListener) : SuggestionsAdapter<Promise, CustomSuggestionAdapter.SuggestionHolder>(inflater) {
 
     override fun onBindSuggestionHolder(promise: Promise, holder: SuggestionHolder, position: Int) {
@@ -27,6 +33,13 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
         return 40
     }
 
+    /**
+     * Suggestion holder
+     *
+     * @constructor
+     *
+     * @param itemView
+     */
     inner class SuggestionHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var title: TextView
         init {
@@ -40,7 +53,17 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
     }
 
 
+    /**
+     * On item click listener
+     *
+     * @constructor Create empty On item click listener
+     */
     interface OnItemClickListener {
+        /**
+         * On item click
+         *
+         * @param v
+         */
         fun onItemClick(v : View?)
     }
 
