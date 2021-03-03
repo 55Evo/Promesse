@@ -93,7 +93,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         })
 
         listPromesses = utils.user.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))
+        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
 
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
         deleteButton.setOnClickListener(deleteListener)
@@ -111,7 +111,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         listPromesses = utils.user.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toMutableList()
         deleteButton.visibility = View.INVISIBLE
 
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))
+        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         hideKeyboard(this)
@@ -142,7 +142,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     override fun onResume() {
         super.onResume()
         listPromesses = utils.user.getAllPromise(promiseDataBase).toMutableList()
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this))
+        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()

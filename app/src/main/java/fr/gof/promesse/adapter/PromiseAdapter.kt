@@ -1,14 +1,18 @@
 package fr.gof.promesse.adapter
 
+import android.content.Context
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
-import java.util.*
 import fr.gof.promesse.model.State
+import java.util.*
+
 
 /**
  * Promise adapter
@@ -17,10 +21,11 @@ import fr.gof.promesse.model.State
  * @property listener
  * @constructor Create empty Promise adapter
  */
-class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItemClickListener): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>(), IItemTouchHelperAdapter {
+class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItemClickListener, val context : Context): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>(), IItemTouchHelperAdapter {
 
     var inSelection = false
     var nbPromisesChecked = 0
+    var lastPosition =  -1
 
     override fun getItemCount() = promiseList.size
 
@@ -34,7 +39,18 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
         holder.checkBox.isVisible = inSelection
         holder.description.maxLines = if (promise.isDescDeployed) 10 else 2
         holder.layoutButtonEdit.visibility = if (promise.isDescDeployed) View.VISIBLE else View.GONE
-        holder.layout.setBackgroundResource( if (promise.priority){ if(promise.state== State.DONE) R.drawable.layout_border_important_done else R.drawable.layout_border_important } else { if(promise.state == State.DONE) R.drawable.layout_border_done else R.drawable.layout_border })
+        holder.layout.setBackgroundResource(if (promise.priority) {
+            if (promise.state == State.DONE) R.drawable.layout_border_important_done else R.drawable.layout_border_important
+        } else {
+            if (promise.state == State.DONE) R.drawable.layout_border_done else R.drawable.layout_border
+        })
+
+
+        if (holder.adapterPosition > lastPosition) {
+            val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+            (holder as PromiseViewHolder).startAnimation(animation)
+            lastPosition = holder.adapterPosition
+        }
 
     }
 
@@ -64,7 +80,7 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
      *
      * @param view
      */// HOLDER
-    inner class PromiseViewHolder (view : View): RecyclerView.ViewHolder(view),
+    inner class PromiseViewHolder(view: View): RecyclerView.ViewHolder(view),
             View.OnClickListener,
             View.OnLongClickListener {
         var titre : TextView = view.findViewById(R.id.title)
@@ -108,6 +124,11 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
             }
             return true
         }
+
+        fun startAnimation(animation: Animation) {
+            super.itemView.startAnimation(animation)
+
+        }
     }
 
     /**
@@ -122,7 +143,7 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
          * @param position
          * @param adapter
          */
-        fun onItemClick(position: Int, adapter : PromiseAdapter)
+        fun onItemClick(position: Int, adapter: PromiseAdapter)
 
         /**
          * On item long click
@@ -130,7 +151,7 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
          * @param position
          * @param adapter
          */
-        fun onItemLongClick(position: Int, adapter : PromiseAdapter)
+        fun onItemLongClick(position: Int, adapter: PromiseAdapter)
 
         /**
          * On item button edit click
