@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,14 +17,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import fr.gof.promesse.adapter.PromiseAdapter
-import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
+import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
+import fr.gof.promesse.services.Notifications
 import java.util.*
 
-import fr.gof.promesse.services.Notifications
 
 /**
  * Main activity
@@ -43,10 +42,21 @@ class MainActivity : AppCompatActivity() {
     lateinit var adapter : PromiseAdapter
     lateinit var listPromesse : MutableList<Promise>
     lateinit var layout : ConstraintLayout
+    var dateOfTheDay : Date? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if (savedInstanceState == null) {
+            val extras = intent.extras
+            if (extras != null) {
+                dateOfTheDay = extras.getSerializable("dateOfTheDayRequested") as Date
+            }
+        } else {
+            dateOfTheDay = savedInstanceState.getSerializable("dateOfTheDayRequested") as Date
+        }
+        if(dateOfTheDay == null) dateOfTheDay = Date(System.currentTimeMillis())
+
         recyclerView = findViewById(R.id.recyclerViewPromesse)
         recyclerView.setHasFixedSize(true)
         val llm = LinearLayoutManager(this)
@@ -56,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = llm
         layout = findViewById(R.id.ConstraintLayout)
 
-        listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
+        listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
 
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
 
@@ -70,7 +80,11 @@ class MainActivity : AppCompatActivity() {
     }
     private fun enableSwipeUpDown(){
         val swipeupDown: SwipeupDown = object : SwipeupDown(this) {
-            override fun onMove(recyclerView: RecyclerView, source: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                source: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
                 if (source.itemViewType != target.itemViewType) {
                     return false
                 }
@@ -80,9 +94,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
             }
-
         }
         val itemReport = ItemTouchHelper(swipeupDown)
         itemReport.attachToRecyclerView(recyclerView)
@@ -90,10 +102,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun enableSwipeToDoneOrReport(){
         val swipeToReportOrDone: SwipeToReportOrDone = object : SwipeToReportOrDone(this) {
-
-
-
-
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
                 var promise = listPromesse.get(position)
@@ -118,7 +126,13 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            private fun snackbarUndo(message: String, i: Int, promise: Promise, date: Date, position: Int) {
+            private fun snackbarUndo(
+                message: String,
+                i: Int,
+                promise: Promise,
+                date: Date,
+                position: Int
+            ) {
                 val snackbar = Snackbar
                         .make(layout, message, Snackbar.LENGTH_LONG)
                 snackbar.setAction(getString(R.string.cancel)) {
@@ -145,7 +159,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
+        listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
@@ -169,7 +183,7 @@ class MainActivity : AppCompatActivity() {
      */
     fun onClickMascot(v: View){
        var bubble : TextView = findViewById(R.id.mascotBubbleTextView)
-        bubble.text = "Coucou c'est moi "+utils.user.mascot.name + " !"
+        bubble.text = "Coucou c'est moi "+utils.user.mascot.nom + " !"
         bubble.visibility = View.VISIBLE
         Handler().postDelayed({
             bubble.visibility = View.GONE
@@ -186,8 +200,14 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun isDone(p : Promise, a : PromiseAdapter) {
+    fun isDone(p: Promise, a: PromiseAdapter) {
         utils.user.setToDone(p, promiseDataBase)
         a.notifyDataSetChanged()
+    }
+
+    fun onClickCalendarButton(v: View){
+        val intent = Intent(this, CalendarActivity::class.java)
+        startActivity(intent)
+        this.finish()
     }
 }

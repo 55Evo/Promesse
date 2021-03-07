@@ -11,11 +11,10 @@ import android.content.Intent
 import android.os.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import fr.gof.promesse.MainActivity
 import fr.gof.promesse.R
-import fr.gof.promesse.SearchActivity
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
-import fr.gof.promesse.model.State
 import fr.gof.promesse.model.User
 import java.util.*
 
@@ -70,7 +69,7 @@ class Notifications : JobService() {
      * @param promises
      */
     fun sendNotification(promises: MutableList<Promise>){
-        val intent = Intent(context, SearchActivity::class.java).apply {
+        val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
@@ -108,7 +107,7 @@ class Notifications : JobService() {
     }
 
     private fun updateListPromises(){
-        listPromises = promiseDataBase.getAllPromisesOfTheDay(email).toMutableList()
+        listPromises = promiseDataBase.getAllPromisesOfTheDay(email, Date(System.currentTimeMillis())).toMutableList()
     }
 
     private fun dateNearToNow(date: Date) : Boolean {

@@ -41,8 +41,8 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param db
      * @return
      */
-    fun getAllPromisesOfTheDay(db: PromiseDataBase) : Set<Promise>{
-        return db.getAllPromisesOfTheDay(email)
+    fun getAllPromisesOfTheDay(db: PromiseDataBase, date: Date = Date(System.currentTimeMillis())) : Set<Promise>{
+        return db.getAllPromisesOfTheDay(email, date)
     }
 
     /**
