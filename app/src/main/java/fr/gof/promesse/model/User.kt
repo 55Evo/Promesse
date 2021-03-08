@@ -1,7 +1,10 @@
 package fr.gof.promesse.model
 
+import android.util.Log
 import fr.gof.promesse.database.PromiseDataBase
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashSet
 
 /**
  * User
@@ -13,7 +16,7 @@ import java.util.*
  * @constructor Create empty User
  */
 data class User(var email: String, var name: String, var password: String, var mascot: Mascot){
-
+lateinit var listPromise:MutableSet<Promise>
     /**
      * Add promise
      *
@@ -21,17 +24,32 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param db
      */
     fun addPromise(promise: Promise, db: PromiseDataBase) {
-        db.addPromise(email, promise)
+
+        promise.id = db.addPromise(email, promise).toInt()
+        listAddPromise(promise)
+
     }
 
+    private fun listAddPromise(promise: Promise) {
+        removePromise(promise)
+        listPromise.add(promise)
+    }
+
+    private fun removePromise(promise: Promise) {
+        listPromise.remove(promise)
+    }
+
+    fun loadPromises(db: PromiseDataBase){
+        listPromise = db.getAllPromises(email).toMutableSet()
+    }
     /**
      * Get all promise
      *
      * @param db
      * @return
      */
-    fun getAllPromise(db: PromiseDataBase) : Set<Promise>{
-        return db.getAllPromises(email)
+    fun getAllPromise() : Set<Promise>{
+        return listPromise
     }
 
 
@@ -42,7 +60,18 @@ data class User(var email: String, var name: String, var password: String, var m
      * @return
      */
     fun getAllPromisesOfTheDay(db: PromiseDataBase) : Set<Promise>{
-        return db.getAllPromisesOfTheDay(email)
+        val sdf = SimpleDateFormat("dd/MM/yyyy")
+        var res = HashSet<Promise>()
+        for (promise in listPromise) {
+            if (promise.dateTodo !=null){
+            if (promise.dateTodo.time < System.currentTimeMillis() && promise.dateTodo.time >System.currentTimeMillis()-(86400000 * 3+1) && promise.state != State.DONE) {
+                res.add(promise)
+            }
+            }
+        }
+
+
+        return res
     }
 
     /**
@@ -138,7 +167,7 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param db
      * @return
      */
-    fun getSearchResultsSorted(name : String, choiceOfSort : Sort, db: PromiseDataBase) : Set<Promise> =
+    fun getSearchResultsSorted(name: String, choiceOfSort: Sort, db: PromiseDataBase) : Set<Promise> =
         db.getAllPromisesNameLike(name, choiceOfSort, this)
 
     /**
@@ -149,6 +178,7 @@ data class User(var email: String, var name: String, var password: String, var m
      */
     fun updatePromise(promise: Promise, db: PromiseDataBase) {
         db.updatePromise(email, promise)
+        listAddPromise(promise)
     }
 
     /**
@@ -157,12 +187,33 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param promise
      * @param db
      */
-    fun deletePromise(promise : Promise, db : PromiseDataBase) {
+    fun deletePromise(promise: Promise, db: PromiseDataBase) {
         db.deletePromise(promise)
+        removePromise(promise)
+
     }
 
-    fun setToDone(promise : Promise, db : PromiseDataBase) {
+    fun setToDone(promise: Promise, db: PromiseDataBase) {
         promise.state = State.DONE
         db.updatePromise(email, promise)
+        var it = listPromise.iterator()
+        while (it.hasNext()) {
+            var p = it.next()
+            Log.d("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",p.title)
+
+            if (p.id == promise.id) {
+                Log.d("--------------------------------------------oooooooooooooooooooooooooooooooooooooooo--",
+                    p.id.toString())
+                it.remove()
+            }
+
+        }
+
+    }
+
+    fun updatePromiseDate(promise: Promise,db: PromiseDataBase) {
+        db.updateDate(promise)
+        listAddPromise(promise)
+
     }
 }

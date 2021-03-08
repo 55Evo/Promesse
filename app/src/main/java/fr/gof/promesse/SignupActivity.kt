@@ -6,6 +6,7 @@ import android.util.Patterns
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
+import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.User
@@ -70,9 +71,9 @@ class SignupActivity : AppCompatActivity() {
             return;
         }
 
-        val user = User(email?.text.toString(), nom?.text.toString(), password?.text.toString(), Mascot.JACOU)
-        promiseDataBase.createAccount(user)
-        utils.user = user
+        val usr = User(email?.text.toString(), nom?.text.toString(), password?.text.toString(), Mascot.JACOU)
+        promiseDataBase.createAccount(usr)
+        user = usr
         val myIntent = Intent(this, ChooseMascotActivity::class.java)
         startActivity(myIntent)
     }

@@ -21,8 +21,10 @@ import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
+import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
+import fr.gof.promesse.model.User
 import java.util.*
 
 import fr.gof.promesse.services.Notifications
@@ -33,6 +35,9 @@ import fr.gof.promesse.services.Notifications
  * @constructor Create empty Main activity
  */
 class MainActivity : AppCompatActivity() {
+    companion object {
+        var user = User("a", "a", "", Mascot.JACOU)
+    }
 
     lateinit var deleteListener: DeleteButtonListener
     lateinit var recyclerView: RecyclerView
@@ -45,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var layout : ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.recyclerViewPromesse)
@@ -52,11 +58,11 @@ class MainActivity : AppCompatActivity() {
         val llm = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.VERTICAL
         mascotView = findViewById(R.id.imageViewMascot)
-        mascotView.setImageResource(utils.user.mascot.image)
+        mascotView.setImageResource(user.mascot.image)
         recyclerView.layoutManager = llm
         layout = findViewById(R.id.ConstraintLayout)
-
-        listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
+        user.loadPromises( promiseDataBase)
+        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
 
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
 
@@ -68,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         //enableSwipeToReport();
         enableSwipeToDoneOrReport()
         enableSwipeUpDown()
-        notifications.scheduleJob(this, utils.user)
+        notifications.scheduleJob(this, user)
     }
     private fun enableSwipeUpDown(){
         val swipeupDown: SwipeupDown = object : SwipeupDown(this) {
@@ -98,19 +104,20 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
-                var promise = listPromesse.get(position)
+                var promise = listPromesse[position]
                 var date = promise.dateTodo
                 var message = ""
                 when(i){ // promise done
                     16 -> {
                         message = getString(R.string.promiseDone)
                         promise.state = State.DONE
-                        utils.user.updatePromise(promise, promiseDataBase)
+                        user.updatePromise(promise, promiseDataBase)
                     }
                     32 -> { // add 1 day to the date to do to postpone it
                         message = getString(R.string.promisePostponed)
                         promise.dateTodo = Date(System.currentTimeMillis() + 86400000)
-                        promiseDataBase.updateDate(promise)
+                        user.updatePromiseDate(promise, promiseDataBase)
+
                     }
                 }
                 listPromesse.removeAt(position)
@@ -131,7 +138,7 @@ class MainActivity : AppCompatActivity() {
                         // j'enlève le done
                         adapter.restoreItem(promise, position, promiseDataBase)
                         promise.state = State.TODO
-                        utils.user.updatePromise(promise, promiseDataBase)
+                        user.updatePromise(promise, promiseDataBase)
                     }
                     recyclerView.scrollToPosition(position)
                     adapter.notifyItemRangeChanged(position, listPromesse.size)
@@ -147,7 +154,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        listPromesse = utils.user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
+        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
+        Log.d("==============================================", listPromesse.toString())
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
@@ -171,7 +179,7 @@ class MainActivity : AppCompatActivity() {
      */
     fun onClickMascot(v: View){
        var bubble : TextView = findViewById(R.id.mascotBubbleTextView)
-        bubble.text = "Coucou c'est moi "+utils.user.mascot.name + " !"
+        bubble.text = "Coucou c'est moi "+user.mascot.name + " !"
         bubble.visibility = View.VISIBLE
         Handler().postDelayed({
             bubble.visibility = View.GONE
@@ -189,7 +197,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun isDone(p : Promise, a : PromiseAdapter) {
-        utils.user.setToDone(p, promiseDataBase)
+        user.setToDone(p, promiseDataBase)
         a.notifyDataSetChanged()
     }
 }
