@@ -331,4 +331,20 @@ class PromiseDataBase(context: Context){
             select, null, null, null)
         return getPromise(curs, dbreadable)
     }
+
+    fun getPromisesOfTheDay(email: String, date: Date): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val dateToDo = formatter.format(date)
+        //Execution requête
+        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val select = arrayOf(email)
+        //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
+        //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
+        val curs: Cursor = dbreadable.query("Promise", col,
+                "DATE(Date_Todo) = DATE('$dateToDo') AND State <> 'DONE' \n" +
+                        "AND Email = ?",
+                select, null, null, null)
+        return getPromise(curs, dbreadable)
+    }
 }

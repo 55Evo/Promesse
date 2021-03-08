@@ -45,6 +45,10 @@ data class User(var email: String, var name: String, var password: String, var m
         return db.getAllPromisesOfTheDay(email, date)
     }
 
+    fun getPromisesOfTheDay(db: PromiseDataBase, date: Date = Date(System.currentTimeMillis())): Set<Promise> {
+        return db.getPromisesOfTheDay(email, date)
+    }
+
     /**
      * Get promises sorted by priority
      *

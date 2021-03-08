@@ -13,6 +13,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </org.naishadhparmar.zcustomcalendar.CustomCalendar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPromises"
+        android:layout_width="404dp"
+        android:layout_height="430dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_calendar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
