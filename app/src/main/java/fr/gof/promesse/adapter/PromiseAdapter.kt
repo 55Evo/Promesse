@@ -1,6 +1,8 @@
 package fr.gof.promesse.adapter
 
 import android.content.Context
+import android.os.Handler
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -35,6 +37,7 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
         holder.description.text = promise.description
         holder.date.text = promise.getDateToDoToString()
         holder.titre.text = promise.title
+        holder.logo.setImageResource(promise.category.image_drawable)
         holder.checkBox.isChecked = promise.isChecked
         holder.checkBox.isVisible = inSelection
         holder.description.maxLines = if (promise.isDescDeployed) 10 else 2
@@ -45,8 +48,9 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
             if (promise.state == State.DONE) R.drawable.layout_border_done else R.drawable.layout_border
         })
 
-
-        if (holder.adapterPosition > lastPosition) {
+        if (lastPosition<4)
+            lastPosition = holder.adapterPosition
+        else if (holder.adapterPosition > lastPosition) {
             val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
             (holder as PromiseViewHolder).startAnimation(animation)
             lastPosition = holder.adapterPosition
@@ -84,6 +88,7 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
             View.OnClickListener,
             View.OnLongClickListener {
         var titre : TextView = view.findViewById(R.id.title)
+        var logo : ImageView = view.findViewById(R.id.logo)
         var date : TextView = view.findViewById(R.id.date)
         var description : TextView = view.findViewById(R.id.description)
         var checkBox : CheckBox = view.findViewById(R.id.delCheckBox)
@@ -99,6 +104,8 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
         }
 
         override fun onClick(v: View?) {
+            if (v!=null){
+
             if(v is CheckBox){
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
@@ -111,7 +118,17 @@ class PromiseAdapter(var promiseList: MutableList<Promise>, val listener: OnItem
                     if (v is Button) {
                         listener.onItemButtonEditClick(position, this@PromiseAdapter)
                     } else {
-                        listener.onItemClick(position, this@PromiseAdapter)
+
+
+
+                      listener.onItemClick(position, this@PromiseAdapter)
+
+                    }
+
+
+
+
+
                     }
                 }
             }

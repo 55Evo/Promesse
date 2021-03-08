@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
+import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.database.PromiseDataBase
 
 class SigninActivity : AppCompatActivity() {
@@ -53,7 +54,7 @@ class SigninActivity : AppCompatActivity() {
         }
         if(promiseDataBase.checkPassword(email?.text.toString(), password?.text.toString())) {
 
-            utils.user = promiseDataBase.getUser(email?.text.toString())
+            user = promiseDataBase.getUser(email?.text.toString())
             val myIntent = Intent(this, MainActivity::class.java)
             startActivity(myIntent)
         } else {

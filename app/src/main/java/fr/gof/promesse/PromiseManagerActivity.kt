@@ -4,13 +4,21 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import fr.gof.promesse.MainActivity.Companion.user
+import fr.gof.promesse.adapter.CategoryAdapter
 import fr.gof.promesse.database.PromiseDataBase
+import fr.gof.promesse.listener.CategoryListener
+import fr.gof.promesse.model.Category
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import java.text.DateFormat
@@ -25,8 +33,26 @@ import java.util.*
 class PromiseManagerActivity : AppCompatActivity() {
 
     private val dateSetListener = OnDateSetListener { view, year, monthOfYear, dayOfMonth -> setDate(year, monthOfYear, dayOfMonth)}
+    private val listCatgerie: List<Category> = listOf(
+            Category.SPORT,
+            Category.ETUDES,
+            Category.CUISINE,
+            Category.LOISIRS,
+            Category.DEFAUT
+
+    )
+    lateinit var adapter : CategoryAdapter
+    lateinit var rvCategory:  RecyclerView
+    lateinit var backgroundImage : ImageView
+    var choosenCategory: Category = Category.DEFAUT
+
+
 
     val promiseDataBase = PromiseDataBase(this@PromiseManagerActivity)
+
+
+
+
     lateinit var textViewDate : TextView
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
     var promise : Promise ?= null
@@ -37,6 +63,15 @@ class PromiseManagerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.promise_manager_activity)
+
+        backgroundImage = findViewById(R.id.backgroundImage)
+        rvCategory= findViewById(R.id.recycler_Category)
+        rvCategory.setHasFixedSize(true)
+
+
+
+
+
         var titleBar : TextView = findViewById(R.id.textViewTitleBar)
         if (intent.getSerializableExtra("Promise") != null) {
             promise = intent.getSerializableExtra("Promise") as Promise
@@ -50,6 +85,14 @@ class PromiseManagerActivity : AppCompatActivity() {
             titleBar.setText(R.string.titleCreatePromise)
             textViewDate.text = getDateToString(Date(System.currentTimeMillis()))
         }
+
+
+
+        adapter = CategoryAdapter(this, listCatgerie,CategoryListener(listCatgerie, this) , promiseDataBase, backgroundImage)
+        rvCategory.adapter = adapter
+        adapter.chooenCategory = choosenCategory
+        rvCategory.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+
     }
 
     private fun setPromiseInFields(
@@ -116,6 +159,7 @@ class PromiseManagerActivity : AppCompatActivity() {
      */
     fun onClickButtonValidate (v : View) {
         //Recuperation des éléments
+        choosenCategory = adapter.chooenCategory
         val editTextTitle : TextView = findViewById(R.id.editTextTitle)
         val editTextDuration : TextView = findViewById(R.id.editTextDuration)
         val switchPriority : Switch = findViewById(R.id.switchPriority)
@@ -125,6 +169,10 @@ class PromiseManagerActivity : AppCompatActivity() {
             editTextTitle.error = getString(R.string.emptyField)
             return
         }
+
+        Log.d("ttttttttttttttt","yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
+
+
         val promiseNm = promise
         if (promiseNm != null) {
             updatePromise(
@@ -139,6 +187,7 @@ class PromiseManagerActivity : AppCompatActivity() {
             val promise = Promise(
                     -1,
                     editTextTitle.text.toString(),
+                    adapter.chooenCategory,
                     if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString().toInt(),
                     State.TODO,
                     switchPriority.isChecked,
@@ -148,8 +197,11 @@ class PromiseManagerActivity : AppCompatActivity() {
                     calendar.time,
                     null
             )
-            utils.user.addPromise(promise, promiseDataBase)
+
+
+            user.addPromise(promise, promiseDataBase)
         }
+
         finish()
     }
 
@@ -162,6 +214,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         editTextDescription: TextView
     ) {
         promiseNm.title = editTextTitle.text.toString()
+        promiseNm.category = adapter.chooenCategory
         promiseNm.duration =
             if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString()
                 .toInt()
@@ -169,7 +222,8 @@ class PromiseManagerActivity : AppCompatActivity() {
         promiseNm.professional = switchProfessional.isChecked
         promiseNm.dateTodo = calendar.time
         promiseNm.description = editTextDescription.text.toString()
-        utils.user.updatePromise(promiseNm, promiseDataBase)
+        user.updatePromise(promiseNm, promiseDataBase)
+
     }
 
     /**
