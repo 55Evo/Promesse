@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.model.*
-
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -113,7 +112,6 @@ class PromiseDataBase (context : Context){
         //Ajout des sous-tâches
         if(promise.subtasks != null) {
             for (sub in promise.subtasks!!) {
-                println("oo???")
                 val subvalues = ContentValues()
                 subvalues.put("Id_Promise", id)
                 subvalues.put("Title", sub.title)
@@ -174,7 +172,6 @@ class PromiseDataBase (context : Context){
                 val subtasks = mutableListOf<Subtask>()
                 val curs2 = dbreadable.query("Subtask", arrayOf("Id_Subtask", "Title", "Done"), "Id_Promise = $id", null, null, null, null)
                 try {
-                    println("aa??")
                     while(curs2.moveToNext()) {
                         subtasks.add(Subtask(curs2.getInt(curs2.getColumnIndexOrThrow("Id_Subtask")), curs2.getString(curs2.getColumnIndexOrThrow("Title")), curs2.getInt(curs2.getColumnIndexOrThrow("Done"))>0))
                     }
@@ -236,20 +233,22 @@ class PromiseDataBase (context : Context){
      * @param email
      * @return
      */
-    fun getAllPromisesOfTheDay(email: String): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
+    fun getAllPromisesOfTheDay(email: String, date: Date = Date(System.currentTimeMillis())): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val dateToDo = formatter.format(date)
         //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
         //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
         val curs: Cursor = dbreadable.query("Promise", col,
-            "((DATE(Date_Todo) = DATE('now','-1 day') AND State <> 'DONE') \n" +
-                "OR (DATE(Date_Todo) = DATE('now','-2 day') AND State <> 'DONE') \n" +
-                "OR (DATE(Date_Todo) = DATE('now','-3 day') AND State <> 'DONE') \n" +
-                "OR DATE(Date_Todo) = DATE('now') AND State <> 'DONE') " +
-                "AND Email = ?",
-            select, null, null, null)
+                "((DATE(Date_Todo) = DATE('$dateToDo','-1 day') AND State <> 'DONE') \n" +
+                        "OR (DATE(Date_Todo) = DATE('$dateToDo','-2 day') AND State <> 'DONE') \n" +
+                        "OR (DATE(Date_Todo) = DATE('$dateToDo','-3 day') AND State <> 'DONE') \n" +
+                        "OR DATE(Date_Todo) = DATE('$dateToDo') AND State <> 'DONE') " +
+                        "AND Email = ?",
+                select, null, null, null)
         return getPromise(curs, dbreadable)
     }
 
@@ -268,7 +267,6 @@ class PromiseDataBase (context : Context){
         values.put("Category", promise.category.nom)
         values.put("Duration", promise.duration)
         values.put("State", promise.state.toString())
-
         values.put("Priority", if(promise.priority) 1 else 0)
         values.put("Professional", if(promise.professional) 1 else 0)
         values.put("Date_Creation", dateFormat.format(promise.dateCreation))
@@ -334,4 +332,35 @@ class PromiseDataBase (context : Context){
                 )
     }
 
+    fun getAllPromisesOfTheMonth(email: String, date: Date): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        val formatter = SimpleDateFormat("yyyy-MM-dd")
+        val dateToDo = formatter.format(date)
+        //Execution requête
+        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val select = arrayOf(email)
+        //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
+        //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
+        val curs: Cursor = dbreadable.query("Promise", col,
+            "strftime('%m', Date_Todo) = strftime('%m', DATE('$dateToDo')) AND State <> 'DONE' \n" +
+                    "AND Email = ?",
+            select, null, null, null)
+        return getPromise(curs, dbreadable)
+    }
+
+    fun getPromisesOfTheDay(email: String, date: Date): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val dateToDo = formatter.format(date)
+        //Execution requête
+        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val select = arrayOf(email)
+        //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
+        //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
+        val curs: Cursor = dbreadable.query("Promise", col,
+                "DATE(Date_Todo) = DATE('$dateToDo') AND State <> 'DONE' \n" +
+                        "AND Email = ?",
+                select, null, null, null)
+        return getPromise(curs, dbreadable)
+    }
 }

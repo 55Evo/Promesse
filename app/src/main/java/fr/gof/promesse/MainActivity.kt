@@ -48,10 +48,21 @@ class MainActivity : AppCompatActivity() {
     lateinit var adapter : PromiseAdapter
     lateinit var listPromesse : MutableList<Promise>
     lateinit var layout : ConstraintLayout
+    var dateOfTheDay : Date? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if (savedInstanceState == null) {
+            val extras = intent.extras
+            if (extras != null) {
+                dateOfTheDay = extras.getSerializable("dateOfTheDayRequested") as Date
+            }
+        } else {
+            dateOfTheDay = savedInstanceState.getSerializable("dateOfTheDayRequested") as Date
+        }
+        if(dateOfTheDay == null) dateOfTheDay = Date(System.currentTimeMillis())
+
         recyclerView = findViewById(R.id.recyclerViewPromesse)
         recyclerView.setHasFixedSize(true)
         val llm = LinearLayoutManager(this)
@@ -85,9 +96,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
             }
-
         }
         val itemReport = ItemTouchHelper(swipeupDown)
         itemReport.attachToRecyclerView(recyclerView)
@@ -95,10 +104,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun enableSwipeToDoneOrReport(){
         val swipeToReportOrDone: SwipeToReportOrDone = object : SwipeToReportOrDone(this) {
-
-
-
-
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
                 var promise = listPromesse[position]
@@ -151,6 +156,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
         listPromesse = user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
         Log.d("==============================================", listPromesse.toString())
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
@@ -176,7 +182,7 @@ class MainActivity : AppCompatActivity() {
      */
     fun onClickMascot(v: View){
        var bubble : TextView = findViewById(R.id.mascotBubbleTextView)
-        bubble.text = "Coucou c'est moi "+user.mascot.name + " !"
+        bubble.text = "Coucou c'est moi "+user.mascot.nom + " !"
         bubble.visibility = View.VISIBLE
         Handler().postDelayed({
             bubble.visibility = View.GONE
@@ -196,5 +202,11 @@ class MainActivity : AppCompatActivity() {
     fun isDone(p : Promise, a : PromiseAdapter) {
         user.setToDone(p, promiseDataBase)
         a.notifyDataSetChanged()
+    }
+
+    fun onClickCalendarButton(v: View){
+        val intent = Intent(this, CalendarActivity::class.java)
+        startActivity(intent)
+        this.finish()
     }
 }

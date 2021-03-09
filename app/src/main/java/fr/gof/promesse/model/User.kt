@@ -74,6 +74,10 @@ lateinit var listPromise:MutableSet<Promise>
         return res
     }
 
+    fun getPromisesOfTheDay(db: PromiseDataBase, date: Date = Date(System.currentTimeMillis())): Set<Promise> {
+        return db.getPromisesOfTheDay(email, date)
+    }
+
     /**
      * Get promises sorted by priority
      *
@@ -199,11 +203,7 @@ lateinit var listPromise:MutableSet<Promise>
         var it = listPromise.iterator()
         while (it.hasNext()) {
             var p = it.next()
-            Log.d("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",p.title)
-
             if (p.id == promise.id) {
-                Log.d("--------------------------------------------oooooooooooooooooooooooooooooooooooooooo--",
-                    p.id.toString())
                 it.remove()
             }
 
