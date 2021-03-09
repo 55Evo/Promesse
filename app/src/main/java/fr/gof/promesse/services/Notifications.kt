@@ -31,6 +31,7 @@ class Notifications : JobService() {
     var context : Context = this
     lateinit var listPromises : MutableList<Promise>
     lateinit var email : String
+    private val oneDayInMilis: Long = 3600000L
 
 
     override fun onStartJob(params: JobParameters?): Boolean {
@@ -41,7 +42,10 @@ class Notifications : JobService() {
         updateListPromises()
 
         if(listPromises.size > 0){
-            sendNotification(listPromises)
+            val now = Calendar.getInstance()
+            //Send notification if it's 8 A.M
+            if(now.get(Calendar.HOUR_OF_DAY) == 8)
+                sendNotification(listPromises)
         }
         return true
     }
@@ -55,8 +59,8 @@ class Notifications : JobService() {
         val bundle = PersistableBundle()
         bundle.putString("email", user.email)
         val jobInbo = JobInfo.Builder(0, serviceComponent)
-                .setMinimumLatency(1000) // Temps d'attente minimal avant déclenchement
-                .setOverrideDeadline(2000) // Temps d'attente maximal avant déclenchement
+                .setPersisted(true)
+                .setPeriodic(oneDayInMilis) // Temps d'attente entre deux déclenchements (1 jour)
                 .setExtras(bundle)
                 .build()
         val jobScheduler: JobScheduler = context.getSystemService(JobScheduler::class.java)

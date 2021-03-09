@@ -100,7 +100,6 @@ class PromiseDataBase(context: Context){
         //Ajout des sous-tâches
         if(promise.subtasks != null) {
             for (sub in promise.subtasks!!) {
-                println("oo???")
                 val subvalues = ContentValues()
                 subvalues.put("Id_Promise", id)
                 subvalues.put("Title", sub.title)
@@ -157,7 +156,6 @@ class PromiseDataBase(context: Context){
                 val subtasks = mutableListOf<Subtask>()
                 val curs2 = dbreadable.query("Subtask", arrayOf("Id_Subtask", "Title", "Done"), "Id_Promise = $id", null, null, null, null)
                 try {
-                    println("aa??")
                     while(curs2.moveToNext()) {
                         subtasks.add(Subtask(curs2.getInt(curs2.getColumnIndexOrThrow("Id_Subtask")), curs2.getString(curs2.getColumnIndexOrThrow("Title")), curs2.getInt(curs2.getColumnIndexOrThrow("Done")) > 0))
                     }

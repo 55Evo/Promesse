@@ -43,4 +43,10 @@
     <string name="passwordTooShort">Le mot de passe est trop court</string>
     <string name="promiseDone">Promesse terminée !</string>
     <string name="promisePostponed">Promesse reportée à demain !</string>
+    <string name="calendar_legend_third">plus de 4 \npromesses</string>
+    <string name="calendar_legend_second">3 à 4 \npromesses</string>
+    <string name="calendar_legend_first">1 à 2 \npromesses</string>
+    <string name="calendar_legend_img_1">Image color of a blue day</string>
+    <string name="calendar_legend_img_2">Image color of a green day</string>
+    <string name="calendar_legend_img_3">Image color of an orange day</string>
 </resources>

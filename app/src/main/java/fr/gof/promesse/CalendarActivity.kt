@@ -2,7 +2,9 @@ package fr.gof.promesse
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +17,7 @@ import org.naishadhparmar.zcustomcalendar.OnDateSelectedListener
 import org.naishadhparmar.zcustomcalendar.OnNavigationButtonClickedListener
 import org.naishadhparmar.zcustomcalendar.Property
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
 
 
@@ -40,13 +43,11 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.calendar_activity)
+        setDaysInFrench()
 
         promisesOfTheSelectedDay = utils.user.getPromisesOfTheDay(promiseDataBase, Date(System.currentTimeMillis())).toMutableList()
         customCalendar = findViewById(R.id.custom_calendar)
         recyclerView = findViewById(R.id.recyclerViewPromises)
-
-        customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.PREVIOUS, this)
-        customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.NEXT, this)
 
         var defaultProperty = Property()
         defaultProperty.layoutResource = R.layout.default_view
@@ -92,10 +93,49 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
 
         updateCalendarWithPromises(dateHashMap, calendar, calendar.get(Calendar.DAY_OF_MONTH))
         recyclerView.adapter = adapter
-
         customCalendar.setOnDateSelectedListener(this)
-        customCalendar.setNavigationButtonDrawable(CustomCalendar.PREVIOUS, R.drawable.previous_icon)
-        customCalendar.setNavigationButtonDrawable(CustomCalendar.NEXT, R.drawable.next_icon)
+        setMonthInFrench()
+        customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.PREVIOUS, this)
+        customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.NEXT, this)
+    }
+
+    private fun setDaysInFrench(){
+        var day: TextView = findViewById(R.id.tv_day_of_week_0)
+        day.text = "Lun"
+        day = findViewById(R.id.tv_day_of_week_1)
+        day.text = "Mar"
+        day = findViewById(R.id.tv_day_of_week_2)
+        day.text = "Mer"
+        day = findViewById(R.id.tv_day_of_week_3)
+        day.text = "Jeu"
+        day = findViewById(R.id.tv_day_of_week_4)
+        day.text = "Ven"
+        day = findViewById(R.id.tv_day_of_week_5)
+        day.text = "Sam"
+        day = findViewById(R.id.tv_day_of_week_6)
+        day.text = "Dim"
+    }
+
+    private fun setMonthInFrench(){
+        var monthYear: TextView = customCalendar.monthYearTextView
+        var monthYearString : List<String> = monthYear.text.split(" ")
+
+        var res = ""
+        when(monthYearString[0]){
+            "January" -> res = "Janvier ${monthYearString[1]}"
+            "February" -> res = "Fevrier ${monthYearString[1]}"
+            "March" -> res = "Mars ${monthYearString[1]}"
+            "April" -> res = "Avril ${monthYearString[1]}"
+            "May" -> res = "Mai ${monthYearString[1]}"
+            "June" -> res = "Juin ${monthYearString[1]}"
+            "July" -> res = "Juillet ${monthYearString[1]}"
+            "August" -> res = "Aout ${monthYearString[1]}"
+            "September" -> res = "Septembre ${monthYearString[1]}"
+            "October" -> res = "Octobre ${monthYearString[1]}"
+            "November" -> res = "Novembre ${monthYearString[1]}"
+            "December" -> res = "Decembre ${monthYearString[1]}"
+        }
+        monthYear.text = res
     }
 
     private fun updateCalendarWithPromises(
@@ -140,6 +180,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
             Handler().postDelayed({
                 calendar = newMonth
                 updateCalendarWithPromises(dateHashMap, newMonth)
+                setMonthInFrench()
             }, 1)
         }
         return arrayOf(descHashMap as MutableMap<Int, Any>, dateHashMap)
