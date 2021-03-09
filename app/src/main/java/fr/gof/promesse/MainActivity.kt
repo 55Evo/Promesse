@@ -156,9 +156,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
+//        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
         listPromesse = user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
-        Log.d("==============================================", listPromesse.toString())
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter

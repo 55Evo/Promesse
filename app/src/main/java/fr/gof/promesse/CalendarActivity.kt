@@ -45,7 +45,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         setContentView(R.layout.calendar_activity)
         setDaysInFrench()
 
-        promisesOfTheSelectedDay = utils.user.getPromisesOfTheDay(promiseDataBase, Date(System.currentTimeMillis())).toMutableList()
+        promisesOfTheSelectedDay = MainActivity.user.getPromisesOfTheDay(promiseDataBase, Date(System.currentTimeMillis())).toMutableList()
         customCalendar = findViewById(R.id.custom_calendar)
         recyclerView = findViewById(R.id.recyclerViewPromises)
 
@@ -143,7 +143,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         month: Calendar,
         selectedDay: Int = 0
     ) {
-        promises = promiseDataBase.getAllPromisesOfTheMonth(utils.user.email, month.time).toMutableList()
+        promises = promiseDataBase.getAllPromisesOfTheMonth(MainActivity.user.email, month.time).toMutableList()
         var occurencePromises = IntArray(32) {0}
         for (promise: Promise in promises) {
             occurencePromises[promise.dateTodo.date]++
@@ -194,7 +194,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      */
     override fun onDateSelected(view: View?, selectedDate: Calendar?, desc: Any?) {
         if (selectedDate != null) {
-            promisesOfTheSelectedDay = utils.user.getPromisesOfTheDay(promiseDataBase, selectedDate.time).toMutableList()
+            promisesOfTheSelectedDay = MainActivity.user.getPromisesOfTheDay(promiseDataBase, selectedDate.time).toMutableList()
             updateCalendarWithPromises(dateHashMap, calendar, selectedDate.get(Calendar.DAY_OF_MONTH))
         } else {
             updateCalendarWithPromises(dateHashMap, calendar)
