@@ -133,7 +133,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         }
 
         valeurActuelle = text
-        listPromesses = user.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toMutableList()
+        listPromesses = user.getSearchResultsSorted(text, choiceOfSort).toMutableList()
         deleteButton.visibility = View.INVISIBLE
 
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)

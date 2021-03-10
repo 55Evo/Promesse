@@ -46,7 +46,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
             displayPopup(listPromesses)
         }
         else {
-            deletePromises(listPromesses, promiseDataBase)
+            deletePromises(listPromesses)
         }
         updateView(v)
     }
@@ -74,7 +74,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
         )
             .setCancelable(true)
             .setPositiveButton("Oui", DialogInterface.OnClickListener { _, _ ->
-                deletePromises(listPromesses, promiseDataBase)
+                deletePromises(listPromesses)
             })
             .setNegativeButton("Non", DialogInterface.OnClickListener { dialog, _ ->
                 dialog.cancel()
@@ -91,13 +91,13 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
      * @param listPromesses
      * @param promiseDataBase
      */
-    private fun deletePromises(listPromesses : MutableList<Promise>, promiseDataBase : PromiseDataBase) {
+    private fun deletePromises(listPromesses : MutableList<Promise>) {
         val it = listPromesses.iterator()
         while(it.hasNext()) {
             var p = it.next()
             if (p.isChecked) {
                 val pos = listPromesses.indexOf(p)
-                user.deletePromise(p, promiseDataBase)
+                user.deletePromise(p)
                 it.remove()
                 adapter.notifyItemRemoved(pos)
                 adapter.notifyItemRangeChanged(pos, listPromesses.size)
