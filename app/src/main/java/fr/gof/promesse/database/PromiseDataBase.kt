@@ -221,9 +221,9 @@ class PromiseDataBase (context : Context){
         val select = arrayOf("%$name%")
         val curs: Cursor = dbreadable.query("Promise", col, "Title LIKE ?", select, null, null, null)
         return when(choiceOfSort){
-            Sort.DATE -> user.getPromisesSortedByDate(this, getPromise(curs, dbreadable))
-            Sort.NAME -> user.getPromisesSortedByName(this, getPromise(curs, dbreadable))
-            Sort.PRIORITY -> user.getPromisesSortedByPriority(this, getPromise(curs, dbreadable))
+            Sort.DATE -> user.getPromisesSortedByDate( getPromise(curs, dbreadable))
+            Sort.NAME -> user.getPromisesSortedByName( getPromise(curs, dbreadable))
+            Sort.PRIORITY -> user.getPromisesSortedByPriority( getPromise(curs, dbreadable))
         }
     }
 
@@ -337,7 +337,7 @@ class PromiseDataBase (context : Context){
         val formatter = SimpleDateFormat("yyyy-MM-dd")
         val dateToDo = formatter.format(date)
         //Execution requête
-        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val col = arrayOf("Id_Promise", "Title","Category", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
         //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
@@ -353,7 +353,7 @@ class PromiseDataBase (context : Context){
         val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         val dateToDo = formatter.format(date)
         //Execution requête
-        val col = arrayOf("Id_Promise", "Title", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val col = arrayOf("Id_Promise", "Title","Category", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
         //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd

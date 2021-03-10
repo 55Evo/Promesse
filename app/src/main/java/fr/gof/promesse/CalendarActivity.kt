@@ -1,5 +1,6 @@
 package fr.gof.promesse
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.PromiseEventListener
@@ -38,14 +40,20 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     private var calendar = Calendar.getInstance()
     var dateHashMap : MutableMap<Int, Any> = HashMap()
     var descHashMap : MutableMap<Any, Property> = HashMap()
+    lateinit var monthDisplay : TextView
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         setContentView(R.layout.calendar_activity)
         setDaysInFrench()
 
-        promisesOfTheSelectedDay = MainActivity.user.getPromisesOfTheDay(promiseDataBase, Date(System.currentTimeMillis())).toMutableList()
+        monthDisplay = findViewById(R.id.monthTextView)
+
+        promisesOfTheSelectedDay = user.getPromisesOfTheDay(Date(System.currentTimeMillis())).toMutableList()
         customCalendar = findViewById(R.id.custom_calendar)
         recyclerView = findViewById(R.id.recyclerViewPromises)
 
@@ -97,6 +105,11 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         setMonthInFrench()
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.PREVIOUS, this)
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.NEXT, this)
+
+
+
+
+
     }
 
     private fun setDaysInFrench(){
@@ -136,14 +149,46 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
             "December" -> res = "Decembre ${monthYearString[1]}"
         }
         monthYear.text = res
+        monthYear.visibility = View.GONE
+
+        monthDisplay.text = res
     }
+
+    private fun updateCalendarWithPromises1(
+        dateHashMap: MutableMap<Int, Any>,
+        month: Calendar,
+        selectedDay: Int = 0
+    ) {
+        promises = user.getAllPromisesOfTheMonth(user.email, month.time).toMutableList()
+        var occurencePromises = IntArray(32) {0}
+        for (promise: Promise in promises) {
+            occurencePromises[promise.dateTodo.date]++
+        }
+
+        for (day: Int in 1 until occurencePromises.size) {
+            when (occurencePromises[day]) {
+                0 -> if(day==selectedDay) dateHashMap[selectedDay] = "default_selected" else dateHashMap[day] = "default"
+                in 1..2 -> if(day==selectedDay) dateHashMap[selectedDay] = "first_selected" else dateHashMap[day] = "first"
+                in 3..4 -> if(day==selectedDay) dateHashMap[selectedDay] = "second_selected" else dateHashMap[day] = "second"
+                else -> if(day==selectedDay) dateHashMap[selectedDay] = "third_selected" else dateHashMap[day] = "third"
+            }
+        }
+
+        val llm = LinearLayoutManager(this)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        recyclerView.layoutManager = llm
+        adapter = PromiseAdapter(promisesOfTheSelectedDay, PromiseEventListener(promisesOfTheSelectedDay, this), this)
+        customCalendar.setDate(month, dateHashMap)
+        adapter.notifyDataSetChanged()
+    }
+
 
     private fun updateCalendarWithPromises(
         dateHashMap: MutableMap<Int, Any>,
         month: Calendar,
         selectedDay: Int = 0
     ) {
-        promises = promiseDataBase.getAllPromisesOfTheMonth(MainActivity.user.email, month.time).toMutableList()
+        promises = user.getAllPromise().toMutableList()
         var occurencePromises = IntArray(32) {0}
         for (promise: Promise in promises) {
             occurencePromises[promise.dateTodo.date]++
@@ -177,11 +222,15 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         newMonth: Calendar?
     ): Array<MutableMap<Int, Any>>? {
         if (newMonth != null) {
+
             Handler().postDelayed({
                 calendar = newMonth
-                updateCalendarWithPromises(dateHashMap, newMonth)
                 setMonthInFrench()
-            }, 1)
+                updateCalendarWithPromises(dateHashMap, newMonth)
+
+            },1)
+
+
         }
         return arrayOf(descHashMap as MutableMap<Int, Any>, dateHashMap)
     }
@@ -194,7 +243,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      */
     override fun onDateSelected(view: View?, selectedDate: Calendar?, desc: Any?) {
         if (selectedDate != null) {
-            promisesOfTheSelectedDay = MainActivity.user.getPromisesOfTheDay(promiseDataBase, selectedDate.time).toMutableList()
+            promisesOfTheSelectedDay = MainActivity.user.getPromisesOfTheDay(selectedDate.time).toMutableList()
             updateCalendarWithPromises(dateHashMap, calendar, selectedDate.get(Calendar.DAY_OF_MONTH))
         } else {
             updateCalendarWithPromises(dateHashMap, calendar)

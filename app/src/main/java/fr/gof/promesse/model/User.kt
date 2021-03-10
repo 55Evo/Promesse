@@ -17,18 +17,21 @@ import kotlin.collections.HashSet
  */
 data class User(var email: String, var name: String, var password: String, var mascot: Mascot){
 lateinit var listPromise:MutableSet<Promise>
+lateinit var db : PromiseDataBase
     /**
      * Add promise
      *
      * @param promise
      * @param db
      */
-    fun addPromise(promise: Promise, db: PromiseDataBase) {
+
+    fun addPromise(promise: Promise) {
 
         promise.id = db.addPromise(email, promise).toInt()
         listAddPromise(promise)
 
     }
+
 
     private fun listAddPromise(promise: Promise) {
         removePromise(promise)
@@ -40,6 +43,7 @@ lateinit var listPromise:MutableSet<Promise>
     }
 
     fun loadPromises(db: PromiseDataBase){
+        this.db = db
         listPromise = db.getAllPromises(email).toMutableSet()
     }
     /**
@@ -59,7 +63,7 @@ lateinit var listPromise:MutableSet<Promise>
      * @param db
      * @return
      */
-    fun getAllPromisesOfTheDay(db: PromiseDataBase) : Set<Promise>{
+    fun getAllPromisesOfTheDay() : Set<Promise>{
         val sdf = SimpleDateFormat("dd/MM/yyyy")
         var res = HashSet<Promise>()
         for (promise in listPromise) {
@@ -73,8 +77,11 @@ lateinit var listPromise:MutableSet<Promise>
 
         return res
     }
+    fun getAllPromisesOfTheMonth(email: String, date: Date): Set<Promise>{
+        return db.getAllPromisesOfTheMonth(email,date)
+    }
 
-    fun getPromisesOfTheDay(db: PromiseDataBase, date: Date = Date(System.currentTimeMillis())): Set<Promise> {
+    fun getPromisesOfTheDay(date: Date = Date(System.currentTimeMillis())): Set<Promise> {
         return db.getPromisesOfTheDay(email, date)
     }
 
@@ -85,7 +92,7 @@ lateinit var listPromise:MutableSet<Promise>
      * @param setToSort
      * @return
      *///Tirer par priorité puis par date
-    fun getPromisesSortedByPriority(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
+    fun getPromisesSortedByPriority(setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
             if(p1.state ==  State.DONE && p2.state != State.DONE)
                 1
@@ -111,8 +118,8 @@ lateinit var listPromise:MutableSet<Promise>
      * @param db
      * @return
      *///Fonction pour renvoyer les promesses du jour triées par priorité puis date d'exécution
-    fun getListPromises(db: PromiseDataBase) : Set<Promise>{
-        return getPromisesSortedByPriority(db, getAllPromisesOfTheDay(db))
+    fun getListPromises() : Set<Promise>{
+        return getPromisesSortedByPriority(getAllPromisesOfTheDay())
     }
 
     /**
@@ -122,7 +129,7 @@ lateinit var listPromise:MutableSet<Promise>
      * @param setToSort
      * @return
      *///Trier par nom puis par date
-    fun getPromisesSortedByName(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
+    fun getPromisesSortedByName( setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
             if(p1.state ==  State.DONE && p2.state != State.DONE)
                 1
@@ -149,7 +156,7 @@ lateinit var listPromise:MutableSet<Promise>
      * @param setToSort
      * @return
      *///Trier par date
-    fun getPromisesSortedByDate(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
+    fun getPromisesSortedByDate( setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
             if(p1.state ==  State.DONE && p2.state != State.DONE)
                 1
@@ -171,7 +178,7 @@ lateinit var listPromise:MutableSet<Promise>
      * @param db
      * @return
      */
-    fun getSearchResultsSorted(name: String, choiceOfSort: Sort, db: PromiseDataBase) : Set<Promise> =
+    fun getSearchResultsSorted(name: String, choiceOfSort: Sort) =
         db.getAllPromisesNameLike(name, choiceOfSort, this)
 
     /**
@@ -180,7 +187,7 @@ lateinit var listPromise:MutableSet<Promise>
      * @param promise
      * @param db
      */
-    fun updatePromise(promise: Promise, db: PromiseDataBase) {
+    fun updatePromise(promise: Promise) {
         db.updatePromise(email, promise)
         listAddPromise(promise)
     }
@@ -191,13 +198,13 @@ lateinit var listPromise:MutableSet<Promise>
      * @param promise
      * @param db
      */
-    fun deletePromise(promise: Promise, db: PromiseDataBase) {
+    fun deletePromise(promise: Promise) {
         db.deletePromise(promise)
         removePromise(promise)
 
     }
 
-    fun setToDone(promise: Promise, db: PromiseDataBase) {
+    fun setToDone(promise: Promise) {
         promise.state = State.DONE
         db.updatePromise(email, promise)
         var it = listPromise.iterator()
@@ -211,7 +218,7 @@ lateinit var listPromise:MutableSet<Promise>
 
     }
 
-    fun updatePromiseDate(promise: Promise,db: PromiseDataBase) {
+    fun updatePromiseDate(promise: Promise) {
         db.updateDate(promise)
         listAddPromise(promise)
 

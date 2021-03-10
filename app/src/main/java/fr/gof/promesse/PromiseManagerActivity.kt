@@ -199,7 +199,7 @@ class PromiseManagerActivity : AppCompatActivity() {
             )
 
 
-            user.addPromise(promise, promiseDataBase)
+            user.addPromise(promise)
         }
 
         finish()
@@ -222,7 +222,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         promiseNm.professional = switchProfessional.isChecked
         promiseNm.dateTodo = calendar.time
         promiseNm.description = editTextDescription.text.toString()
-        user.updatePromise(promiseNm, promiseDataBase)
+        user.updatePromise(promiseNm)
 
     }
 

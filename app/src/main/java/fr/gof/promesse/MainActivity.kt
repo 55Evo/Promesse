@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = llm
         layout = findViewById(R.id.ConstraintLayout)
         user.loadPromises( promiseDataBase)
-        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
+        listPromesse = user.getAllPromisesOfTheDay().toMutableList()
 
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
 
@@ -113,12 +113,12 @@ class MainActivity : AppCompatActivity() {
                     16 -> {
                         message = getString(R.string.promiseDone)
                         promise.state = State.DONE
-                        user.updatePromise(promise, promiseDataBase)
+                        user.updatePromise(promise)
                     }
                     32 -> { // add 1 day to the date to do to postpone it
                         message = getString(R.string.promisePostponed)
                         promise.dateTodo = Date(System.currentTimeMillis() + 86400000)
-                        user.updatePromiseDate(promise, promiseDataBase)
+                        user.updatePromiseDate(promise)
 
                     }
                 }
@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                         // j'enlève le done
                         adapter.restoreItem(promise, position, promiseDataBase)
                         promise.state = State.TODO
-                        user.updatePromise(promise, promiseDataBase)
+                        user.updatePromise(promise)
                     }
                     recyclerView.scrollToPosition(position)
                     adapter.notifyItemRangeChanged(position, listPromesse.size)
@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 //        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
-        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase).toMutableList()
+        listPromesse = user.getAllPromisesOfTheDay().toMutableList()
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun isDone(p : Promise, a : PromiseAdapter) {
-        user.setToDone(p, promiseDataBase)
+        user.setToDone(p)
         a.notifyDataSetChanged()
     }
 
