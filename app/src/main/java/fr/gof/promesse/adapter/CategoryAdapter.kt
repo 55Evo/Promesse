@@ -32,9 +32,6 @@ class CategoryAdapter(var context: Context, var listCategory: List<Category>, va
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.category_item, parent, false)
-
-
-
         return MyViewHolder(itemView)
 
     }
@@ -53,10 +50,8 @@ class CategoryAdapter(var context: Context, var listCategory: List<Category>, va
             holder.categoryView.setImageResource(R.drawable.selected)
             holder.name = (listCategory[position].nom)
             listCategory[position].check = false
+
         }
-
-
-
     }
 
     override fun getItemCount(): Int {
@@ -94,7 +89,24 @@ class CategoryAdapter(var context: Context, var listCategory: List<Category>, va
                 // chosenCategory.background = R.drawable.cuisine
                 // categoryView.setImageResource(R.drawable.cuisine)
                  listener.onItemClick(position, this@CategoryAdapter, database)
+
                  listCategory[position].check = true
+
+                 if (!listCategory[position].check){
+                     categoryView.setImageResource(listCategory[position].image_drawable)
+                     name = (listCategory[position].nom)
+
+
+                 }
+                 else{
+                     for (elem in listCategory){
+                         if(elem.name != listCategory[position].name)
+                         elem.check = false
+                     }
+                     categoryView.setImageResource(R.drawable.selected)
+                     name = (listCategory[position].nom)
+                     //listCategory[position].check = false
+                 }
 
                  this@CategoryAdapter.notifyDataSetChanged()
              }

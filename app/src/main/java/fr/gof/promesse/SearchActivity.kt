@@ -191,11 +191,11 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         super.onResume()
         //listPromesses = utils.user.getAllPromise().toMutableList()
         //adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-//        deleteListener.adapter = adapter
         //recyclerView.adapter = adapter
         listPromesses = user.getAllPromise().toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
 
+        deleteListener.adapter = adapter
 
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()

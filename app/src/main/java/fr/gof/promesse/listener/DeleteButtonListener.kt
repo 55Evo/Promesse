@@ -38,7 +38,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
         while(it2.hasNext()) {
             var p = it2.next()
             if(p.isChecked) {
-                if(p.subtasks != null)
+                if(p.subtasks.size > 0 )
                     hasSubtasks = true
             }
         }

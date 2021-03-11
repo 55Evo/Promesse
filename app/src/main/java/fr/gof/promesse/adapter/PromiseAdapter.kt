@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import fr.gof.promesse.MainActivity
 import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
@@ -98,15 +99,18 @@ class PromiseAdapter(
         else{
             holder.imageViewCategoryGlobal.visibility = View.GONE
         }
-        if(!holder.promise.isDescDeployed) {
-            val zoomout = AnimationUtils.loadAnimation(context, R.anim.zoomout)
+        if (context is MainActivity){
+            if(!holder.promise.isDescDeployed) {
+                val zoomout = AnimationUtils.loadAnimation(context, R.anim.zoomout)
 
-            holder.logo.animation = zoomout
+                holder.logo.animation = zoomout
+            }
+            else if (holder.promise.isDescDeployed){
+                val zoomin = AnimationUtils.loadAnimation(context, R.anim.zoomin)
+                holder.logo.animation = zoomin
+            }
         }
-        else if (holder.promise.isDescDeployed){
-            val zoomin = AnimationUtils.loadAnimation(context, R.anim.zoomin)
-            holder.logo.animation = zoomin
-        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseViewHolder {
