@@ -59,7 +59,7 @@
         android:id="@+id/divider4"
         android:layout_width="match_parent"
         android:layout_height="12dp"
-        android:background="?android:attr/textColorSecondary"
+        android:background="@color/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewMascot" />
