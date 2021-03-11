@@ -92,7 +92,7 @@ class PromiseAdapter(
 
             holder.logo.animation = zoomout
         }
-        else{
+        else if (holder.promise.isDescDeployed){
             val zoomin = AnimationUtils.loadAnimation(context, R.anim.zoomin)
             holder.logo.animation = zoomin
         }
