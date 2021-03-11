@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -36,7 +35,7 @@ import fr.gof.promesse.services.Notifications
  */
 class MainActivity : AppCompatActivity() {
     companion object {
-        var user = User("al", "al", "", Mascot.JACOU)
+        var user = User("a", "a", "", Mascot.JACOU)
     }
 
     lateinit var deleteListener: DeleteButtonListener
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-      dateOfTheDay = Date(System.currentTimeMillis())
+        dateOfTheDay = Date(System.currentTimeMillis())
 
         recyclerView = findViewById(R.id.recyclerViewPromesse)
         recyclerView.setHasFixedSize(true)
@@ -199,6 +198,5 @@ class MainActivity : AppCompatActivity() {
     fun onClickCalendarButton(v: View){
         val intent = Intent(this, CalendarActivity::class.java)
         startActivity(intent)
-        this.finish()
     }
 }
