@@ -71,6 +71,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     private fun uncheckItem(clickedItem: Promise, adapter: PromiseAdapter) {
         if (clickedItem.isChecked) adapter.nbPromisesChecked--
         else adapter.nbPromisesChecked++
+        Log.d("Nbpromessescheck", adapter.nbPromisesChecked.toString())
         clickedItem.isChecked = !clickedItem.isChecked
         if (adapter.nbPromisesChecked == 0) {
             adapter.inSelection = false
@@ -84,7 +85,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
                 addButton.visibility = View.VISIBLE
             }
         }
-        //adapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
     }
 }
 

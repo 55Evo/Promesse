@@ -99,6 +99,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
                 val pos = listPromesses.indexOf(p)
                 user.deletePromise(p)
                 it.remove()
+                adapter.nbPromisesChecked = 0
                 adapter.notifyItemRemoved(pos)
                 adapter.notifyItemRangeChanged(pos, listPromesses.size)
             }
