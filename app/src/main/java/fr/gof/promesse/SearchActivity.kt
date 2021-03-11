@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -83,10 +84,12 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (materialSearchBar.text.length > before) {
                     customSuggestionAdapter.suggestions = user.getAllPromise().toList()
+                        //user.getSearchResultsSorted(materialSearchBar.text, Sort.DATE).toList()
 
                 }
                 materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-                val suggest = mutableListOf<Promise>()
+                var suggest = mutableListOf<Promise>()
+
 
                 for (search in customSuggestionAdapter.suggestions) {
                     if (search.title.toLowerCase().contains(materialSearchBar.text.toLowerCase())) {
@@ -94,11 +97,15 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                     }
                     //customSuggestionAdapter.suggestions = suggest
                     //materialSearchBar.lastSuggestions = suggest
-                    materialSearchBar.setMaxSuggestionCount(suggest.size); // ?????????????? !!!!!!!!!!!!!!!!!!!!!
-                    materialSearchBar.updateLastSuggestions(suggest)
+
 //                        customSuggestionAdapter.suggestions = suggest
 //                        materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
+                     // ?????????????? !!!!!!!!!!!!!!!!!!!!!
+                    materialSearchBar.updateLastSuggestions(suggest)
                 }
+                materialSearchBar.setMaxSuggestionCount(suggest.size);
+                Log.d("_______________________---------------_________________",suggest.size.toString())
+
             }
         })
 
@@ -107,6 +114,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                 if (!enabled) {
                     recyclerView.adapter = adapter
                 }
+                materialSearchBar.clearSuggestions()
             }
 
             override fun onSearchConfirmed(text: CharSequence?) {

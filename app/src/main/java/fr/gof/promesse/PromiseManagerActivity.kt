@@ -104,7 +104,8 @@ class PromiseManagerActivity : AppCompatActivity() {
         val title: EditText = findViewById(R.id.editTextTitle)
         title.setText(promiseNm.title)
         val duration: EditText = findViewById(R.id.editTextDuration)
-        duration.setText(promise?.duration.toString())
+        if (promise?.duration != null)
+            duration.setText(promise?.duration.toString())
         date = promiseNm.dateTodo
         calendar.time = date
         val description: EditText = findViewById(R.id.editTextDescription)

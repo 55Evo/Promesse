@@ -52,7 +52,7 @@ class PromiseAdapter(
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
         holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
-        holder.description.minLines = 2
+        holder.description.minLines = 3
         holder.layoutButtonEdit.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
         holder.layout.setBackgroundResource(if (holder.promise.priority) {
             if (holder.promise.state == State.DONE) R.drawable.layout_border_important_done else R.drawable.layout_border_important

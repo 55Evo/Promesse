@@ -36,7 +36,7 @@ import fr.gof.promesse.services.Notifications
  */
 class MainActivity : AppCompatActivity() {
     companion object {
-        var user = User("a", "a", "", Mascot.JACOU)
+        var user = User("al", "al", "", Mascot.JACOU)
     }
 
     lateinit var deleteListener: DeleteButtonListener
@@ -53,15 +53,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (savedInstanceState == null) {
-            val extras = intent.extras
-            if (extras != null) {
-                dateOfTheDay = extras.getSerializable("dateOfTheDayRequested") as Date
-            }
-        } else {
-            dateOfTheDay = savedInstanceState.getSerializable("dateOfTheDayRequested") as Date
-        }
-        if(dateOfTheDay == null) dateOfTheDay = Date(System.currentTimeMillis())
+      dateOfTheDay = Date(System.currentTimeMillis())
 
         recyclerView = findViewById(R.id.recyclerViewPromesse)
         recyclerView.setHasFixedSize(true)
