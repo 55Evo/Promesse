@@ -17,7 +17,7 @@ import kotlin.collections.HashSet
  * @constructor Create empty User
  */
 data class User(var email: String, var name: String, var password: String, var mascot: Mascot){
-lateinit var listPromise:MutableSet<Promise>
+lateinit var listPromise:MutableList<Promise>
 lateinit var db : PromiseDataBase
     /**
      * Add promise
@@ -28,6 +28,7 @@ lateinit var db : PromiseDataBase
 
     fun addPromise(promise: Promise) {
         promise.id = db.addPromise(email, promise).toInt()
+        Log.d("----------------------id---------------",promise.id.toString())
         listAddPromise(promise)
 
     }
@@ -46,7 +47,7 @@ lateinit var db : PromiseDataBase
 
     fun loadPromises(db: PromiseDataBase){
         this.db = db
-        listPromise = db.getAllPromises(email).toMutableSet()
+        listPromise = db.getAllPromises(email).toMutableList()
     }
     /**
      * Get all promise
@@ -54,7 +55,7 @@ lateinit var db : PromiseDataBase
      * @param db
      * @return
      */
-    fun getAllPromise() : Set<Promise>{
+    fun getAllPromise() : MutableList<Promise>{
         return listPromise
     }
 
