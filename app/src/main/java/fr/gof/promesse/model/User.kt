@@ -246,4 +246,8 @@ lateinit var db : PromiseDataBase
         listAddPromise(promise)
 
     }
+
+    fun updateDoneSubtask(clickedItem: Subtask, done: Boolean) {
+        db.updateSubtask(clickedItem.id, clickedItem.done)
+    }
 }

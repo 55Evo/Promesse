@@ -49,4 +49,6 @@
     <string name="calendar_legend_img_1">Image color of a blue day</string>
     <string name="calendar_legend_img_2">Image color of a green day</string>
     <string name="calendar_legend_img_3">Image color of an orange day</string>
+    <string name="subtaskName">Nom de la sous-tâche</string>
+    <string name="subtaskTitle">Sous-tâches</string>
 </resources>

@@ -25,128 +25,173 @@
                 android:layout_height="200dp"
                 app:srcCompat="@drawable/defaut_background" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_Category"
-                android:layout_width='match_parent'
-                android:layout_height="100dp"
-                android:layout_margin="10dp"
-                android:orientation="horizontal" />
-
-            <TextView
-                android:id="@+id/textViewTitle"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/textViewTitle"
-                android:textColor="@color/black" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp">
 
-            <EditText
-                android:id="@+id/editTextTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/editTextTitleHint"
-                android:inputType="textPersonName" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_Category"
+                    android:layout_width='match_parent'
+                    android:layout_height="100dp"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                </androidx.recyclerview.widget.RecyclerView>
 
-            <TextView
-                android:id="@+id/textViewDuration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/textViewDuration"
-                android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/textViewTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/textViewTitle"
+                    android:textColor="@color/black" />
 
-            <EditText
-                android:id="@+id/editTextDuration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/editTextDurationHint"
-                android:inputType="number" />
+                <EditText
+                    android:id="@+id/editTextTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/editTextTitleHint"
+                    android:inputType="textPersonName" />
 
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="?android:attr/listDivider" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
 
-            <TextView
-                android:id="@+id/textViewDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/textViewDate"
-                android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/textViewDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/textViewDuration"
+                    android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/textViewDatePicker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="onClickDate"
-                android:text="TextView"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                <EditText
+                    android:id="@+id/editTextDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/editTextDurationHint"
+                    android:inputType="number" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="?android:attr/listDivider" />
 
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="?android:attr/listDivider" />
+                <TextView
+                    android:id="@+id/textViewDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/textViewDate"
+                    android:textColor="@color/black" />
 
-            <Switch
-                android:id="@+id/switchPriority"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/textViewPriority"
-                android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/textViewDatePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickDate"
+                    android:text="TextView"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
 
-            <Switch
-                android:id="@+id/switchProfessional"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/textViewProfessionnal"
-                android:textSize="18sp" />
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="?android:attr/listDivider" />
 
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="?android:attr/listDivider" />
+                <Switch
+                    android:id="@+id/switchPriority"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/textViewPriority"
+                    android:textSize="18sp" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
 
-            <TextView
-                android:id="@+id/textViewDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/textViewDescription"
-                android:textColor="@color/black" />
+                <Switch
+                    android:id="@+id/switchProfessional"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/textViewProfessionnal"
+                    android:textSize="18sp" />
 
-            <EditText
-                android:id="@+id/editTextDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="start|top"
-                android:hint="@string/editTextDescriptionHint"
-                android:inputType="textMultiLine" />
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewSubtask"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/subtaskTitle"
+                        android:textColor="@color/black" />
+
+                    <ImageButton
+                        android:id="@+id/buttonAddSubtask"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:onClick="onClickButtonAddSubtask"
+                        app:srcCompat="@android:drawable/ic_input_add" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_subtask"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <View
+                    android:id="@+id/divider6"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <TextView
+                    android:id="@+id/textViewDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/textViewDescription"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/editTextDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:hint="@string/editTextDescriptionHint"
+                    android:inputType="textMultiLine" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

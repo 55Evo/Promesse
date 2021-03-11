@@ -110,15 +110,15 @@ class PromiseDataBase (context : Context){
         promiseToValues(values, email, promise)
         val id = dbwritable.insert("Promise", null, values)
         //Ajout des sous-tâches
-        if(promise.subtasks != null) {
-            for (sub in promise.subtasks!!) {
-                val subvalues = ContentValues()
-                subvalues.put("Id_Promise", id)
-                subvalues.put("Title", sub.title)
-                subvalues.put("Done", sub.done)
-                dbwritable.insert("Subtask", null, subvalues)
-            }
+
+        for (sub in promise.subtasks) {
+            val subvalues = ContentValues()
+            subvalues.put("Id_Promise", id)
+            subvalues.put("Title", sub.title)
+            subvalues.put("Done", sub.done)
+            dbwritable.insert("Subtask", null, subvalues)
         }
+
         //Fermeture
         dbwritable.close()
         return id
@@ -179,7 +179,21 @@ class PromiseDataBase (context : Context){
                     curs2.close()
                 }
                 Log.d("----------------------------------------" , category)
-                promiseList.add(Promise(id, title,Category.valueOf(category.toUpperCase()),duration,state,priority,description,professional,dateCreation,dateTodo, if (subtasks.isNotEmpty()) subtasks else null))
+                promiseList.add(
+                        Promise(
+                                id,
+                                title,
+                                Category.valueOf(category.toUpperCase()),
+                                duration,
+                                state,
+                                priority,
+                                description,
+                                professional,
+                                dateCreation,
+                                dateTodo,
+                                subtasks
+                        )
+                )
 
             }
         } finally {
@@ -274,8 +288,17 @@ class PromiseDataBase (context : Context){
         values.put("Description", promise.description)
 
         dbwritable.update("Promise", values,"Email = '$email' AND Id_Promise = '${promise.id}'", null)
-        dbwritable.close()
 
+        dbwritable.delete("Subtask", "Id_Promise = '${promise.id}'", null)
+
+        for (sub in promise.subtasks) {
+            val subvalues = ContentValues()
+            subvalues.put("Id_Promise", promise.id)
+            subvalues.put("Title", sub.title)
+            subvalues.put("Done", sub.done)
+            dbwritable.insert("Subtask", null, subvalues)
+        }
+        dbwritable.close()
     }
 
     fun emailExist(email : String): Boolean {
@@ -362,5 +385,13 @@ class PromiseDataBase (context : Context){
                         "AND Email = ?",
                 select, null, null, null)
         return getPromise(curs, dbreadable)
+    }
+
+    fun updateSubtask(id: Int, done: Boolean) {
+        val dbwritable : SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Done", done)
+        dbwritable.update("Subtask", values,"Id_Subtask = '$id'", null)
+        dbwritable.close()
     }
 }

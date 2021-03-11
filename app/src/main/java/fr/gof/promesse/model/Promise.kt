@@ -32,7 +32,7 @@ data class Promise(
     var professional: Boolean,
     var dateCreation: Date,
     var dateTodo: Date,
-    var subtasks: MutableList<Subtask>?,
+    var subtasks: MutableList<Subtask>,
     var isChecked: Boolean = false,
     var isDescDeployed: Boolean = false
 ) : Serializable, Comparable<Promise> {
@@ -88,6 +88,16 @@ data class Promise(
 
     override fun hashCode(): Int {
         return id
+    }
+
+    fun getNbStDone(): Int {
+        var nbDone = 0
+        for (st: Subtask in this.subtasks) {
+            if (st.done) {
+                nbDone ++
+            }
+        }
+        return nbDone
     }
 
 

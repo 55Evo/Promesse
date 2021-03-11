@@ -16,12 +16,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.CategoryAdapter
+import fr.gof.promesse.adapter.SubtaskEditorAdapter
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.CategoryListener
+import fr.gof.promesse.listener.SubtaskListener
 import fr.gof.promesse.model.Category
 import fr.gof.promesse.model.Promise
 
 import fr.gof.promesse.model.State
+import fr.gof.promesse.model.Subtask
 import java.text.DateFormat
 import java.util.*
 
@@ -42,11 +45,13 @@ class PromiseManagerActivity : AppCompatActivity() {
             Category.DEFAUT
 
     )
-    lateinit var adapter : CategoryAdapter
+    lateinit var adapterCategory : CategoryAdapter
+    lateinit var adapterSubtask : SubtaskEditorAdapter
     lateinit var rvCategory:  RecyclerView
+    lateinit var rvSubtask:  RecyclerView
     lateinit var backgroundImage : ImageView
     var choosenCategory: Category = Category.DEFAUT
-
+    lateinit var subtasks : MutableList<Subtask>
 
 
     val promiseDataBase = PromiseDataBase(this@PromiseManagerActivity)
@@ -66,8 +71,10 @@ class PromiseManagerActivity : AppCompatActivity() {
         setContentView(R.layout.promise_manager_activity)
 
         backgroundImage = findViewById(R.id.backgroundImage)
-        rvCategory= findViewById(R.id.recycler_Category)
+        rvCategory = findViewById(R.id.recycler_Category)
         rvCategory.setHasFixedSize(true)
+        rvSubtask = findViewById(R.id.recycler_subtask)
+        rvSubtask.setHasFixedSize(true)
 
 
 
@@ -85,14 +92,17 @@ class PromiseManagerActivity : AppCompatActivity() {
         } else {
             titleBar.setText(R.string.titleCreatePromise)
             textViewDate.text = getDateToString(Date(System.currentTimeMillis()))
+            subtasks = mutableListOf()
         }
 
-
-
-        adapter = CategoryAdapter(this, listCatgerie,CategoryListener(listCatgerie, this) , promiseDataBase, backgroundImage)
-        rvCategory.adapter = adapter
-        adapter.chooenCategory = choosenCategory
+        adapterCategory = CategoryAdapter(this, listCatgerie,CategoryListener(listCatgerie, this) , promiseDataBase, backgroundImage)
+        rvCategory.adapter = adapterCategory
+        adapterCategory.chooenCategory = choosenCategory
         rvCategory.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+
+        adapterSubtask = SubtaskEditorAdapter(subtasks, SubtaskListener(subtasks, this), this)
+        rvSubtask.adapter = adapterSubtask
+        rvSubtask.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
 
     }
 
@@ -115,6 +125,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         val professional: Switch = findViewById(R.id.switchProfessional)
         professional.isChecked = promiseNm.professional
         textViewDate.text = promiseNm.getDateToDoToString()
+        subtasks = promiseNm.subtasks
     }
 
     /**
@@ -167,7 +178,7 @@ class PromiseManagerActivity : AppCompatActivity() {
      */
     fun onClickButtonValidate (v : View) {
         //Recuperation des éléments
-        choosenCategory = adapter.chooenCategory
+        choosenCategory = adapterCategory.chooenCategory
         val editTextTitle : TextView = findViewById(R.id.editTextTitle)
         val editTextDuration : TextView = findViewById(R.id.editTextDuration)
         val switchPriority : Switch = findViewById(R.id.switchPriority)
@@ -192,10 +203,16 @@ class PromiseManagerActivity : AppCompatActivity() {
                 editTextDescription
             )
         } else { //creation nouvelle promesse
+            subtasks = mutableListOf()
+            for (st : Subtask in adapterSubtask.subtaskList) {
+                if (st.title != "") {
+                    subtasks.add(st)
+                }
+            }
             val promise = Promise(
                     -1,
                     editTextTitle.text.toString(),
-                    adapter.chooenCategory,
+                    adapterCategory.chooenCategory,
                     if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString().toInt(),
                     State.TODO,
                     switchPriority.isChecked,
@@ -203,7 +220,7 @@ class PromiseManagerActivity : AppCompatActivity() {
                     switchProfessional.isChecked,
                     Date(System.currentTimeMillis()),
                     calendar.time,
-                    null
+                    subtasks
             )
 
 
@@ -222,7 +239,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         editTextDescription: TextView
     ) {
         promiseNm.title = editTextTitle.text.toString()
-        promiseNm.category = adapter.chooenCategory
+        promiseNm.category = adapterCategory.chooenCategory
         promiseNm.duration =
             if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString()
                 .toInt()
@@ -230,6 +247,13 @@ class PromiseManagerActivity : AppCompatActivity() {
         promiseNm.professional = switchProfessional.isChecked
         promiseNm.dateTodo = calendar.time
         promiseNm.description = editTextDescription.text.toString()
+        subtasks = mutableListOf()
+        for (st : Subtask in adapterSubtask.subtaskList) {
+            if (st.title != "") {
+                subtasks.add(st)
+            }
+        }
+        promiseNm.subtasks = subtasks
         user.updatePromise(promiseNm)
 
     }
@@ -242,4 +266,14 @@ class PromiseManagerActivity : AppCompatActivity() {
     fun onClickButtonCancel (v : View) {
         finish()
     }
+
+    fun onClickButtonAddSubtask (v : View) {
+        var position = subtasks.size
+        subtasks.add(Subtask(-1, "", false))
+        adapterSubtask.subtaskList = subtasks
+        adapterSubtask.notifyDataSetChanged()
+
+    }
+
+
 }
