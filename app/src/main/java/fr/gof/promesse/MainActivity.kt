@@ -28,6 +28,7 @@ import fr.gof.promesse.model.User
 import java.util.*
 
 import fr.gof.promesse.services.Notifications
+import java.text.SimpleDateFormat
 
 /**
  * Main activity
@@ -69,6 +70,11 @@ class MainActivity : AppCompatActivity() {
         adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this, false)
 
         val del = findViewById<FloatingActionButton>(R.id.deleteButton)
+        var date = findViewById<TextView>(R.id.dateDayView)
+        val formatter = SimpleDateFormat("YYYY dd MM ")
+        val dateDay = formatter.format(Date())
+        date.text = dateDay
+
         recyclerView.adapter = adapter
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
         del.setOnClickListener(deleteListener)

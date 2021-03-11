@@ -97,4 +97,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/calendar_icon" />
 
+    <TextView
+        android:id="@+id/dateDayView"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:fontFamily="@font/amita"
+        android:text="TextView"
+        android:textColor="#FFFCFC"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="@+id/searchButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

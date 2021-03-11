@@ -46,14 +46,7 @@ class PromiseManagerActivity : AppCompatActivity() {
     lateinit var rvCategory:  RecyclerView
     lateinit var backgroundImage : ImageView
     var choosenCategory: Category = Category.DEFAUT
-
-
-
     val promiseDataBase = PromiseDataBase(this@PromiseManagerActivity)
-
-
-
-
     lateinit var textViewDate : TextView
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
     var promise : Promise?= null
@@ -89,10 +82,29 @@ class PromiseManagerActivity : AppCompatActivity() {
 
 
 
-        adapter = CategoryAdapter(this, listCatgerie,CategoryListener(listCatgerie, this) , promiseDataBase, backgroundImage)
+        if (promiseNm != null)
+            backgroundImage.setImageResource(promiseNm.category.background)
+
+        if (promiseNm != null) {
+            adapter = CategoryAdapter(this, listCatgerie,CategoryListener(listCatgerie, this) , promiseDataBase, backgroundImage, promiseNm.category)
+        }
+        else{
+            adapter = CategoryAdapter(this, listCatgerie,CategoryListener(listCatgerie, this) , promiseDataBase, backgroundImage, Category.DEFAUT)
+        }
+            adapter.chosenCategory = choosenCategory
         rvCategory.adapter = adapter
-        adapter.chooenCategory = choosenCategory
-        rvCategory.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+            rvCategory.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+
+        if (promiseNm != null) {
+            adapter.listCategory[adapter.listCategory.lastIndexOf(promiseNm.category)].check = true
+        }
+        else{
+            adapter.listCategory[adapter.listCategory.lastIndexOf(Category.DEFAUT)].check = true
+        }
+//        adapter.listCategory[adapter.listCategory.indexOf(adapter.chosenCategory)].background = R.drawable.cuisine
+//        adapter.notifyDataSetChanged()
+
+
 
     }
 
@@ -167,7 +179,7 @@ class PromiseManagerActivity : AppCompatActivity() {
      */
     fun onClickButtonValidate (v : View) {
         //Recuperation des éléments
-        choosenCategory = adapter.chooenCategory
+        choosenCategory = adapter.chosenCategory
         val editTextTitle : TextView = findViewById(R.id.editTextTitle)
         val editTextDuration : TextView = findViewById(R.id.editTextDuration)
         val switchPriority : Switch = findViewById(R.id.switchPriority)
@@ -182,6 +194,7 @@ class PromiseManagerActivity : AppCompatActivity() {
 
 
         val promiseNm = promise
+
         if (promiseNm != null) {
             updatePromise(
                 promiseNm,
@@ -195,7 +208,7 @@ class PromiseManagerActivity : AppCompatActivity() {
             val promise = Promise(
                     -1,
                     editTextTitle.text.toString(),
-                    adapter.chooenCategory,
+                    adapter.chosenCategory,
                     if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString().toInt(),
                     State.TODO,
                     switchPriority.isChecked,
@@ -222,7 +235,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         editTextDescription: TextView
     ) {
         promiseNm.title = editTextTitle.text.toString()
-        promiseNm.category = adapter.chooenCategory
+        promiseNm.category = adapter.chosenCategory
         promiseNm.duration =
             if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString()
                 .toInt()

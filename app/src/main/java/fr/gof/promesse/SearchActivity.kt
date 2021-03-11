@@ -78,32 +78,42 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
         materialSearchBar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                //materialSearchBar.clearSuggestions()
+                //materialSearchBar.hideSuggestionsList()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (materialSearchBar.text.length > before) {
-                    customSuggestionAdapter.suggestions = user.getAllPromise().toList()
-                        //user.getSearchResultsSorted(materialSearchBar.text, Sort.DATE).toList()
+                    materialSearchBar.lastSuggestions = user.getAllPromise().toList()
+                    //materialSearchBar.lastSuggestions = user.getSearchResultsSorted(materialSearchBar.text.toLowerCase(), Sort.DATE).toList()
 
                 }
                 materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
                 var suggest = mutableListOf<Promise>()
-
+               // materialSearchBar.setMaxSuggestionCount(0);
+               // materialSearchBar.updateLastSuggestions(suggest)
 
                 for (search in customSuggestionAdapter.suggestions) {
                     if (search.title.toLowerCase().contains(materialSearchBar.text.toLowerCase())) {
                         suggest.add(search)
                     }
-                    //customSuggestionAdapter.suggestions = suggest
+                    customSuggestionAdapter.suggestions = suggest
                     //materialSearchBar.lastSuggestions = suggest
 
 //                        customSuggestionAdapter.suggestions = suggest
-//                        materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-                     // ?????????????? !!!!!!!!!!!!!!!!!!!!!
-                    materialSearchBar.updateLastSuggestions(suggest)
+
                 }
-                materialSearchBar.setMaxSuggestionCount(suggest.size);
+                materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
+                // ?????????????? !!!!!!!!!!!!!!!!!!!!!
+                //materialSearchBar.setMaxSuggestionCount(suggest.size);
+                materialSearchBar.updateLastSuggestions(suggest)
+
+//                if (suggest.size == 0) {
+//                    materialSearchBar.clearSuggestions()
+////                    materialSearchBar.hideSuggestionsList()
+//                }
+
                 Log.d("_______________________---------------_________________",suggest.size.toString())
 
             }
@@ -119,6 +129,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
             override fun onSearchConfirmed(text: CharSequence?) {
                 startResearch(text.toString())
+                materialSearchBar.clearSuggestions()
             }
             override fun onButtonClicked(buttonCode: Int) {
             }
