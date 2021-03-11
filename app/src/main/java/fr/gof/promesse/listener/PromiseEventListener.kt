@@ -3,8 +3,10 @@ package fr.gof.promesse.listener
 import android.app.Activity
 import android.content.Intent
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.MainActivity
@@ -27,7 +29,6 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
 
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
         //adapter.notifyItemChanged(position)
-        adapter.notifyDataSetChanged()
 
 
     }
@@ -52,6 +53,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
 
     override fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter) {
         val clickedItem = listPromesses[position]
+        Log.d("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",clickedItem.id.toString() + "  " +clickedItem.dateCreation.toString()+"  "+clickedItem.category.toString())
         val intent = Intent(context, PromiseManagerActivity::class.java)
         intent.putExtra("Promise", clickedItem)
         context.startActivity(intent)
@@ -69,13 +71,16 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
         if (adapter.nbPromisesChecked == 0) {
             adapter.inSelection = false
             val deleteButton: FloatingActionButton = context.findViewById(R.id.deleteButton)
+
             deleteButton.visibility = View.GONE
+
+
             if (context is MainActivity) {
                 val addButton: FloatingActionButton = context.findViewById(R.id.buttonAdd)
                 addButton.visibility = View.VISIBLE
             }
         }
-        adapter.notifyDataSetChanged()
+        //adapter.notifyDataSetChanged()
     }
 }
 

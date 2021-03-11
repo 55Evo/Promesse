@@ -21,20 +21,21 @@ import java.util.*
  * @property isDescDeployed
  * @constructor Create empty Promise
  */
-data class Promise (
-    var id : Int,
-    var title : String,
+data class Promise(
+    var id: Int,
+    var title: String,
     var category: Category,
-    var duration : Int?,
-    var state : State,
-    var priority : Boolean,
-    var description : String,
-    var professional : Boolean,
-    var dateCreation : Date,
-    var dateTodo : Date,
-    var subtasks : MutableList<Subtask>?,
-    var isChecked : Boolean = false,
-    var isDescDeployed : Boolean = false) : Serializable, Comparable<Promise> {
+    var duration: Int?,
+    var state: State,
+    var priority: Boolean,
+    var description: String,
+    var professional: Boolean,
+    var dateCreation: Date,
+    var dateTodo: Date,
+    var subtasks: MutableList<Subtask>?,
+    var isChecked: Boolean = false,
+    var isDescDeployed: Boolean = false
+) : Serializable, Comparable<Promise> {
 
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
 
@@ -72,7 +73,14 @@ data class Promise (
      * Get date creation to string
      *
      */
-    fun getDateCreationToString() = dfl.format(dateCreation)
+    fun getDateToString()
+//    {
+//        val cal = Calendar.getInstance()
+//        cal.time = dateTodo
+//        val day = cal[Calendar.DAT]
+//        return
+    //}
+    = dfl.format(dateTodo)
 
     override fun compareTo(other: Promise): Int {
         return if (this.id==other.id) return 1 else return -1

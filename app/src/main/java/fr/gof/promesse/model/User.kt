@@ -4,6 +4,7 @@ import android.util.Log
 import fr.gof.promesse.database.PromiseDataBase
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 /**
@@ -26,7 +27,6 @@ lateinit var db : PromiseDataBase
      */
 
     fun addPromise(promise: Promise) {
-
         promise.id = db.addPromise(email, promise).toInt()
         listAddPromise(promise)
 
@@ -34,12 +34,14 @@ lateinit var db : PromiseDataBase
 
 
     private fun listAddPromise(promise: Promise) {
-        removePromise(promise)
+        var res = removePromise(promise)
+        Log.d("----------------ici-------------------------------------",res.toString())
+
         listPromise.add(promise)
     }
 
-    private fun removePromise(promise: Promise) {
-        listPromise.remove(promise)
+    private fun removePromise(promise: Promise) : Boolean{
+        return listPromise.remove(promise)
     }
 
     fun loadPromises(db: PromiseDataBase){
@@ -73,10 +75,30 @@ lateinit var db : PromiseDataBase
             }
             }
         }
-
-
         return res
     }
+
+    fun getAllPromisesOfTheDayCategory() : MutableList<Promise>{
+        var lP = this.getAllPromisesOfTheDay()
+        var res = mutableListOf<Promise>()
+        var hashMap = HashMap<Category,MutableList<Promise>>()
+        for (promise in lP){
+            var liste = mutableListOf<Promise>()
+            if (hashMap[promise.category] !=null){
+                liste = hashMap[promise.category]!!
+            }
+            liste.add(promise)
+
+            hashMap[promise.category] = liste
+        }
+        for (key in hashMap){
+            for (e in key.value){
+                res.add(e)
+            }
+        }
+        return res
+    }
+
     fun getAllPromisesOfTheMonth(email: String, date: Date): Set<Promise>{
         return db.getAllPromisesOfTheMonth(email,date)
     }

@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         user.loadPromises( promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay().toMutableList()
 
-        adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
+        adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this, false)
 
         val del = findViewById<FloatingActionButton>(R.id.deleteButton)
         recyclerView.adapter = adapter
@@ -157,8 +157,9 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 //        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
+        //user.loadPromises( promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay().toMutableList()
-        adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this)
+        adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this, false)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()

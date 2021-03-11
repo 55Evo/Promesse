@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="right"
     android:layout_margin="5dp"
     android:background="@android:color/transparent"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="20dp"
     app:cardElevation="0dp">
+    _
 
     <LinearLayout
         android:id="@+id/linearlayoutitem"
@@ -16,7 +19,16 @@
         android:background="@drawable/layout_border"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/imageViewCategoryGlobal"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:rotation="0"
+            android:src="@drawable/ic_baseline_assignment_24" />
+
         <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -25,8 +37,8 @@
 
             <ImageView
                 android:id="@+id/logo"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:src="@drawable/ic_baseline_assignment_24" />_
 
             <LinearLayout
@@ -34,7 +46,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
 
-                android:orientation="vertical">
+                android:background="@android:color/transparent"
+                android:orientation="vertical"
+                android:paddingLeft="20dp">
 
 
                 <LinearLayout
@@ -48,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_marginLeft="10dp"
+                    android:fontFamily="More Fonts..."
                     android:text="Promesse 1"
                     android:textAllCaps="true"
                     android:textSize="18sp"
@@ -80,31 +95,27 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutButtonEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="147dp"
+            android:layout_height="54dp"
+            android:layout_gravity="right"
             android:layout_weight="0"
-            android:background="@android:color/transparent"
-            android:orientation="horizontal">
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent" />
+            android:background="@android:color/transparent">
 
             <Button
                 android:id="@+id/buttonEdit"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
+                android:layout_height="match_parent"
                 android:text="Modifier"
                 android:textColor="?android:attr/textColorSecondary"
                 app:icon="@android:drawable/ic_menu_edit"
-                app:iconTint="?android:attr/textColorSecondary" />
-        </LinearLayout>
+                app:iconTint="?android:attr/textColorSecondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 
