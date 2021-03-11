@@ -51,6 +51,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         monthDisplay = findViewById(R.id.monthTextView)
         promisesOfTheSelectedDay = user.getPromisesOfTheDay(Date(System.currentTimeMillis())).toMutableList()
         customCalendar = findViewById(R.id.custom_calendar)
+        customCalendar.background = getResources().getDrawable(R.drawable.calendar_background)
         recyclerView = findViewById(R.id.recyclerViewPromises)
         initProperty()
         customCalendar.setMapDescToProp(descHashMap)
@@ -189,7 +190,8 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      * @param dateHashMap
      */
     private fun autoSelectionWhenMonthChanged(month: Calendar, selectedDay: Int, occurencePromises: IntArray, dateHashMap: MutableMap<Int, Any>) {
-        if (month.get(Calendar.MONTH) == today.get(Calendar.MONTH) && selectedDay == 0) {
+        if (month.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
+                selectedDay == 0 && month.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
             promisesOfTheSelectedDay = user.getPromisesOfTheDay(today.time).toMutableList()
             when (occurencePromises[today.get(Calendar.DAY_OF_MONTH)]) {
                 0 -> dateHashMap[today.get(Calendar.DAY_OF_MONTH)] = "default_selected"
@@ -198,7 +200,9 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
                 else -> dateHashMap[today.get(Calendar.DAY_OF_MONTH)] = "third_selected"
             }
         }
-        if (month.get(Calendar.MONTH) != today.get(Calendar.MONTH) && selectedDay == 0) {
+        if (month.get(Calendar.MONTH) != today.get(Calendar.MONTH) && selectedDay == 0 ||
+                month.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
+                selectedDay == 0 && month.get(Calendar.YEAR) != today.get(Calendar.YEAR)) {
             var cld = Calendar.getInstance()
             cld.set(Calendar.YEAR, month.get(Calendar.YEAR))
             cld.set(Calendar.MONTH, month.get(Calendar.MONTH))

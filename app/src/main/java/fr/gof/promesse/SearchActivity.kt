@@ -59,9 +59,10 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         listPromesses = user.getAllPromise().toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
-        deleteListener.adapter = adapter
+        deleteButton.setOnClickListener(deleteListener)
+        //deleteListener.adapter = adapter
         recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
+        //adapter.notifyDataSetChanged()
 
 
         val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -137,10 +138,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
        // listPromesses = utils.user.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
         listPromesses = user.getAllPromise().toMutableList()
-
-        deleteButton.setOnClickListener(deleteListener)
-
-
         this.recyclerView.adapter = adapter
     }
 
@@ -189,18 +186,11 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
     override fun onResume() {
         super.onResume()
-        //listPromesses = utils.user.getAllPromise().toMutableList()
-        //adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-        //recyclerView.adapter = adapter
         listPromesses = user.getAllPromise().toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-
         deleteListener.adapter = adapter
-
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
-//        customSuggestionAdapter.suggestions = listPromesses
-//        materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
         materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
     }
 
