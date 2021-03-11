@@ -19,5 +19,6 @@
     <color name="dark_red">#F22B00</color>
     <color name="light_green">#ACEC48</color>
     <color name="light_grey">#AAAAAA</color>
+    <color name="divider">#89000000</color>
 
 </resources>
