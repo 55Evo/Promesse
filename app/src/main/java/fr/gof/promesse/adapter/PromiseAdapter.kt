@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
@@ -53,7 +54,17 @@ class PromiseAdapter(
         holder.checkBox.isVisible = inSelection
         holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
         holder.description.minLines = 3
-        holder.layoutButtonEdit.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+        val deployed = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+        holder.layoutButtonEdit.visibility = deployed
+        holder.progressBar.max = holder.promise.subtasks.size
+        holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
+        holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise.subtasks, context, listener, this)
+        //btaskAdapter(holder.promise.subtasks, context, listener)
+        holder.rvSubtasks.setHasFixedSize(true)
+        holder.rvSubtasks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        holder.progressBar.visibility = deployed
+
+        holder.rvSubtasks.visibility = deployed
         holder.layout.setBackgroundResource(if (holder.promise.priority) {
             if (holder.promise.state == State.DONE) R.drawable.layout_border_important_done else R.drawable.layout_border_important
         } else {
@@ -149,6 +160,8 @@ class PromiseAdapter(
         var layout : LinearLayout = view.findViewById(R.id.linearlayoutitem)
         var layoutButtonEdit : ConstraintLayout = view.findViewById(R.id.layoutButtonEdit)
         var buttonEdit : Button = view.findViewById(R.id.buttonEdit)
+        var progressBar : ProgressBar = view.findViewById(R.id.progressBar)
+        var rvSubtasks : RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
 
         init {
             view.setOnClickListener(this)
@@ -158,32 +171,29 @@ class PromiseAdapter(
         }
 
         override fun onClick(v: View?) {
-            if (v!=null){
+            if (v!=null) {
                 val position = adapterPosition
-            if(v is CheckBox){
-                if (position != RecyclerView.NO_POSITION) {
-                    listener.onItemCheckedChanged(position, this@PromiseAdapter)
-                    this@PromiseAdapter.notifyDataSetChanged()
-                }
-            } else {
-                if (position != RecyclerView.NO_POSITION) {
-                    if (v is Button) {
-                        listener.onItemButtonEditClick(position, this@PromiseAdapter)
-                    } else {
-                      listener.onItemClick(position, this@PromiseAdapter)
-                        Log.d("____________________<--------->_______________",
-                            promise.isDescDeployed.toString())
-                        description.visibility = if (!promise.isDescDeployed) View.VISIBLE else View.GONE
-
-
-                        //promise.isDescDeployed = !promise.isDescDeployed
-
-
-
+                if(v is CheckBox) {
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemCheckedChanged(position, this@PromiseAdapter)
+                        this@PromiseAdapter.notifyDataSetChanged()
                     }
+                } else {
+                    if (position != RecyclerView.NO_POSITION) {
+                        if (v is Button) {
+                            listener.onItemButtonEditClick(position, this@PromiseAdapter)
+                        } else {
+                          listener.onItemClick(position, this@PromiseAdapter)
+                            Log.d("____________________<--------->_______________",
+                                promise.isDescDeployed.toString())
+                            description.visibility = if (!promise.isDescDeployed) View.VISIBLE else View.GONE
+
+
+                            //promise.isDescDeployed = !promise.isDescDeployed
+
+                        }
                     }
                 }
-
                 this@PromiseAdapter.notifyItemChanged(position)
             }
         }
@@ -232,6 +242,7 @@ class PromiseAdapter(
          */
         fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter)
         fun onItemCheckedChanged(position: Int, promiseAdapter: PromiseAdapter)
+        fun onCheckSubtaskChanged(position: Int, subtaskAdapter: SubtaskAdapter, promiseAdapter: PromiseAdapter)
     }
 
 

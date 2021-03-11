@@ -2,14 +2,13 @@ package fr.gof.promesse.listener
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import fr.gof.promesse.adapter.SubtaskAdapter
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.MainActivity
+import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.PromiseManagerActivity
 import fr.gof.promesse.R
 import fr.gof.promesse.model.Promise
@@ -71,6 +70,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     private fun uncheckItem(clickedItem: Promise, adapter: PromiseAdapter) {
         if (clickedItem.isChecked) adapter.nbPromisesChecked--
         else adapter.nbPromisesChecked++
+        Log.d("Nbpromessescheck", adapter.nbPromisesChecked.toString())
         clickedItem.isChecked = !clickedItem.isChecked
         if (adapter.nbPromisesChecked == 0) {
             adapter.inSelection = false
@@ -84,7 +84,18 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
                 addButton.visibility = View.VISIBLE
             }
         }
-        //adapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun onCheckSubtaskChanged(
+        position: Int,
+        subtaskAdapter: SubtaskAdapter,
+        promiseAdapter: PromiseAdapter
+    ) {
+        var clickedItem = subtaskAdapter.subtaskList[position]
+        clickedItem.done = !clickedItem.done
+        user.updateDoneSubtask(clickedItem, clickedItem.done)
+        promiseAdapter.notifyDataSetChanged()
     }
 }
 
