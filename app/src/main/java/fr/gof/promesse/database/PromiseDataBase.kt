@@ -342,7 +342,7 @@ class PromiseDataBase (context : Context){
         //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
         //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
         val curs: Cursor = dbreadable.query("Promise", col,
-            "strftime('%m', Date_Todo) = strftime('%m', DATE('$dateToDo')) AND State <> 'DONE' \n" +
+            "strftime('%Y %m', Date_Todo) = strftime('%Y %m', DATE('$dateToDo')) AND State <> 'DONE' \n" +
                     "AND Email = ?",
             select, null, null, null)
         return getPromise(curs, dbreadable)

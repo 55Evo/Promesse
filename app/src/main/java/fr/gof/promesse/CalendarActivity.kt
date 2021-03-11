@@ -45,71 +45,41 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
         setContentView(R.layout.calendar_activity)
         setDaysInFrench()
-
         monthDisplay = findViewById(R.id.monthTextView)
-
         promisesOfTheSelectedDay = user.getPromisesOfTheDay(Date(System.currentTimeMillis())).toMutableList()
         customCalendar = findViewById(R.id.custom_calendar)
         recyclerView = findViewById(R.id.recyclerViewPromises)
-
-        var defaultProperty = Property()
-        defaultProperty.layoutResource = R.layout.default_view
-        defaultProperty.dateTextViewResource = R.id.text_view
-        descHashMap["default"] = defaultProperty
-
-        var firstProperty = Property()
-        firstProperty.layoutResource = R.layout.first_level_view
-        firstProperty.dateTextViewResource = R.id.text_view
-        descHashMap["first"] = firstProperty
-
-        var secondProperty = Property()
-        secondProperty.layoutResource = R.layout.second_level_view
-        secondProperty.dateTextViewResource = R.id.text_view
-        descHashMap["second"] = secondProperty
-
-        var thirdProprety = Property()
-        thirdProprety.layoutResource = R.layout.third_level_view
-        thirdProprety.dateTextViewResource = R.id.text_view
-        descHashMap["third"] = thirdProprety
-
-        var defaultSelectedProprety = Property()
-        defaultSelectedProprety.layoutResource = R.layout.default_selected_view
-        defaultSelectedProprety.dateTextViewResource = R.id.text_view
-        descHashMap["default_selected"] = defaultSelectedProprety
-
-        var firstSelectedProprety = Property()
-        firstSelectedProprety.layoutResource = R.layout.first_selected_view
-        firstSelectedProprety.dateTextViewResource = R.id.text_view
-        descHashMap["first_selected"] = firstSelectedProprety
-
-        var secondSelectedProprety = Property()
-        secondSelectedProprety.layoutResource = R.layout.second_selected_view
-        secondSelectedProprety.dateTextViewResource = R.id.text_view
-        descHashMap["second_selected"] = secondSelectedProprety
-
-        var thirdSelectedProprety = Property()
-        thirdSelectedProprety.layoutResource = R.layout.third_selected_view
-        thirdSelectedProprety.dateTextViewResource = R.id.text_view
-        descHashMap["third_selected"] = thirdSelectedProprety
-
+        initProperty()
         customCalendar.setMapDescToProp(descHashMap)
-
         updateCalendarWithPromises(dateHashMap, calendar, calendar.get(Calendar.DAY_OF_MONTH))
         recyclerView.adapter = adapter
         customCalendar.setOnDateSelectedListener(this)
         setMonthInFrench()
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.PREVIOUS, this)
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.NEXT, this)
+        customCalendar.monthYearTextView.visibility = View.GONE
+    }
 
+    private fun initProperty() {
+        var map = HashMap<String,Int>()
+        map["default"] = R.layout.default_view
+        map["first"] = R.layout.first_level_view
+        map["second"] = R.layout.second_level_view
+        map["third"] = R.layout.third_level_view
+        map["default_selected"] = R.layout.default_selected_view
+        map["first_selected"] = R.layout.first_selected_view
+        map["second_selected"] = R.layout.second_selected_view
+        map["third_selected"] = R.layout.third_selected_view
 
+        for ((key,value) in map){
+            var defaultProperty = Property()
+            defaultProperty.layoutResource = map[key] as Int
+            defaultProperty.dateTextViewResource = R.id.text_view
+            descHashMap[key] = defaultProperty
 
-
-
+        }
     }
 
     private fun setDaysInFrench(){
@@ -148,8 +118,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
             "November" -> res = "Novembre ${monthYearString[1]}"
             "December" -> res = "Decembre ${monthYearString[1]}"
         }
-        monthYear.text = res
-        monthYear.visibility = View.GONE
+        //monthYear.visibility = View.GONE
 
         monthDisplay.text = res
     }
@@ -164,7 +133,6 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         for (promise: Promise in promises) {
             occurencePromises[promise.dateTodo.date]++
         }
-
         for (day: Int in 1 until occurencePromises.size) {
             when (occurencePromises[day]) {
                 0 -> if(day==selectedDay) dateHashMap[selectedDay] = "default_selected" else dateHashMap[day] = "default"
@@ -173,7 +141,6 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
                 else -> if(day==selectedDay) dateHashMap[selectedDay] = "third_selected" else dateHashMap[day] = "third"
             }
         }
-
         val llm = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = llm
@@ -188,12 +155,11 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         month: Calendar,
         selectedDay: Int = 0
     ) {
-        promises = user.getAllPromise().toMutableList()
+        promises = user.getAllPromisesOfTheMonth(user.email,month.time).toMutableList()
         var occurencePromises = IntArray(32) {0}
         for (promise: Promise in promises) {
             occurencePromises[promise.dateTodo.date]++
         }
-
         for (day: Int in 1 until occurencePromises.size) {
             when (occurencePromises[day]) {
                 0 -> if(day==selectedDay) dateHashMap[selectedDay] = "default_selected" else dateHashMap[day] = "default"
@@ -202,7 +168,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
                 else -> if(day==selectedDay) dateHashMap[selectedDay] = "third_selected" else dateHashMap[day] = "third"
             }
         }
-
+        this.dateHashMap = dateHashMap
         val llm = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = llm
@@ -222,33 +188,43 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         newMonth: Calendar?
     ): Array<MutableMap<Int, Any>>? {
         if (newMonth != null) {
-
             Handler().postDelayed({
                 calendar = newMonth
                 setMonthInFrench()
                 updateCalendarWithPromises(dateHashMap, newMonth)
-
             },1)
-
-
         }
         return arrayOf(descHashMap as MutableMap<Int, Any>, dateHashMap)
     }
+    override fun onResume() {
+        super.onResume()
+        //listPromesses = utils.user.getAllPromise().toMutableList()
+        //adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
+//        deleteListener.adapter = adapter
+        //recyclerView.adapter = adapter
+        promises = user.getPromisesOfTheDay(calendar.time).toMutableList()
+        adapter = PromiseAdapter(promises, PromiseEventListener(promises, this),this)
 
+        adapter.notifyDataSetChanged()
+        recyclerView.adapter = adapter
+//        customSuggestionAdapter.suggestions = listPromesses
+//        materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
+    }
     /**
      * Called when a date is selected
      * @param view The date view that was clicked (the tag on this view will be as given in the map linking date to the tag)
      * @param selectedDate Calendar representation of the selected date
      * @param desc Description of the date (as given in the map linking date to its description)
      */
+
+
     override fun onDateSelected(view: View?, selectedDate: Calendar?, desc: Any?) {
         if (selectedDate != null) {
-            promisesOfTheSelectedDay = MainActivity.user.getPromisesOfTheDay(selectedDate.time).toMutableList()
+            promisesOfTheSelectedDay = user.getPromisesOfTheDay(selectedDate.time).toMutableList()
             updateCalendarWithPromises(dateHashMap, calendar, selectedDate.get(Calendar.DAY_OF_MONTH))
         } else {
             updateCalendarWithPromises(dateHashMap, calendar)
         }
-
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
     }

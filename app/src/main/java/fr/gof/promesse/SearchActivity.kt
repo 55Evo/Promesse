@@ -176,6 +176,9 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         //recyclerView.adapter = adapter
         listPromesses = user.getAllPromise().toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
+
+
+        recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
 //        customSuggestionAdapter.suggestions = listPromesses
 //        materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)

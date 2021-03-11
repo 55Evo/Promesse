@@ -20,6 +20,7 @@ import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.CategoryListener
 import fr.gof.promesse.model.Category
 import fr.gof.promesse.model.Promise
+
 import fr.gof.promesse.model.State
 import java.text.DateFormat
 import java.util.*
@@ -55,7 +56,7 @@ class PromiseManagerActivity : AppCompatActivity() {
 
     lateinit var textViewDate : TextView
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
-    var promise : Promise ?= null
+    var promise : Promise?= null
     lateinit var date : Date
     val dfl = DateFormat.getDateInstance(DateFormat.FULL);
 
@@ -105,6 +106,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         val duration: EditText = findViewById(R.id.editTextDuration)
         duration.setText(promise?.duration.toString())
         date = promiseNm.dateTodo
+        calendar.time = date
         val description: EditText = findViewById(R.id.editTextDescription)
         description.setText(promiseNm.description)
         val priority: Switch = findViewById(R.id.switchPriority)
@@ -144,7 +146,12 @@ class PromiseManagerActivity : AppCompatActivity() {
     fun onClickDate (v : View) {
         // Create DatePickerDialog (Spinner Mode):
         val date = Date(System.currentTimeMillis())
-        calendar.time = date
+        if (promise != null ) {
+            calendar.time = promise!!.dateTodo
+        }
+        else {
+            calendar.time = date
+        }
         // Create DatePickerDialog (Spinner Mode):
         val datePickerDialog = DatePickerDialog(this,
                 dateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
