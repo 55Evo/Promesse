@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/light_grey"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -17,28 +18,37 @@
             android:layout_marginLeft="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/layout_category">
 
             <ImageView
                 android:id="@+id/backgroundImage"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="190dp"
                 app:srcCompat="@drawable/defaut_background" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_Category"
+                android:layout_width='match_parent'
+                android:layout_height='match_parent'
+
+
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingTop="3dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="3dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="5dp">
+                android:padding="5dp"
+                >
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_Category"
-                    android:layout_width='match_parent'
-                    android:layout_height="100dp"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
 
-                </androidx.recyclerview.widget.RecyclerView>
 
                 <TextView
                     android:id="@+id/textViewTitle"

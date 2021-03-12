@@ -2,6 +2,7 @@ package fr.gof.promesse
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mancj.materialsearchbar.MaterialSearchBar
+import com.r0adkll.slidr.Slidr
+import com.r0adkll.slidr.model.SlidrConfig
+import com.r0adkll.slidr.model.SlidrInterface
+import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.CustomSuggestionAdapter
 import fr.gof.promesse.adapter.PromiseAdapter
@@ -38,9 +43,22 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     var valeurActuelle : String = ""
     private lateinit var deleteButton : FloatingActionButton
     private lateinit var deleteListener : DeleteButtonListener
-
+    private lateinit var slidr: SlidrInterface
+    var  config : SlidrConfig =  SlidrConfig.Builder()
+        .position(SlidrPosition.LEFT)
+        .sensitivity(1f)
+        .scrimColor(Color.BLACK)
+        .scrimStartAlpha(0.8f)
+        .scrimEndAlpha(0f)
+        .velocityThreshold(2400F)
+        .distanceThreshold(0.25f)
+        .edge(true)
+        .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
+        .build();
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        slidr = Slidr.attach(this, utils.config);
         setContentView(R.layout.activity_search)
         recyclerView  = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -85,37 +103,55 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (materialSearchBar.text.length > before) {
-                    materialSearchBar.lastSuggestions = user.getAllPromise().toList()
-                    //materialSearchBar.lastSuggestions = user.getSearchResultsSorted(materialSearchBar.text.toLowerCase(), Sort.DATE).toList()
+                if (start > 0) {
+                    var suggest =
+                        user.getSearchResultsSorted((materialSearchBar.text.toLowerCase()),
+                            choiceOfSort).toMutableList()
 
-                }
-                materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-                var suggest = mutableListOf<Promise>()
-               // materialSearchBar.setMaxSuggestionCount(0);
-               // materialSearchBar.updateLastSuggestions(suggest)
+                    if (suggest.size < 1) {
 
-                for (search in customSuggestionAdapter.suggestions) {
-                    if (search.title.toLowerCase().contains(materialSearchBar.text.toLowerCase())) {
-                        suggest.add(search)
+                        Log.d("_______________________---------------_________________",
+                            suggest.size.toString())
+                        Log.d("_______________________----- ok ----------_________________",
+                            suggest.size.toString())
+                        //materialSearchBar.clearSuggestions()
+                        materialSearchBar.hideSuggestionsList()
+                    } else {
+                        //materialSearchBar.lastSuggestions = suggest
+
+                        //materialSearchBar.lastSuggestions = user.getSearchResultsSorted(materialSearchBar.text.toLowerCase(), Sort.DATE).toList()
+
+                       // customSuggestionAdapter.suggestions = suggest
+                        materialSearchBar.updateLastSuggestions(suggest)
                     }
-                    customSuggestionAdapter.suggestions = suggest
-                    //materialSearchBar.lastSuggestions = suggest
-
-//                        customSuggestionAdapter.suggestions = suggest
-
                 }
-                materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-                // ?????????????? !!!!!!!!!!!!!!!!!!!!!
-                //materialSearchBar.setMaxSuggestionCount(suggest.size);
-                materialSearchBar.updateLastSuggestions(suggest)
-
-//                if (suggest.size == 0) {
-//                    materialSearchBar.clearSuggestions()
-////                    materialSearchBar.hideSuggestionsList()
+              //  }
+               // materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
+//                var suggest = mutableListOf<Promise>()
+//               // materialSearchBar.setMaxSuggestionCount(0);
+//               // materialSearchBar.updateLastSuggestions(suggest)
+//
+//                for (search in customSuggestionAdapter.suggestions) {
+//                    if (search.title.toLowerCase().contains(materialSearchBar.text.toLowerCase())) {
+//                        suggest.add(search)
+//                    }
+//                    //customSuggestionAdapter.suggestions = suggest
+//                    materialSearchBar.lastSuggestions = suggest
+//
+//                        customSuggestionAdapter.suggestions = suggest
+//
 //                }
+//                materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
+//                // ?????????????? !!!!!!!!!!!!!!!!!!!!!
+//               materialSearchBar.setMaxSuggestionCount(suggest.size);
+//                materialSearchBar.updateLastSuggestions(suggest)
 
-                Log.d("_______________________---------------_________________",suggest.size.toString())
+
+
+//                recyclerView.adapter = customSuggestionAdapter
+//                customSuggestionAdapter.notifyDataSetChanged()
+
+
 
             }
         })
@@ -125,14 +161,20 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                 if (!enabled) {
                     recyclerView.adapter = adapter
                 }
-                materialSearchBar.clearSuggestions()
+                //materialSearchBar.clearSuggestions()
             }
 
             override fun onSearchConfirmed(text: CharSequence?) {
                 startResearch(text.toString())
-                materialSearchBar.clearSuggestions()
             }
             override fun onButtonClicked(buttonCode: Int) {
+//                adapter.notifyDataSetChanged()
+//
+//                materialSearchBar.closeSearch()
+//                materialSearchBar.clearSuggestions()
+//                materialSearchBar.hideSuggestionsList()
+
+
             }
         })
 
@@ -140,12 +182,19 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         listPromesses = user.getAllPromise().toMutableList()
         this.recyclerView.adapter = adapter
     }
-
+    private fun lockSlider(){
+        slidr.lock()
+    }
+    private fun unLockSlider(){
+        slidr.unlock()
+    }
     private fun startResearch(text: String, relaunch : Boolean = true) {
         if (relaunch)
         {
             materialSearchBar.closeSearch()
             materialSearchBar.setPlaceHolder(text)
+
+
         }
 
         valeurActuelle = text
@@ -154,12 +203,13 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
         deleteListener.adapter = adapter
+        recyclerView.adapter = adapter
+        adapter.notifyDataSetChanged()
 
         materialSearchBar.clearSuggestions()
         materialSearchBar.hideSuggestionsList()
-        recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
         hideKeyboard(this)
+        materialSearchBar.closeSearch()
 
     }
 

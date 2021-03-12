@@ -10,9 +10,9 @@ import fr.gof.promesse.R
  * @property image_drawable
  */
 enum class Category (val nom : String, var background :Int, var image_drawable :Int, var check : Boolean = false) {
-    SPORT("Sport", R.drawable.sport, R.drawable.sport),
+    SPORT("Sport", R.drawable.sport_background, R.drawable.sport),
     CUISINE("Cuisine", R.drawable.manger, R.drawable.logo_manger),
-    ETUDES ("Etudes", R.drawable.etudes, R.drawable.etudes),
-    LOISIRS ("Loisirs", R.drawable.loisirs, R.drawable.loisirs),
+    ETUDES ("Etudes", R.drawable.travail_background, R.drawable.etudes),
+    LOISIRS ("Loisirs", R.drawable.loisirs_background, R.drawable.loisirs),
     DEFAUT ("Defaut", R.drawable.defaut_background, R.drawable.defaut),
 }
