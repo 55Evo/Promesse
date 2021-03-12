@@ -2,6 +2,7 @@ package fr.gof.promesse
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.graphics.Color
 
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.r0adkll.slidr.Slidr
+import com.r0adkll.slidr.model.SlidrConfig
+import com.r0adkll.slidr.model.SlidrInterface
+import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.CategoryAdapter
 import fr.gof.promesse.adapter.SubtaskEditorAdapter
@@ -45,6 +50,19 @@ class PromiseManagerActivity : AppCompatActivity() {
             Category.DEFAUT
 
     )
+    private lateinit var slidr: SlidrInterface
+    var  config : SlidrConfig =  SlidrConfig.Builder()
+        .position(SlidrPosition.LEFT)
+        .sensitivity(1f)
+        .scrimColor(Color.BLACK)
+        .scrimStartAlpha(0.8f)
+        .scrimEndAlpha(0f)
+        .velocityThreshold(2400F)
+        .distanceThreshold(0.25f)
+        .edge(true)
+        .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
+        .build();
+
     lateinit var adapterCategory : CategoryAdapter
     lateinit var adapterSubtask : SubtaskEditorAdapter
     lateinit var rvCategory:  RecyclerView
@@ -65,7 +83,7 @@ class PromiseManagerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.promise_manager_activity)
-
+        slidr = Slidr.attach(this, utils.config);
         backgroundImage = findViewById(R.id.backgroundImage)
         rvCategory = findViewById(R.id.recycler_Category)
         rvCategory.setHasFixedSize(true)
@@ -118,7 +136,12 @@ class PromiseManagerActivity : AppCompatActivity() {
         rvSubtask.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
 
     }
-
+    private fun lockSlider(){
+        slidr.lock()
+    }
+    private fun unLockSlider(){
+        slidr.unlock()
+    }
     private fun setPromiseInFields(
         titleBar: TextView,
         promiseNm: Promise

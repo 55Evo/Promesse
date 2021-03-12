@@ -11,12 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Promesse">
 
-        <activity android:name=".PromiseManagerActivity" >
+        <activity android:name=".PromiseManagerActivity" android:theme="@style/Theme.SliderActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchActivity">
+        <activity android:name=".SearchActivity"  android:theme="@style/Theme.SliderActivity">
 
             <intent-filter>
 
@@ -29,7 +29,7 @@
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:theme="@style/Theme.SliderActivity">
             <intent-filter>
 
                 <action android:name="android.intent.action.DEFAULT" />
@@ -51,7 +51,7 @@
         <service android:name=".services.Notifications"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:process=":jobServiceThread"/>
-        <activity android:name=".CalendarActivity" android:windowSoftInputMode="adjustResize" >
+        <activity android:name=".CalendarActivity" android:windowSoftInputMode="adjustResize"  android:theme="@style/Theme.SliderActivity">
             <intent-filter>
 <!--                <action android:name="android.intent.action.MAIN" />-->
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->

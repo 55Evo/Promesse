@@ -1,5 +1,6 @@
 package fr.gof.promesse
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -7,6 +8,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.r0adkll.slidr.Slidr
+import com.r0adkll.slidr.model.SlidrConfig
+import com.r0adkll.slidr.model.SlidrInterface
+import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.listener.PromiseEventListener
@@ -37,8 +42,18 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     var dateHashMap : MutableMap<Int, Any> = HashMap()
     var descHashMap : MutableMap<Any, Property> = HashMap()
     lateinit var monthDisplay : TextView
-
-
+    private lateinit var slidr: SlidrInterface
+    var  config : SlidrConfig =  SlidrConfig.Builder()
+        .position(SlidrPosition.LEFT)
+        .sensitivity(1f)
+        .scrimColor(Color.BLACK)
+        .scrimStartAlpha(0.8f)
+        .scrimEndAlpha(0f)
+        .velocityThreshold(2400F)
+        .distanceThreshold(0.25f)
+        .edge(true)
+        .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
+        .build();
     /**
      * On create
      *
@@ -48,6 +63,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.calendar_activity)
         setDaysInFrench()
+        slidr = Slidr.attach(this, utils.config);
         monthDisplay = findViewById(R.id.monthTextView)
         promisesOfTheSelectedDay = user.getPromisesOfTheDay(Date(System.currentTimeMillis())).toMutableList()
         customCalendar = findViewById(R.id.custom_calendar)
@@ -63,7 +79,12 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         customCalendar.monthYearTextView.visibility = View.GONE
     }
 
-
+    private fun lockSlider(){
+        slidr.lock()
+    }
+    private fun unLockSlider(){
+        slidr.unlock()
+    }
     /**
      * Init property
      *

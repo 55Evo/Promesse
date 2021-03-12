@@ -16,6 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.r0adkll.slidr.Slidr
+import com.r0adkll.slidr.model.SlidrConfig
+import com.r0adkll.slidr.model.SlidrInterface
+import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
@@ -27,6 +31,7 @@ import fr.gof.promesse.model.User
 import java.util.*
 
 import fr.gof.promesse.services.Notifications
+import utils.config
 import java.text.SimpleDateFormat
 
 /**
@@ -44,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mascotView : ImageView
     val promiseDataBase = PromiseDataBase(this@MainActivity)
     var notifications = Notifications()
+    lateinit var slidr: SlidrInterface
 
     lateinit var adapter : PromiseAdapter
     lateinit var listPromesse : MutableList<Promise>
@@ -52,6 +58,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        slidr = Slidr.attach(this, config);
         setContentView(R.layout.activity_main)
         dateOfTheDay = Date(System.currentTimeMillis())
 
@@ -80,6 +89,12 @@ class MainActivity : AppCompatActivity() {
         enableSwipeToDoneOrReport()
         //enableSwipeUpDown()
         notifications.scheduleJob(this, user)
+    }
+    private fun lockSlider(){
+        slidr.lock()
+    }
+    private fun unLockSlider(){
+        slidr.unlock()
     }
     private fun enableSwipeUpDown(){
         val swipeupDown: SwipeupDown = object : SwipeupDown(this) {

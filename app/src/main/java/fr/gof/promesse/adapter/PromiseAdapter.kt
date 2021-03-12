@@ -31,11 +31,11 @@ class PromiseAdapter(
     val listener: OnItemClickListener,
     val context: Context,
     var displayDate: Boolean = true
-): RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>(), IItemTouchHelperAdapter {
+) : RecyclerView.Adapter<PromiseAdapter.PromiseViewHolder>(), IItemTouchHelperAdapter {
 
     var inSelection = false
     var nbPromisesChecked = 0
-    private var lastPosition =  -1
+    private var lastPosition = -1
     private var sortedCategory = false
 
 
@@ -62,7 +62,8 @@ class PromiseAdapter(
         holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise.subtasks, context, listener, this)
         //btaskAdapter(holder.promise.subtasks, context, listener)
         holder.rvSubtasks.setHasFixedSize(true)
-        holder.rvSubtasks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        holder.rvSubtasks.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         holder.progressBar.visibility = deployed
 
         holder.rvSubtasks.visibility = deployed
@@ -74,38 +75,37 @@ class PromiseAdapter(
         holder.imageViewCategoryGlobal.setBackgroundResource(R.drawable.layout_bubble1)
 
 
-        if (lastPosition<4)
+        if (lastPosition < 4)
             lastPosition = holder.adapterPosition
         else if (holder.adapterPosition > lastPosition) {
             val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-            (holder as PromiseViewHolder).startAnimation(animation)
+            holder.startAnimation(animation)
             lastPosition = holder.adapterPosition
         }
         if (!displayDate)
-        holder.date.visibility = View.GONE
-        holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+            holder.date.visibility = View.GONE
+        holder.description.visibility =
+            if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
 
         if (sortedCategory) {
             holder.logo.visibility = View.GONE
 
-            if((position != 0) and (position!=-1) ){
+            if ((position != 0) and (position != -1)) {
                 if (holder.promise.category.nom == promiseList[position - 1].category.nom)
                     holder.imageViewCategoryGlobal.visibility = View.GONE
-                else{
+                else {
                     setMargins(holder.layout, 0, 0, 0, 0)
                 }
             }
-        }
-        else{
+        } else {
             holder.imageViewCategoryGlobal.visibility = View.GONE
         }
-        if (context is MainActivity){
-            if(!holder.promise.isDescDeployed) {
+        if (context is MainActivity) {
+            if (!holder.promise.isDescDeployed) {
                 val zoomout = AnimationUtils.loadAnimation(context, R.anim.zoomout)
 
                 holder.logo.animation = zoomout
-            }
-            else if (holder.promise.isDescDeployed){
+            } else if (holder.promise.isDescDeployed) {
                 val zoomin = AnimationUtils.loadAnimation(context, R.anim.zoomin)
                 holder.logo.animation = zoomin
             }
@@ -130,6 +130,8 @@ class PromiseAdapter(
 
     fun restoreItem(promise: Promise, position: Int, dataBase: PromiseDataBase) {
         promiseList.add(position, promise)
+        //user.listPromise.add(promise)
+        //user.updatePromise(promise)
         dataBase.updateDate(promise)
     }
 
@@ -137,6 +139,7 @@ class PromiseAdapter(
         Collections.swap(promiseList, fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
     }
+
     override fun onItemDismiss(position: Int) {
         promiseList.removeAt(position)
         notifyItemRemoved(position)
@@ -149,23 +152,23 @@ class PromiseAdapter(
      *
      * @param view
      */// HOLDER
-    inner class PromiseViewHolder(view: View): RecyclerView.ViewHolder(view),
-            View.OnClickListener,
-            View.OnLongClickListener {
-        lateinit var promise:Promise
+    inner class PromiseViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener,
+        View.OnLongClickListener {
+        lateinit var promise: Promise
 
-        var titre : TextView = view.findViewById(R.id.title)
-        var logo : ImageView = view.findViewById(R.id.logo)
-        var imageViewCategoryGlobal : ImageView = view.findViewById(R.id.imageViewCategoryGlobal)
+        var titre: TextView = view.findViewById(R.id.title)
+        var logo: ImageView = view.findViewById(R.id.logo)
+        var imageViewCategoryGlobal: ImageView = view.findViewById(R.id.imageViewCategoryGlobal)
 
-        var date : TextView = view.findViewById(R.id.date)
-        var description : TextView = view.findViewById(R.id.description)
-        var checkBox : CheckBox = view.findViewById(R.id.delCheckBox)
-        var layout : LinearLayout = view.findViewById(R.id.linearlayoutitem)
-        var layoutButtonEdit : ConstraintLayout = view.findViewById(R.id.layoutButtonEdit)
-        var buttonEdit : Button = view.findViewById(R.id.buttonEdit)
-        var progressBar : ProgressBar = view.findViewById(R.id.progressBar)
-        var rvSubtasks : RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
+        var date: TextView = view.findViewById(R.id.date)
+        var description: TextView = view.findViewById(R.id.description)
+        var checkBox: CheckBox = view.findViewById(R.id.delCheckBox)
+        var layout: LinearLayout = view.findViewById(R.id.linearlayoutitem)
+        var layoutButtonEdit: ConstraintLayout = view.findViewById(R.id.layoutButtonEdit)
+        var buttonEdit: Button = view.findViewById(R.id.buttonEdit)
+        var progressBar: ProgressBar = view.findViewById(R.id.progressBar)
+        var rvSubtasks: RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
 
         init {
             view.setOnClickListener(this)
@@ -175,9 +178,9 @@ class PromiseAdapter(
         }
 
         override fun onClick(v: View?) {
-            if (v!=null) {
+            if (v != null) {
                 val position = adapterPosition
-                if(v is CheckBox) {
+                if (v is CheckBox) {
                     if (position != RecyclerView.NO_POSITION) {
                         listener.onItemCheckedChanged(position, this@PromiseAdapter)
                         this@PromiseAdapter.notifyDataSetChanged()
@@ -187,10 +190,11 @@ class PromiseAdapter(
                         if (v is Button) {
                             listener.onItemButtonEditClick(position, this@PromiseAdapter)
                         } else {
-                          listener.onItemClick(position, this@PromiseAdapter)
+                            listener.onItemClick(position, this@PromiseAdapter)
                             Log.d("____________________<--------->_______________",
                                 promise.isDescDeployed.toString())
-                            description.visibility = if (!promise.isDescDeployed) View.VISIBLE else View.GONE
+                            description.visibility =
+                                if (!promise.isDescDeployed) View.VISIBLE else View.GONE
 
 
                             //promise.isDescDeployed = !promise.isDescDeployed
@@ -246,12 +250,16 @@ class PromiseAdapter(
          */
         fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter)
         fun onItemCheckedChanged(position: Int, promiseAdapter: PromiseAdapter)
-        fun onCheckSubtaskChanged(position: Int, subtaskAdapter: SubtaskAdapter, promiseAdapter: PromiseAdapter)
+        fun onCheckSubtaskChanged(
+            position: Int,
+            subtaskAdapter: SubtaskAdapter,
+            promiseAdapter: PromiseAdapter
+        )
     }
 
 
-
 }
+
 interface IItemTouchHelperAdapter {
     /**
      * Called when item is moved
