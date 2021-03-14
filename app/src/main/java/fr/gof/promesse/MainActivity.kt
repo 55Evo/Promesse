@@ -17,22 +17,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.r0adkll.slidr.Slidr
-import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrInterface
-import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.adapter.PromiseAdapter
-import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
+import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import fr.gof.promesse.model.User
-import java.util.*
-
 import fr.gof.promesse.services.Notifications
 import utils.config
+import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Main activity
@@ -72,16 +70,31 @@ class MainActivity : AppCompatActivity() {
         mascotView.setImageResource(user.mascot.image)
         recyclerView.layoutManager = llm
         layout = findViewById(R.id.ConstraintLayout)
-        user.loadPromises( promiseDataBase)
+        user.loadPromises(promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay().toMutableList()
 
-        adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this, false)
+        adapter = PromiseAdapter(listPromesse,
+            PromiseEventListener(listPromesse, this),
+            this,
+            false)
 
         val del = findViewById<FloatingActionButton>(R.id.deleteButton)
         var date = findViewById<TextView>(R.id.dateDayView)
-        val formatter = SimpleDateFormat("YYYY dd MM ")
-        val dateDay = formatter.format(Date())
-        date.text = dateDay
+
+        val dt = Date()
+        val dfs = DateFormatSymbols(Locale.FRANCE)
+        val dateFormat = SimpleDateFormat("EEEE dd MMMM", dfs)
+        val date1 = dateFormat.format(dt)
+
+
+        println(date1)
+        var res =""
+
+        val formatter = SimpleDateFormat("YYYY")
+        val date2 = formatter.format(Date())
+        res +=date2
+        res +="\n" + date1.substring(0,1).toUpperCase() + date1.substring(1).toLowerCase();
+        date.text = res
 
         recyclerView.adapter = adapter
         deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
@@ -98,7 +111,11 @@ class MainActivity : AppCompatActivity() {
     }
     private fun enableSwipeUpDown(){
         val swipeupDown: SwipeupDown = object : SwipeupDown(this) {
-            override fun onMove(recyclerView: RecyclerView, source: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                source: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
                 if (source.itemViewType != target.itemViewType) {
                     return false
                 }
@@ -141,7 +158,13 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            private fun snackbarUndo(message: String, i: Int, promise: Promise, date: Date, position: Int) {
+            private fun snackbarUndo(
+                message: String,
+                i: Int,
+                promise: Promise,
+                date: Date,
+                position: Int
+            ) {
                 val snackbar = Snackbar
                         .make(layout, message, Snackbar.LENGTH_LONG)
                 snackbar.setAction(getString(R.string.cancel)) {
@@ -171,7 +194,10 @@ class MainActivity : AppCompatActivity() {
 //        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
         //user.loadPromises( promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay().toMutableList()
-        adapter = PromiseAdapter(listPromesse, PromiseEventListener(listPromesse, this), this, false)
+        adapter = PromiseAdapter(listPromesse,
+            PromiseEventListener(listPromesse, this),
+            this,
+            false)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
@@ -211,7 +237,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun isDone(p : Promise, a : PromiseAdapter) {
+    fun isDone(p: Promise, a: PromiseAdapter) {
         user.setToDone(p)
         a.notifyDataSetChanged()
     }

@@ -37,6 +37,8 @@ class PromiseAdapter(
     var nbPromisesChecked = 0
     private var lastPosition = -1
     private var sortedCategory = false
+    var displayAnimation = false
+    var stateZoom = false
 
 
     override fun getItemCount() = promiseList.size
@@ -59,7 +61,7 @@ class PromiseAdapter(
         holder.layoutButtonEdit.visibility = deployed
         holder.progressBar.max = holder.promise.subtasks.size
         holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
-        holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise.subtasks, context, listener, this)
+        holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
         //btaskAdapter(holder.promise.subtasks, context, listener)
         holder.rvSubtasks.setHasFixedSize(true)
         holder.rvSubtasks.layoutManager =
@@ -100,16 +102,47 @@ class PromiseAdapter(
         } else {
             holder.imageViewCategoryGlobal.visibility = View.GONE
         }
-        if (context is MainActivity) {
-            if (!holder.promise.isDescDeployed) {
-                val zoomout = AnimationUtils.loadAnimation(context, R.anim.zoomout)
 
-                holder.logo.animation = zoomout
-            } else if (holder.promise.isDescDeployed) {
-                val zoomin = AnimationUtils.loadAnimation(context, R.anim.zoomin)
-                holder.logo.animation = zoomin
+
+        if ((context !is Calendar) ) {
+
+            if (!holder.promise.isDescDeployed && displayAnimation and promiseList[holder.adapterPosition].getFocus()) {
+                promiseList[holder.adapterPosition].setFocus(false)
+                holder.logo.animation = AnimationUtils.loadAnimation(context, R.anim.zoomout)
+                displayAnimation = false
+            } else if (holder.promise.isDescDeployed ) {
+
+                if (displayAnimation ){
+                    displayAnimation = false
+                    if (!promiseList[holder.adapterPosition].getFocus()){
+
+                        stateZoom = true
+                        promiseList[holder.adapterPosition].setFocus(true)
+                        holder.logo.animation = AnimationUtils.loadAnimation(context, R.anim.zoomin)
+                    }
+                }
+                else{
+                    if (promiseList[holder.adapterPosition].getFocus()){
+                        holder.logo.animation = AnimationUtils.loadAnimation(context, R.anim.zoomout)
+                       // stateZoom=false
+                        promiseList[holder.adapterPosition].setFocus(false)
+
+                    }
+                }
+
+
+
             }
+
         }
+//        else if (promiseList[holder.posAdapter].id == holder.promise.id){
+//
+//            if (!holder.promise.isDescDeployed ) {
+//                holder.logo.animation = AnimationUtils.loadAnimation(context, R.anim.zoomout)
+//            } else if (holder.promise.isDescDeployed ) {
+//                holder.logo.animation = AnimationUtils.loadAnimation(context, R.anim.zoomin)
+//            }
+//        }
 
     }
 
@@ -156,6 +189,7 @@ class PromiseAdapter(
         View.OnClickListener,
         View.OnLongClickListener {
         lateinit var promise: Promise
+        lateinit var savePromise : Promise
 
         var titre: TextView = view.findViewById(R.id.title)
         var logo: ImageView = view.findViewById(R.id.logo)
@@ -169,6 +203,7 @@ class PromiseAdapter(
         var buttonEdit: Button = view.findViewById(R.id.buttonEdit)
         var progressBar: ProgressBar = view.findViewById(R.id.progressBar)
         var rvSubtasks: RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
+        var posAdapter : Int = 0
 
         init {
             view.setOnClickListener(this)
@@ -179,18 +214,22 @@ class PromiseAdapter(
 
         override fun onClick(v: View?) {
             if (v != null) {
-                val position = adapterPosition
+                posAdapter = adapterPosition
                 if (v is CheckBox) {
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemCheckedChanged(position, this@PromiseAdapter)
-                        this@PromiseAdapter.notifyDataSetChanged()
+                    if (posAdapter != RecyclerView.NO_POSITION) {
+                        listener.onItemCheckedChanged(posAdapter, this@PromiseAdapter)
+                        //this@PromiseAdapter.notifyDataSetChanged()
+
+
                     }
+
                 } else {
-                    if (position != RecyclerView.NO_POSITION) {
+                    if (posAdapter != RecyclerView.NO_POSITION) {
                         if (v is Button) {
-                            listener.onItemButtonEditClick(position, this@PromiseAdapter)
+                            listener.onItemButtonEditClick(posAdapter, this@PromiseAdapter)
                         } else {
-                            listener.onItemClick(position, this@PromiseAdapter)
+                            displayAnimation = true
+                            listener.onItemClick(posAdapter, this@PromiseAdapter)
                             Log.d("____________________<--------->_______________",
                                 promise.isDescDeployed.toString())
                             description.visibility =
@@ -202,14 +241,15 @@ class PromiseAdapter(
                         }
                     }
                 }
-                this@PromiseAdapter.notifyItemChanged(position)
+
+               // this@PromiseAdapter.notifyItemChanged(posAdapter)
             }
         }
 
         override fun onLongClick(v: View?): Boolean {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                listener.onItemLongClick(position, this@PromiseAdapter)
+            posAdapter = adapterPosition
+            if (posAdapter != RecyclerView.NO_POSITION) {
+                listener.onItemLongClick(posAdapter, this@PromiseAdapter)
             }
             return true
         }
@@ -252,6 +292,7 @@ class PromiseAdapter(
         fun onItemCheckedChanged(position: Int, promiseAdapter: PromiseAdapter)
         fun onCheckSubtaskChanged(
             position: Int,
+            promise : Promise,
             subtaskAdapter: SubtaskAdapter,
             promiseAdapter: PromiseAdapter
         )

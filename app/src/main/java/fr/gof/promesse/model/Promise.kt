@@ -37,6 +37,7 @@ data class Promise(
     var isDescDeployed: Boolean = false
 ) : Serializable, Comparable<Promise> {
 
+    private var focus = false
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
 
 //    override operator fun compareTo(other: Promise): Int {
@@ -51,7 +52,12 @@ data class Promise(
 //        }
 //    }
 
-
+    fun setFocus(value : Boolean){
+        focus = value
+    }
+    fun getFocus():Boolean{
+        return focus
+    }
     override fun equals(other: Any?): Boolean {
         if( other is Promise){
             return other.id == this.id
