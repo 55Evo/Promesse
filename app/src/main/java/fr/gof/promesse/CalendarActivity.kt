@@ -57,7 +57,9 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         .distanceThreshold(0.25f)
         .edge(true)
         .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
-        .build();
+        .build()
+
+
     /**
      * On create
      *
@@ -76,11 +78,6 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         recyclerView = findViewById(R.id.recyclerViewPromises)
         initProperty()
         customCalendar.setMapDescToProp(descHashMap)
-        adapter = PromiseAdapter(promisesOfTheSelectedDay, PromiseEventListener(promisesOfTheSelectedDay, this), this)
-        deleteListener = DeleteButtonListener(adapter, this)
-        deleteButton.setOnClickListener(deleteListener)
-        updateCalendarWithPromises(dateHashMap, calendar, calendar.get(Calendar.DAY_OF_MONTH))
-        recyclerView.adapter = adapter
         customCalendar.setOnDateSelectedListener(this)
         setMonthInFrench()
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.PREVIOUS, this)
@@ -88,12 +85,23 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         customCalendar.monthYearTextView.visibility = View.GONE
     }
 
+    /**
+     * Lock slider
+     *
+     */
     private fun lockSlider(){
         slidr.lock()
     }
+
+    /**
+     * Un lock slider
+     *
+     */
     private fun unLockSlider(){
         slidr.unlock()
     }
+
+
     /**
      * Init property
      *
@@ -203,7 +211,6 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         adapter = PromiseAdapter(promisesOfTheSelectedDay, PromiseEventListener(promisesOfTheSelectedDay, this), this)
         deleteListener.adapter = adapter
         customCalendar.setDate(month, dateHashMap)
-//        adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
     }
@@ -277,6 +284,9 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         super.onResume()
         promises = user.getPromisesOfTheDay(calendar.time).toMutableList()
         adapter = PromiseAdapter(promises, PromiseEventListener(promises, this),this)
+        deleteListener = DeleteButtonListener(adapter, this)
+        deleteButton.setOnClickListener(deleteListener)
+        updateCalendarWithPromises(dateHashMap, calendar, calendar.get(Calendar.DAY_OF_MONTH))
         adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter
     }
