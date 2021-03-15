@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/light_grey"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@color/light_grey">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,8 +18,8 @@
             android:layout_marginLeft="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
-            android:orientation="vertical"
-            android:background="@drawable/layout_category">
+            android:background="@drawable/layout_category"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/backgroundImage"
@@ -45,9 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="5dp"
-                >
-
+                android:padding="5dp">
 
 
                 <TextView
@@ -154,7 +152,7 @@
                     <TextView
                         android:id="@+id/textViewSubtask"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="@string/subtaskTitle"
                         android:textColor="@color/black" />
