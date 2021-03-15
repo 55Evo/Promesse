@@ -7,15 +7,16 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
+import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.Subtask
 
 class SubtaskAdapter(
-    var subtaskList: MutableList<Subtask>,
+    var promise : Promise,
     val context: Context,
     val listener: PromiseAdapter.OnItemClickListener,
     val promiseAdapter: PromiseAdapter
 ): RecyclerView.Adapter<SubtaskAdapter.SubtaskViewHolder>() {
-
+    var subtaskList: MutableList<Subtask> = promise.subtasks
     override fun getItemCount() = subtaskList.size
 
     //Affichage d'un item (appelé quand la liste defile ou quand on notifie un changement)
@@ -54,7 +55,7 @@ class SubtaskAdapter(
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                listener.onCheckSubtaskChanged(position, this@SubtaskAdapter, promiseAdapter)
+                listener.onCheckSubtaskChanged(position,promise, this@SubtaskAdapter, promiseAdapter)
             }
         }
     }

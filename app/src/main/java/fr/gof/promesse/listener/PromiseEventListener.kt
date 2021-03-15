@@ -27,7 +27,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
 
 
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
-        //adapter.notifyItemChanged(position)
+        adapter.notifyItemChanged(position)
 
 
     }
@@ -89,13 +89,14 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
 
     override fun onCheckSubtaskChanged(
         position: Int,
+        promise :Promise,
         subtaskAdapter: SubtaskAdapter,
         promiseAdapter: PromiseAdapter
     ) {
         var clickedItem = subtaskAdapter.subtaskList[position]
         clickedItem.done = !clickedItem.done
         user.updateDoneSubtask(clickedItem, clickedItem.done)
-        promiseAdapter.notifyDataSetChanged()
+        promiseAdapter.notifyItemChanged(promiseAdapter.promiseList.indexOf(promise))
     }
 }
 

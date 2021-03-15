@@ -99,13 +99,15 @@
 
     <TextView
         android:id="@+id/dateDayView"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:fontFamily="@font/amita"
-        android:text="TextView"
+        android:layout_width="221dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="176dp"
+        android:fontFamily="casual"
+        android:text="2021\nLundi 3 mars"
         android:textColor="#FFFCFC"
-        android:textSize="30sp"
+        android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="@+id/searchButton"
+        app:layout_constraintHorizontal_bias="0.041"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
