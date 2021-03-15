@@ -2,6 +2,7 @@ package fr.gof.promesse.listener
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -24,12 +25,8 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
 
     override fun onItemClick(position: Int, adapter : PromiseAdapter) {
         val clickedItem = listPromesses[position]
-
-
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
         adapter.notifyItemChanged(position)
-
-
     }
 
     override fun onItemLongClick(position: Int, adapter : PromiseAdapter) {
