@@ -76,7 +76,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
         listPromesses = user.getAllPromise().toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-        deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
+        deleteListener = DeleteButtonListener(adapter, this)
         deleteButton.setOnClickListener(deleteListener)
         //deleteListener.adapter = adapter
         recyclerView.adapter = adapter

@@ -96,7 +96,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
         var clickedItem = subtaskAdapter.subtaskList[position]
         clickedItem.done = !clickedItem.done
         user.updateDoneSubtask(clickedItem, clickedItem.done)
-        promiseAdapter.notifyItemChanged(promiseAdapter.promiseList.indexOf(promise))
+        promiseAdapter.notifyDataSetChanged()
     }
 }
 

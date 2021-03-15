@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_weight="6"
+    android:background="@android:color/transparent"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardElevation="0dp">
 
@@ -13,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
         android:textColor="?android:attr/textColorSecondary" />
 
 </androidx.cardview.widget.CardView>

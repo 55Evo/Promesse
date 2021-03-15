@@ -7,8 +7,9 @@ class SubtaskListener(subtaskList: Any, promiseManagerActivity: PromiseManagerAc
 
     override fun onItemDelete(position: Int, subtaskEditorAdapter: SubtaskEditorAdapter) {
         subtaskEditorAdapter.subtaskList.removeAt(position)
-        subtaskEditorAdapter.notifyItemRemoved(position)
-        subtaskEditorAdapter.notifyItemRangeChanged(position, subtaskEditorAdapter.subtaskList.size)
+//        subtaskEditorAdapter.notifyItemRemoved(position)
+//        subtaskEditorAdapter.notifyItemRangeChanged(position, subtaskEditorAdapter.subtaskList.size)
+        subtaskEditorAdapter.notifyDataSetChanged()
     }
 
     override fun onItemCheckedChanged(position: Int, subtaskEditorAdapter: SubtaskEditorAdapter) {
