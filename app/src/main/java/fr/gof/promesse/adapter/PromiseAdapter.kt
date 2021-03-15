@@ -38,7 +38,6 @@ class PromiseAdapter(
     private var lastPosition = -1
     private var sortedCategory = false
     var displayAnimation = false
-    var stateZoom = false
 
 
     override fun getItemCount() = promiseList.size
@@ -115,8 +114,6 @@ class PromiseAdapter(
                 if (displayAnimation ){
                     displayAnimation = false
                     if (!promiseList[holder.adapterPosition].getFocus()){
-
-                        stateZoom = true
                         promiseList[holder.adapterPosition].setFocus(true)
                         holder.logo.animation = AnimationUtils.loadAnimation(context, R.anim.zoomin)
                     }
@@ -124,7 +121,6 @@ class PromiseAdapter(
                 else{
                     if (promiseList[holder.adapterPosition].getFocus()){
                         holder.logo.animation = AnimationUtils.loadAnimation(context, R.anim.zoomout)
-                       // stateZoom=false
                         promiseList[holder.adapterPosition].setFocus(false)
 
                     }
@@ -230,10 +226,10 @@ class PromiseAdapter(
                         } else {
                             displayAnimation = true
                             listener.onItemClick(posAdapter, this@PromiseAdapter)
-                            Log.d("____________________<--------->_______________",
-                                promise.isDescDeployed.toString())
-                            description.visibility =
-                                if (!promise.isDescDeployed) View.VISIBLE else View.GONE
+//                            Log.d("____________________<--------->_______________",
+//                                promise.isDescDeployed.toString())
+//                            description.visibility =
+//                                if (!promise.isDescDeployed) View.VISIBLE else View.GONE
 
 
                             //promise.isDescDeployed = !promise.isDescDeployed
@@ -243,7 +239,7 @@ class PromiseAdapter(
                 }
 
                //this@PromiseAdapter.notifyDataSetChanged()
-                this@PromiseAdapter.notifyItemChanged(adapterPosition)
+            // this@PromiseAdapter.notifyItemChanged(adapterPosition)
             }
         }
 
