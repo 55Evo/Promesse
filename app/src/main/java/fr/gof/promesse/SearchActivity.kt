@@ -75,11 +75,11 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
 
         listPromesses = user.getAllPromise().toMutableList()
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-        deleteListener = DeleteButtonListener(adapter, this)
-        deleteButton.setOnClickListener(deleteListener)
-        //deleteListener.adapter = adapter
-        recyclerView.adapter = adapter
+//        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
+//        deleteListener = DeleteButtonListener(adapter, this)
+//        deleteButton.setOnClickListener(deleteListener)
+//        //deleteListener.adapter = adapter
+//        recyclerView.adapter = adapter
         //adapter.notifyDataSetChanged()
 
 
@@ -179,8 +179,8 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         })
 
        // listPromesses = utils.user.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
-        listPromesses = user.getAllPromise().toMutableList()
-        this.recyclerView.adapter = adapter
+//        listPromesses = user.getAllPromise().toMutableList()
+//        this.recyclerView.adapter = adapter
     }
     private fun lockSlider(){
         slidr.lock()
@@ -238,7 +238,8 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         super.onResume()
         listPromesses = user.getAllPromise().toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-        deleteListener.adapter = adapter
+        deleteListener = DeleteButtonListener(adapter, this)
+        deleteButton.setOnClickListener(deleteListener)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
         materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
