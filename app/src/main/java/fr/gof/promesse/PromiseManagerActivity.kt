@@ -51,17 +51,7 @@ class PromiseManagerActivity : AppCompatActivity() {
 
     )
     private lateinit var slidr: SlidrInterface
-    var  config : SlidrConfig =  SlidrConfig.Builder()
-        .position(SlidrPosition.LEFT)
-        .sensitivity(1f)
-        .scrimColor(Color.BLACK)
-        .scrimStartAlpha(0.8f)
-        .scrimEndAlpha(0f)
-        .velocityThreshold(2400F)
-        .distanceThreshold(0.25f)
-        .edge(true)
-        .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
-        .build();
+
 
     lateinit var adapterCategory : CategoryAdapter
     lateinit var adapterSubtask : SubtaskEditorAdapter

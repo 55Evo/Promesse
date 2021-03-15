@@ -8,12 +8,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.r0adkll.slidr.Slidr
 import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrInterface
 import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.PromiseAdapter
+import fr.gof.promesse.listener.DeleteButtonListener
 import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.model.Promise
 import org.naishadhparmar.zcustomcalendar.CustomCalendar
@@ -31,7 +33,7 @@ import kotlin.collections.HashMap
  */
 class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     OnDateSelectedListener {
-
+    lateinit var deleteListener : DeleteButtonListener
     lateinit var customCalendar: CustomCalendar
     lateinit var promises: MutableList<Promise>
     lateinit var promisesOfTheSelectedDay: MutableList<Promise>
@@ -43,6 +45,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     var descHashMap : MutableMap<Any, Property> = HashMap()
     lateinit var monthDisplay : TextView
     private lateinit var slidr: SlidrInterface
+    var deleteButton : FloatingActionButton = findViewById(R.id.deleteButton)
     var  config : SlidrConfig =  SlidrConfig.Builder()
         .position(SlidrPosition.LEFT)
         .sensitivity(1f)
@@ -61,8 +64,11 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.calendar_activity)
+
         setDaysInFrench()
+
         slidr = Slidr.attach(this, utils.config);
         monthDisplay = findViewById(R.id.monthTextView)
         promisesOfTheSelectedDay = user.getPromisesOfTheDay(Date(System.currentTimeMillis())).toMutableList()
@@ -78,6 +84,8 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.PREVIOUS, this)
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.NEXT, this)
         customCalendar.monthYearTextView.visibility = View.GONE
+        adapter = PromiseAdapter(promises, PromiseEventListener(promises, this),this)
+
     }
 
     private fun lockSlider(){
@@ -174,6 +182,8 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         month: Calendar,
         selectedDay: Int = 0
     ) {
+
+
         promises = user.getAllPromisesOfTheMonth(user.email,month.time).toMutableList()
         var occurencePromises = IntArray(32) {0}
         for (promise: Promise in promises) {
@@ -193,6 +203,11 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         llm.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = llm
         adapter = PromiseAdapter(promisesOfTheSelectedDay, PromiseEventListener(promisesOfTheSelectedDay, this), this)
+        if (deleteListener == null)
+        deleteListener = DeleteButtonListener(adapter, this)
+        deleteButton.setOnClickListener(deleteListener)
+        deleteListener.adapter = adapter
+
         customCalendar.setDate(month, dateHashMap)
 //        adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter

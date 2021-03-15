@@ -242,7 +242,8 @@ class PromiseAdapter(
                     }
                 }
 
-               // this@PromiseAdapter.notifyItemChanged(posAdapter)
+               //this@PromiseAdapter.notifyDataSetChanged()
+                this@PromiseAdapter.notifyItemChanged(adapterPosition)
             }
         }
 

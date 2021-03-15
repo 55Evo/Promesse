@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="6">
+    android:layout_weight="6"
+    android:background="@android:color/transparent"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:cardMaxElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +18,8 @@
             android:id="@+id/checkBoxDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0" />
+            android:layout_weight="0"
+            android:background="@android:color/transparent" />
 
         <EditText
             android:id="@+id/editTextSubtask"
