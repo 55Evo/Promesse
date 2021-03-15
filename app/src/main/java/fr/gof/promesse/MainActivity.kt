@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         date.text = res
 
         recyclerView.adapter = adapter
-        deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
+        deleteListener = DeleteButtonListener(adapter, this)
         del.setOnClickListener(deleteListener)
         enableSwipeToDoneOrReport()
         //enableSwipeUpDown()

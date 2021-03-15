@@ -23,7 +23,7 @@ import fr.gof.promesse.model.Promise
  * @property promiseDataBase
  * @constructor Create empty Delete button listener
  */
-class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity, val promiseDataBase : PromiseDataBase): View.OnClickListener {
+class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity): View.OnClickListener {
     override fun onClick(v: View?) {
         v?.clearAnimation()
         v?.animate()?.apply {
@@ -53,17 +53,14 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
 
     private fun updateView(v: View?) {
         adapter.inSelection = false
-        adapter.notifyDataSetChanged()
+        Handler().postDelayed({adapter.notifyDataSetChanged()}, 450)
         Handler().postDelayed({
             v?.visibility = View.GONE
             if (context is MainActivity) {
                 val addButton: FloatingActionButton = context.findViewById(R.id.buttonAdd)
                 addButton.visibility = View.VISIBLE
             }
-
         }, 1000)
-
-
     }
 
     private fun displayPopup(listPromesses: MutableList<Promise>) {
