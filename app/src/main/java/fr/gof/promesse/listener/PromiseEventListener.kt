@@ -26,7 +26,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     override fun onItemClick(position: Int, adapter : PromiseAdapter) {
         val clickedItem = listPromesses[position]
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
-        adapter.notifyItemChanged(position)
+        adapter.notifyItemChanged(position, true);
     }
 
     override fun onItemLongClick(position: Int, adapter : PromiseAdapter) {
@@ -49,9 +49,6 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
 
     override fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = promiseAdapter.promiseList[position]
-        Log.d("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",clickedItem.id.toString() + "  " +clickedItem.dateCreation.toString()+"  "+clickedItem.category.toString()
-        + clickedItem.description)
-
         var p = clickedItem.copy()
 
         val intent = Intent(context, PromiseManagerActivity::class.java)
@@ -72,10 +69,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
         if (adapter.nbPromisesChecked == 0) {
             adapter.inSelection = false
             val deleteButton: FloatingActionButton = context.findViewById(R.id.deleteButton)
-
             deleteButton.visibility = View.GONE
-
-
             if (context is MainActivity) {
                 val addButton: FloatingActionButton = context.findViewById(R.id.buttonAdd)
                 addButton.visibility = View.VISIBLE

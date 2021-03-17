@@ -67,34 +67,14 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         deleteButton = findViewById(R.id.deleteButton)
         materialSearchBar.inflateMenu(R.menu.app_menu)
         materialSearchBar.menu.setOnMenuItemClickListener(this as PopupMenu.OnMenuItemClickListener)
-       // materialSearchBar.setCardViewElevation(10)
         materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
-
-
-
-
-
         listPromesses = user.getAllPromise().toMutableList()
-//        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-//        deleteListener = DeleteButtonListener(adapter, this)
-//        deleteButton.setOnClickListener(deleteListener)
-//        //deleteListener.adapter = adapter
-//        recyclerView.adapter = adapter
-        //adapter.notifyDataSetChanged()
-
-
         val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this)
-
         customSuggestionAdapter.suggestions = listPromesses
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-
-
-
-//
         customSuggestionAdapter.suggestions = user.getAllPromise().toList()
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-
         materialSearchBar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 //materialSearchBar.clearSuggestions()
@@ -109,50 +89,12 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                             choiceOfSort).toMutableList()
 
                     if (suggest.size < 1) {
-
-                        Log.d("_______________________---------------_________________",
-                            suggest.size.toString())
-                        Log.d("_______________________----- ok ----------_________________",
-                            suggest.size.toString())
                         //materialSearchBar.clearSuggestions()
                         materialSearchBar.hideSuggestionsList()
                     } else {
-                        //materialSearchBar.lastSuggestions = suggest
-
-                        //materialSearchBar.lastSuggestions = user.getSearchResultsSorted(materialSearchBar.text.toLowerCase(), Sort.DATE).toList()
-
-                       // customSuggestionAdapter.suggestions = suggest
                         materialSearchBar.updateLastSuggestions(suggest)
                     }
                 }
-              //  }
-               // materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-//                var suggest = mutableListOf<Promise>()
-//               // materialSearchBar.setMaxSuggestionCount(0);
-//               // materialSearchBar.updateLastSuggestions(suggest)
-//
-//                for (search in customSuggestionAdapter.suggestions) {
-//                    if (search.title.toLowerCase().contains(materialSearchBar.text.toLowerCase())) {
-//                        suggest.add(search)
-//                    }
-//                    //customSuggestionAdapter.suggestions = suggest
-//                    materialSearchBar.lastSuggestions = suggest
-//
-//                        customSuggestionAdapter.suggestions = suggest
-//
-//                }
-//                materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-//                // ?????????????? !!!!!!!!!!!!!!!!!!!!!
-//               materialSearchBar.setMaxSuggestionCount(suggest.size);
-//                materialSearchBar.updateLastSuggestions(suggest)
-
-
-
-//                recyclerView.adapter = customSuggestionAdapter
-//                customSuggestionAdapter.notifyDataSetChanged()
-
-
-
             }
         })
 
@@ -177,10 +119,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
             }
         })
-
-       // listPromesses = utils.user.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
-//        listPromesses = user.getAllPromise().toMutableList()
-//        this.recyclerView.adapter = adapter
     }
     private fun lockSlider(){
         slidr.lock()
@@ -193,24 +131,19 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         {
             materialSearchBar.closeSearch()
             materialSearchBar.setPlaceHolder(text)
-
-
         }
 
         valeurActuelle = text
         listPromesses = user.getSearchResultsSorted(text, choiceOfSort).toMutableList()
         deleteButton.visibility = View.INVISIBLE
-
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
-
         materialSearchBar.clearSuggestions()
         materialSearchBar.hideSuggestionsList()
         hideKeyboard(this)
         materialSearchBar.closeSearch()
-
     }
 
     private fun hideKeyboard(activity: Activity) {

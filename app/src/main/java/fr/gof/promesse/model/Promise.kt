@@ -40,24 +40,7 @@ data class Promise(
     private var focus = false
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
 
-//    override operator fun compareTo(other: Promise): Int {
-//        return if(this.dateTodo == other.dateTodo){
-//            -1
-//        } else {
-//            if(this.dateTodo.after(other.dateTodo)){
-//                1
-//            } else {
-//                -1
-//            }
-//        }
-//    }
 
-    fun setFocus(value : Boolean){
-        focus = value
-    }
-    fun getFocus():Boolean{
-        return focus
-    }
     override fun equals(other: Any?): Boolean {
         if( other is Promise){
             return other.id == this.id
@@ -79,14 +62,7 @@ data class Promise(
      * Get date creation to string
      *
      */
-    fun getDateToString()
-//    {
-//        val cal = Calendar.getInstance()
-//        cal.time = dateTodo
-//        val day = cal[Calendar.DAT]
-//        return
-    //}
-    = dfl.format(dateTodo)
+    fun getDateToString()= dfl.format(dateTodo)
 
     override fun compareTo(other: Promise): Int {
         return if (this.id==other.id) return 1 else return -1

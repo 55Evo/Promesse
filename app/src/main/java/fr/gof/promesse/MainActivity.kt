@@ -56,12 +56,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         slidr = Slidr.attach(this, config);
         setContentView(R.layout.activity_main)
         dateOfTheDay = Date(System.currentTimeMillis())
-
         recyclerView = findViewById(R.id.recyclerViewPromesse)
         recyclerView.setHasFixedSize(true)
         val llm = LinearLayoutManager(this)
@@ -72,7 +69,6 @@ class MainActivity : AppCompatActivity() {
         layout = findViewById(R.id.ConstraintLayout)
         user.loadPromises(promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay().toMutableList()
-
         adapter = PromiseAdapter(listPromesse,
             PromiseEventListener(listPromesse, this),
             this,
@@ -80,16 +76,12 @@ class MainActivity : AppCompatActivity() {
 
         val del = findViewById<FloatingActionButton>(R.id.deleteButton)
         var date = findViewById<TextView>(R.id.dateDayView)
-
         val dt = Date()
         val dfs = DateFormatSymbols(Locale.FRANCE)
         val dateFormat = SimpleDateFormat("EEEE dd MMMM", dfs)
         val date1 = dateFormat.format(dt)
-
-
         println(date1)
         var res =""
-
         val formatter = SimpleDateFormat("YYYY")
         val date2 = formatter.format(Date())
         res +=date2
@@ -102,6 +94,9 @@ class MainActivity : AppCompatActivity() {
         enableSwipeToDoneOrReport()
         //enableSwipeUpDown()
         notifications.scheduleJob(this, user)
+
+        //user.generatePromises()
+
     }
     private fun lockSlider(){
         slidr.lock()
@@ -123,7 +118,6 @@ class MainActivity : AppCompatActivity() {
                 adapter.onItemMove(source.adapterPosition, target.adapterPosition)
                 return true
             }
-
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             }
         }

@@ -22,10 +22,6 @@ import fr.gof.promesse.model.Mascot
  * @constructor Create empty Mascot adapter
  */
 class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val listener : OnItemClickListener, val database : PromiseDataBase) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
-
-//    private val inflater: LayoutInflater
-//    private val imageModelArrayList: ArrayList<Mascot>
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.mascot_item, parent, false)
         return MyViewHolder(itemView)

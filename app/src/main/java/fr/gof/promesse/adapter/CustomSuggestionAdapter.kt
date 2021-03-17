@@ -46,7 +46,6 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
             title = itemView.findViewById(R.id.textSuggest)
             title.setOnClickListener(this)
         }
-
         override fun onClick(v: View?) {
             listener.onItemClick(v)
         }

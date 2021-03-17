@@ -113,10 +113,13 @@ class PromiseManagerActivity : AppCompatActivity() {
             rvCategory.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
 
         if (promiseNm != null) {
+            adapterCategory.chosenCategory = promiseNm.category
             adapterCategory.listCategory[adapterCategory.listCategory.lastIndexOf(promiseNm.category)].check = true
+            rvCategory.scrollToPosition(adapterCategory.listCategory.lastIndexOf(promiseNm.category))
         }
         else{
-            adapterCategory.listCategory[adapterCategory.listCategory.lastIndexOf(Category.DEFAUT)].check = true
+           adapterCategory.listCategory[adapterCategory.listCategory.lastIndexOf(Category.DEFAUT)].check = true
+
         }
 //        adapter.listCategory[adapter.listCategory.indexOf(adapter.chosenCategory)].background = R.drawable.cuisine
 //        adapter.notifyDataSetChanged()
@@ -221,6 +224,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         val promiseNm = promise
 
         if (promiseNm != null) {
+//            promiseNm.category = adapterCategory.chosenCategory
             updatePromise(
                 promiseNm,
                 editTextTitle,
