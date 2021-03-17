@@ -19,7 +19,6 @@ class CategoryListener(var listCategory: List<Category>, var context: Activity):
     override fun onItemClick(position: Int, adapter: CategoryAdapter, database: PromiseDataBase) {
         var category : Category = listCategory[position]
         adapter.chosenCategory = category
-       // database.updateCategory(category, promise)
     }
 
 }

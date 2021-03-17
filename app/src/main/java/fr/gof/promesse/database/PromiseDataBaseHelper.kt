@@ -64,4 +64,5 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
         db?.execSQL(createPromise)
         db?.execSQL(createSubtask)
     }
+
 }

@@ -192,7 +192,19 @@ lateinit var db : PromiseDataBase
         setSorted.addAll(setToSort)
         return setSorted
     }
+    fun generatePromises(){
 
+        for (nm in 1..10){
+            var listSubTask = mutableListOf<Subtask>()
+            listSubTask.add(Subtask(1000+nm,"sous tache numéro 1", false))
+            listSubTask.add(Subtask(700+nm,"sous tache numéro 2", false))
+            listSubTask.add(Subtask(400+nm,"sous tache numéro 3", false))
+            var promesse = Promise(-1,"Promesse numero $nm" ,Category.values()[nm%5],1,State.TODO, false,
+                "Ceci est la derscription de la premiere promesse, bon courage a vous pour la réaliser ! :)",false, Date(),Date(),listSubTask)
+            this.addPromise(promesse)
+        }
+
+    }
     /**
      * Get search results sorted
      *

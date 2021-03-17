@@ -19,7 +19,6 @@ class SubtaskAdapter(
     var subtaskList: MutableList<Subtask> = promise.subtasks
     override fun getItemCount() = subtaskList.size
 
-    //Affichage d'un item (appelé quand la liste defile ou quand on notifie un changement)
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
         holder.subtask = subtaskList[position]
         holder.checkBox.isChecked = holder.subtask.done
