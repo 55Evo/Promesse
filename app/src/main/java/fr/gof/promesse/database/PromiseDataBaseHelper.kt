@@ -25,6 +25,7 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
     val createPromise = "CREATE TABLE Promise(\n" +
             "   Id_Promise INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Title VARCHAR(50) NOT NULL,\n" +
+            "   Category VARCHAR(50) NOT NULL,\n" +
             "   Duration INT,\n" +
             "   State CHAR(10) NOT NULL,\n" +
             "   Priority LOGICAL NOT NULL,\n" +
@@ -63,4 +64,5 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
         db?.execSQL(createPromise)
         db?.execSQL(createSubtask)
     }
+
 }

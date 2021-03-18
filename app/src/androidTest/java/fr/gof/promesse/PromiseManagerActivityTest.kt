@@ -45,12 +45,12 @@ class PromiseManagerActivityTest {
      */
     @Before
     fun initValidString() {
-
-        dateTodo = Date(System.currentTimeMillis()+1000000)
-        dateCrea = Date(System.currentTimeMillis())
-        promiseToAdd = Promise(-1, "Titre", 1, State.TODO, true, "desc", false, dateCrea, dateTodo, null)
-        calendar.time = dateTodo
-        instrumentationContext = InstrumentationRegistry.getInstrumentation().context
+//
+//        dateTodo = Date(System.currentTimeMillis()+1000000)
+//        dateCrea = Date(System.currentTimeMillis())
+//        promiseToAdd = Promise(-1, "Titre", 1, State.TODO, true, "desc", false, dateCrea, dateTodo, null)
+//        calendar.time = dateTodo
+//        instrumentationContext = InstrumentationRegistry.getInstrumentation().context
     }
 
     /**

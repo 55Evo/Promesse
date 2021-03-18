@@ -1,7 +1,11 @@
 package fr.gof.promesse.model
 
+import android.util.Log
 import fr.gof.promesse.database.PromiseDataBase
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 /**
  * User
@@ -13,25 +17,46 @@ import java.util.*
  * @constructor Create empty User
  */
 data class User(var email: String, var name: String, var password: String, var mascot: Mascot){
-
+lateinit var listPromise:MutableList<Promise>
+lateinit var db : PromiseDataBase
     /**
      * Add promise
      *
      * @param promise
      * @param db
      */
-    fun addPromise(promise: Promise, db: PromiseDataBase) {
-        db.addPromise(email, promise)
+
+    fun addPromise(promise: Promise) {
+        promise.id = db.addPromise(email, promise).toInt()
+        Log.d("----------------------id---------------",promise.id.toString())
+        listAddPromise(promise)
+
     }
 
+
+    private fun listAddPromise(promise: Promise) {
+        var res = removePromise(promise)
+        Log.d("----------------ici-------------------------------------",res.toString())
+
+        listPromise.add(promise)
+    }
+
+    private fun removePromise(promise: Promise) : Boolean{
+        return listPromise.remove(promise)
+    }
+
+    fun loadPromises(db: PromiseDataBase){
+        this.db = db
+        listPromise = db.getAllPromises(email).toMutableList()
+    }
     /**
      * Get all promise
      *
      * @param db
      * @return
      */
-    fun getAllPromise(db: PromiseDataBase) : Set<Promise>{
-        return db.getAllPromises(email)
+    fun getAllPromise() : MutableList<Promise>{
+        return listPromise
     }
 
 
@@ -41,8 +66,46 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param db
      * @return
      */
-    fun getAllPromisesOfTheDay(db: PromiseDataBase) : Set<Promise>{
-        return db.getAllPromisesOfTheDay(email)
+    fun getAllPromisesOfTheDay() : Set<Promise>{
+        val sdf = SimpleDateFormat("dd/MM/yyyy")
+        var res = HashSet<Promise>()
+        for (promise in listPromise) {
+            if (promise.dateTodo !=null){
+            if (promise.dateTodo.time < System.currentTimeMillis() && promise.dateTodo.time >System.currentTimeMillis()-(86400000 * 3+1) && promise.state != State.DONE) {
+                res.add(promise)
+            }
+            }
+        }
+        return res
+    }
+
+    fun getAllPromisesOfTheDayCategory() : MutableList<Promise>{
+        var lP = this.getAllPromisesOfTheDay()
+        var res = mutableListOf<Promise>()
+        var hashMap = HashMap<Category,MutableList<Promise>>()
+        for (promise in lP){
+            var liste = mutableListOf<Promise>()
+            if (hashMap[promise.category] !=null){
+                liste = hashMap[promise.category]!!
+            }
+            liste.add(promise)
+
+            hashMap[promise.category] = liste
+        }
+        for (key in hashMap){
+            for (e in key.value){
+                res.add(e)
+            }
+        }
+        return res
+    }
+
+    fun getAllPromisesOfTheMonth(email: String, date: Date): Set<Promise>{
+        return db.getAllPromisesOfTheMonth(email,date)
+    }
+
+    fun getPromisesOfTheDay(date: Date = Date(System.currentTimeMillis())): Set<Promise> {
+        return db.getPromisesOfTheDay(email, date)
     }
 
     /**
@@ -52,7 +115,7 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param setToSort
      * @return
      *///Tirer par priorité puis par date
-    fun getPromisesSortedByPriority(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
+    fun getPromisesSortedByPriority(setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
             if(p1.state ==  State.DONE && p2.state != State.DONE)
                 1
@@ -78,8 +141,8 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param db
      * @return
      *///Fonction pour renvoyer les promesses du jour triées par priorité puis date d'exécution
-    fun getListPromises(db: PromiseDataBase) : Set<Promise>{
-        return getPromisesSortedByPriority(db, getAllPromisesOfTheDay(db))
+    fun getListPromises() : Set<Promise>{
+        return getPromisesSortedByPriority(getAllPromisesOfTheDay())
     }
 
     /**
@@ -89,7 +152,7 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param setToSort
      * @return
      *///Trier par nom puis par date
-    fun getPromisesSortedByName(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
+    fun getPromisesSortedByName( setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
             if(p1.state ==  State.DONE && p2.state != State.DONE)
                 1
@@ -116,7 +179,7 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param setToSort
      * @return
      *///Trier par date
-    fun getPromisesSortedByDate(db: PromiseDataBase, setToSort: Set<Promise>) : Set<Promise>{
+    fun getPromisesSortedByDate( setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
             if(p1.state ==  State.DONE && p2.state != State.DONE)
                 1
@@ -129,7 +192,19 @@ data class User(var email: String, var name: String, var password: String, var m
         setSorted.addAll(setToSort)
         return setSorted
     }
+    fun generatePromises(){
 
+        for (nm in 1..10){
+            var listSubTask = mutableListOf<Subtask>()
+            listSubTask.add(Subtask(1000+nm,"sous tache numéro 1", false))
+            listSubTask.add(Subtask(700+nm,"sous tache numéro 2", false))
+            listSubTask.add(Subtask(400+nm,"sous tache numéro 3", false))
+            var promesse = Promise(-1,"Promesse numero $nm" ,Category.values()[nm%5],1,State.TODO, false,
+                "Ceci est la derscription de la premiere promesse, bon courage a vous pour la réaliser ! :)",false, Date(),Date(),listSubTask)
+            this.addPromise(promesse)
+        }
+
+    }
     /**
      * Get search results sorted
      *
@@ -138,7 +213,7 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param db
      * @return
      */
-    fun getSearchResultsSorted(name : String, choiceOfSort : Sort, db: PromiseDataBase) : Set<Promise> =
+    fun getSearchResultsSorted(name: String, choiceOfSort: Sort) =
         db.getAllPromisesNameLike(name, choiceOfSort, this)
 
     /**
@@ -147,8 +222,9 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param promise
      * @param db
      */
-    fun updatePromise(promise: Promise, db: PromiseDataBase) {
+    fun updatePromise(promise: Promise) {
         db.updatePromise(email, promise)
+        listAddPromise(promise)
     }
 
     /**
@@ -157,12 +233,33 @@ data class User(var email: String, var name: String, var password: String, var m
      * @param promise
      * @param db
      */
-    fun deletePromise(promise : Promise, db : PromiseDataBase) {
+    fun deletePromise(promise: Promise) {
         db.deletePromise(promise)
+        removePromise(promise)
+
     }
 
-    fun setToDone(promise : Promise, db : PromiseDataBase) {
+    fun setToDone(promise: Promise) {
         promise.state = State.DONE
         db.updatePromise(email, promise)
+        var it = listPromise.iterator()
+        while (it.hasNext()) {
+            var p = it.next()
+            if (p.id == promise.id) {
+                it.remove()
+            }
+
+        }
+
+    }
+
+    fun updatePromiseDate(promise: Promise) {
+        db.updateDate(promise)
+        listAddPromise(promise)
+
+    }
+
+    fun updateDoneSubtask(clickedItem: Subtask, done: Boolean) {
+        db.updateSubtask(clickedItem.id, clickedItem.done)
     }
 }

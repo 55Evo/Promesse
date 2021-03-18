@@ -2,9 +2,11 @@ package fr.gof.promesse
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -16,6 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mancj.materialsearchbar.MaterialSearchBar
+import com.r0adkll.slidr.Slidr
+import com.r0adkll.slidr.model.SlidrConfig
+import com.r0adkll.slidr.model.SlidrInterface
+import com.r0adkll.slidr.model.SlidrPosition
+import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.CustomSuggestionAdapter
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.listener.PromiseEventListener
@@ -34,11 +41,24 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     lateinit var materialSearchBar : MaterialSearchBar
     var choiceOfSort : Sort = Sort.NAME
     var valeurActuelle : String = ""
-    lateinit var deleteButton : FloatingActionButton
-    lateinit var deleteListener : DeleteButtonListener
-
+    private lateinit var deleteButton : FloatingActionButton
+    private lateinit var deleteListener : DeleteButtonListener
+    private lateinit var slidr: SlidrInterface
+    var  config : SlidrConfig =  SlidrConfig.Builder()
+        .position(SlidrPosition.LEFT)
+        .sensitivity(1f)
+        .scrimColor(Color.BLACK)
+        .scrimStartAlpha(0.8f)
+        .scrimEndAlpha(0f)
+        .velocityThreshold(2400F)
+        .distanceThreshold(0.25f)
+        .edge(true)
+        .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
+        .build();
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        slidr = Slidr.attach(this, utils.config);
         setContentView(R.layout.activity_search)
         recyclerView  = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -47,33 +67,33 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         deleteButton = findViewById(R.id.deleteButton)
         materialSearchBar.inflateMenu(R.menu.app_menu)
         materialSearchBar.menu.setOnMenuItemClickListener(this as PopupMenu.OnMenuItemClickListener)
-        //materialSearchBar.setCardViewElevation(10)
-        materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),utils.user.name))
+        materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
+        listPromesses = user.getAllPromise().toMutableList()
         val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this)
-
-        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
+        customSuggestionAdapter.suggestions = listPromesses
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-
+        customSuggestionAdapter.suggestions = user.getAllPromise().toList()
+        materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
         materialSearchBar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                //materialSearchBar.clearSuggestions()
+                //materialSearchBar.hideSuggestionsList()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (materialSearchBar.text.length > before) {
-                    materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-                    val suggest = mutableListOf<Promise>()
+                if (start > 0) {
+                    var suggest =
+                        user.getSearchResultsSorted((materialSearchBar.text.toLowerCase()),
+                            choiceOfSort).toMutableList()
 
-                    for (search in customSuggestionAdapter.suggestions) {
-                        if (search.title.toLowerCase().contains(materialSearchBar.text.toLowerCase())) {
-                            suggest.add(search)
-                        }
-                        materialSearchBar.lastSuggestions = suggest
+                    if (suggest.size < 1) {
+                        //materialSearchBar.clearSuggestions()
+                        materialSearchBar.hideSuggestionsList()
+                    } else {
+                        materialSearchBar.updateLastSuggestions(suggest)
                     }
-                } else {
-                    customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
-                    materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
                 }
             }
         })
@@ -83,23 +103,29 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                 if (!enabled) {
                     recyclerView.adapter = adapter
                 }
+                //materialSearchBar.clearSuggestions()
             }
 
             override fun onSearchConfirmed(text: CharSequence?) {
                 startResearch(text.toString())
             }
             override fun onButtonClicked(buttonCode: Int) {
+//                adapter.notifyDataSetChanged()
+//
+//                materialSearchBar.closeSearch()
+//                materialSearchBar.clearSuggestions()
+//                materialSearchBar.hideSuggestionsList()
+
+
             }
         })
-
-        listPromesses = utils.user.getSearchResultsSorted("", choiceOfSort, promiseDataBase).toMutableList()
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
-
-        deleteListener = DeleteButtonListener(adapter, this, promiseDataBase)
-        deleteButton.setOnClickListener(deleteListener)
-        this.recyclerView.adapter = adapter
     }
-
+    private fun lockSlider(){
+        slidr.lock()
+    }
+    private fun unLockSlider(){
+        slidr.unlock()
+    }
     private fun startResearch(text: String, relaunch : Boolean = true) {
         if (relaunch)
         {
@@ -108,17 +134,19 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         }
 
         valeurActuelle = text
-        listPromesses = utils.user.getSearchResultsSorted(text, choiceOfSort, promiseDataBase).toMutableList()
+        listPromesses = user.getSearchResultsSorted(text, choiceOfSort).toMutableList()
         deleteButton.visibility = View.INVISIBLE
-
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
+        adapter.notifyDataSetChanged()
+        materialSearchBar.clearSuggestions()
+        materialSearchBar.hideSuggestionsList()
         hideKeyboard(this)
-
+        materialSearchBar.closeSearch()
     }
 
-    fun hideKeyboard(activity: Activity) {
+    private fun hideKeyboard(activity: Activity) {
         val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         //Find the currently focused view, so we can grab the correct window token from it.
         var view = activity.currentFocus
@@ -141,14 +169,13 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
     override fun onResume() {
         super.onResume()
-        listPromesses = utils.user.getAllPromise(promiseDataBase).toMutableList()
+        listPromesses = user.getAllPromise().toMutableList()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-        deleteListener.adapter = adapter
+        deleteListener = DeleteButtonListener(adapter, this)
+        deleteButton.setOnClickListener(deleteListener)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
-        customSuggestionAdapter.suggestions = promiseDataBase.getAllPromises(utils.user.email).toList()
-        materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-        materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),utils.user.name))
+        materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
     }
 
     fun onAddButtonClicked (v : View) {

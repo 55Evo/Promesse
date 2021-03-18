@@ -21,7 +21,7 @@ import fr.gof.promesse.model.Promise
 class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSuggestionAdapter.OnItemClickListener) : SuggestionsAdapter<Promise, CustomSuggestionAdapter.SuggestionHolder>(inflater) {
 
     override fun onBindSuggestionHolder(promise: Promise, holder: SuggestionHolder, position: Int) {
-        holder.title.text = promise.title;
+        holder.title.text = promise.title
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder {
         val view: View = layoutInflater.inflate(R.layout.suggest_item, parent, false)
@@ -46,7 +46,6 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
             title = itemView.findViewById(R.id.textSuggest)
             title.setOnClickListener(this)
         }
-
         override fun onClick(v: View?) {
             listener.onItemClick(v)
         }

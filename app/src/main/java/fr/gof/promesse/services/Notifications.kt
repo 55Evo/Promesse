@@ -11,11 +11,10 @@ import android.content.Intent
 import android.os.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import fr.gof.promesse.MainActivity
 import fr.gof.promesse.R
-import fr.gof.promesse.SearchActivity
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
-import fr.gof.promesse.model.State
 import fr.gof.promesse.model.User
 import java.util.*
 
@@ -32,6 +31,7 @@ class Notifications : JobService() {
     var context : Context = this
     lateinit var listPromises : MutableList<Promise>
     lateinit var email : String
+    private val oneDayInMilis: Long = 3600000L
 
 
     override fun onStartJob(params: JobParameters?): Boolean {
@@ -42,7 +42,10 @@ class Notifications : JobService() {
         updateListPromises()
 
         if(listPromises.size > 0){
-            sendNotification(listPromises)
+            val now = Calendar.getInstance()
+            //Send notification if it's 8 A.M
+            if(now.get(Calendar.HOUR_OF_DAY) == 8)
+                sendNotification(listPromises)
         }
         return true
     }
@@ -56,8 +59,8 @@ class Notifications : JobService() {
         val bundle = PersistableBundle()
         bundle.putString("email", user.email)
         val jobInbo = JobInfo.Builder(0, serviceComponent)
-                .setMinimumLatency(1000) // Temps d'attente minimal avant déclenchement
-                .setOverrideDeadline(2000) // Temps d'attente maximal avant déclenchement
+                .setPersisted(true)
+                .setPeriodic(oneDayInMilis) // Temps d'attente entre deux déclenchements (1 jour)
                 .setExtras(bundle)
                 .build()
         val jobScheduler: JobScheduler = context.getSystemService(JobScheduler::class.java)
@@ -70,7 +73,7 @@ class Notifications : JobService() {
      * @param promises
      */
     fun sendNotification(promises: MutableList<Promise>){
-        val intent = Intent(context, SearchActivity::class.java).apply {
+        val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
@@ -108,7 +111,7 @@ class Notifications : JobService() {
     }
 
     private fun updateListPromises(){
-        listPromises = promiseDataBase.getAllPromisesOfTheDay(email).toMutableList()
+        listPromises = promiseDataBase.getAllPromisesOfTheDay(email, Date(System.currentTimeMillis())).toMutableList()
     }
 
     private fun dateNearToNow(date: Date) : Boolean {

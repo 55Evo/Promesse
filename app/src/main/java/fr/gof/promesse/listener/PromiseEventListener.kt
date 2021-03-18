@@ -2,10 +2,14 @@ package fr.gof.promesse.listener
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Handler
+import android.util.Log
 import android.view.View
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import fr.gof.promesse.adapter.SubtaskAdapter
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.MainActivity
+import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.PromiseManagerActivity
 import fr.gof.promesse.R
 import fr.gof.promesse.model.Promise
@@ -22,7 +26,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     override fun onItemClick(position: Int, adapter : PromiseAdapter) {
         val clickedItem = listPromesses[position]
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
-        adapter.notifyItemChanged(position)
+        adapter.notifyItemChanged(position, true);
     }
 
     override fun onItemLongClick(position: Int, adapter : PromiseAdapter) {
@@ -44,9 +48,11 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     }
 
     override fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter) {
-        val clickedItem = listPromesses[position]
+        var clickedItem = promiseAdapter.promiseList[position]
+        var p = clickedItem.copy()
+
         val intent = Intent(context, PromiseManagerActivity::class.java)
-        intent.putExtra("Promise", clickedItem)
+        intent.putExtra("Promise", p)
         context.startActivity(intent)
     }
 
@@ -58,6 +64,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     private fun uncheckItem(clickedItem: Promise, adapter: PromiseAdapter) {
         if (clickedItem.isChecked) adapter.nbPromisesChecked--
         else adapter.nbPromisesChecked++
+        Log.d("Nbpromessescheck", adapter.nbPromisesChecked.toString())
         clickedItem.isChecked = !clickedItem.isChecked
         if (adapter.nbPromisesChecked == 0) {
             adapter.inSelection = false
@@ -69,6 +76,18 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
             }
         }
         adapter.notifyDataSetChanged()
+    }
+
+    override fun onCheckSubtaskChanged(
+        position: Int,
+        promise :Promise,
+        subtaskAdapter: SubtaskAdapter,
+        promiseAdapter: PromiseAdapter
+    ) {
+        var clickedItem = subtaskAdapter.subtaskList[position]
+        clickedItem.done = !clickedItem.done
+        user.updateDoneSubtask(clickedItem, clickedItem.done)
+        promiseAdapter.notifyDataSetChanged()
     }
 }
 
