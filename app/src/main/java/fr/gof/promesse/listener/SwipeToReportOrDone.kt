@@ -38,24 +38,26 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
 
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        val dragFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT //ItemTouchHelper.UP or ItemTouchHelper.DOWN //or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
+        val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+        val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         return makeMovementFlags(dragFlags, swipeFlags)
     }
 
-
+    override fun isLongPressDragEnabled(): Boolean {
+        return true
+    }
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, viewHolder1: RecyclerView.ViewHolder): Boolean {
             return true;
     }
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         if (dX<0){ // left case
                leftTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
        else if (dX>0){ //right treatment
                 rightTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
-
 
     }
 
@@ -74,7 +76,6 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     }
 
     private fun rightTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         val itemView = viewHolder.itemView
         val itemHeight = itemView.height
         val isCancelled = dX == 0f && !isCurrentlyActive

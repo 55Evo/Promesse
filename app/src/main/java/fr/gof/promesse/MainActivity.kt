@@ -121,34 +121,23 @@ class MainActivity : AppCompatActivity() {
         res += date2
         res += "\n" + date1.substring(0, 1).toUpperCase() + date1.substring(1).toLowerCase();
         date.text = res
-    }
 
+        recyclerView.adapter = adapter
+        deleteListener = DeleteButtonListener(adapter, this)
+        del.setOnClickListener(deleteListener)
+        enableSwipeToDoneOrReport()
+        //notifications.scheduleJob(this, user)
+
+        //user.generatePromises()
+
+    }
     private fun lockSlider(){
         slidr.lock()
     }
     private fun unLockSlider(){
         slidr.unlock()
     }
-    private fun enableSwipeUpDown(){
-        val swipeupDown: SwipeupDown = object : SwipeupDown(this) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                source: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                if (source.itemViewType != target.itemViewType) {
-                    return false
-                }
-                // Notify the adapter of the move
-                adapter.onItemMove(source.adapterPosition, target.adapterPosition)
-                return true
-            }
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            }
-        }
-        val itemReport = ItemTouchHelper(swipeupDown)
-        itemReport.attachToRecyclerView(recyclerView)
-    }
+
 
     private fun enableSwipeToDoneOrReport(){
         val swipeToReportOrDone: SwipeToReportOrDone = object : SwipeToReportOrDone(this) {
@@ -170,13 +159,51 @@ class MainActivity : AppCompatActivity() {
 
                     }
                 }
+                if (adapter.inSelection){
+                    for(l in adapter.promiseList){
+                        l.isChecked = false
+                    }
+                    adapter.nbPromisesChecked = 0
+                    adapter.inSelection = false
+                    var bundle = Bundle()
+                    bundle.putBoolean("longclick", true)
+                    for (i in 0..(adapter.promiseList.size)){
+                        adapter.notifyItemChanged(i, bundle);
+                    }
+                    adapter.showOffDdelete()
+                }
                 listPromesse.removeAt(position)
                 adapter.notifyItemRemoved(position)
                 adapter.notifyItemRangeChanged(position, listPromesse.size)
                 snackbarUndo(message, i, promise, date, position)
 
-            }
 
+            }
+            override fun onMove(
+                recyclerView: RecyclerView,
+                source: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                //adapter.inDrag = true
+                if (source.itemViewType != target.itemViewType) {
+                    return false
+                }
+                adapter.nbPromisesChecked = 0
+                adapter.inSelection = false
+                adapter.promiseList[source.adapterPosition].isChecked = false
+                var bundle = Bundle()
+                bundle.putBoolean("longclick", true)
+                for (i in 0..adapter.promiseList.size )
+                    adapter.notifyItemChanged(i,bundle)
+                adapter.showOffDdelete()
+                // Notify the adapter of the move
+
+
+
+
+                adapter.onItemMove(source.adapterPosition, target.adapterPosition)
+                return true
+            }
             private fun snackbarUndo(
                 message: String,
                 i: Int,

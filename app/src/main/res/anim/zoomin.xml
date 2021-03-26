@@ -3,6 +3,6 @@
     android:toXScale="1.5"
     android:fromYScale="1"
     android:toYScale="1.5"
-    android:duration="700"
+    android:duration="300"
     android:fillAfter="true">
 </scale>

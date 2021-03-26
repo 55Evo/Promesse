@@ -14,6 +14,7 @@ import java.util.*
 /**
  * Promise adapter
  *
+ *
  * @property subtaskList
  * @property listener
  * @constructor Create empty Promise adapter

@@ -2,6 +2,7 @@ package fr.gof.promesse.listener
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -26,23 +27,41 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     override fun onItemClick(position: Int, adapter : PromiseAdapter) {
         val clickedItem = listPromesses[position]
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
-        adapter.notifyItemChanged(position, true);
+        var bundle = Bundle()
+        bundle.putBoolean("click", true)
+        adapter.notifyItemChanged(position, bundle);
+    }
+    fun uncheckitems(adapter : PromiseAdapter){
+        var bundle = Bundle()
+        bundle.putBoolean("longclick", true)
+        for (i in 0..(listPromesses.size)){
+            adapter.notifyItemChanged(i, bundle);
+        }
     }
 
     override fun onItemLongClick(position: Int, adapter : PromiseAdapter) {
-        val clickedItem = listPromesses[position]
+        var clickedItem = listPromesses[position]
         if(!adapter.inSelection){
             clickedItem.isChecked = true
             adapter.nbPromisesChecked++
             adapter.inSelection = true
-            adapter.notifyDataSetChanged()
+
+            //adapter.notifyItemChanged(position)
+            Log.d("_______________________1__________________________________________oooo","la")
             val deleteButton : FloatingActionButton = context.findViewById(R.id.deleteButton)
             deleteButton.visibility = View.VISIBLE
             if (context is MainActivity) {
                 val addButton : FloatingActionButton = context.findViewById(R.id.buttonAdd)
                 addButton.visibility = View.GONE
             }
+            var bundle = Bundle()
+            bundle.putBoolean("longclick", true)
+            for (i in 0..(listPromesses.size)){
+                adapter.notifyItemChanged(i, bundle);
+            }
+
         } else {
+            Log.d("___________________nnnon______________________________________________oooo","la")
             uncheckItem(clickedItem, adapter)
         }
     }
@@ -74,8 +93,17 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
                 val addButton: FloatingActionButton = context.findViewById(R.id.buttonAdd)
                 addButton.visibility = View.VISIBLE
             }
+            uncheckitems(adapter)
         }
-        adapter.notifyDataSetChanged()
+        else{
+
+        var bundle = Bundle()
+        bundle.putBoolean("longclick", true)
+            adapter.notifyItemChanged(adapter.promiseList.lastIndexOf(clickedItem), bundle);
+
+        //adapter.notifyItemChanged(adapter.promiseList.lastIndexOf(clickedItem))
+        }
+
     }
 
     override fun onCheckSubtaskChanged(
@@ -87,7 +115,10 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
         var clickedItem = subtaskAdapter.subtaskList[position]
         clickedItem.done = !clickedItem.done
         user.updateDoneSubtask(clickedItem, clickedItem.done)
-        promiseAdapter.notifyDataSetChanged()
+        //promiseAdapter.notifyItemChanged(position)
+        var bundle = Bundle()
+        bundle.putBoolean("clicksubtask", true)
+        promiseAdapter.notifyItemChanged(promiseAdapter.promiseList.lastIndexOf(promise), bundle)
     }
 }
 
