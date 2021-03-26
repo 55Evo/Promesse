@@ -75,14 +75,28 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|start"
-                        android:layout_marginLeft="10dp"
-                        android:text="11-01-21"
-                        android:textStyle="italic" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|start"
+                            android:layout_marginLeft="10dp"
+                            android:text="11-01-21"
+                            android:textStyle="italic" />
+
+                        <TextView
+                            android:id="@+id/textViewInProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:text="@string/inprogress" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -124,23 +138,85 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layoutButtonEdit"
-                    android:layout_width="147dp"
-                    android:layout_height="54dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_weight="0"
                     android:background="@android:color/transparent">
+
+                    <Button
+                        android:id="@+id/buttonStop"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/stop"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:visibility="visible"
+                        app:icon="@android:drawable/picture_frame"
+                        app:iconTint="?android:attr/textColorSecondary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/buttonStart"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/start"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:visibility="gone"
+                        app:icon="@android:drawable/ic_media_play"
+                        app:iconTint="?android:attr/textColorSecondary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
+                        app:layout_constraintStart_toEndOf="@id/buttonStop"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/buttonRedo"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/redo"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:visibility="gone"
+                        app:icon="@android:drawable/ic_popup_sync"
+                        app:iconTint="?android:attr/textColorSecondary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
+                        app:layout_constraintStart_toEndOf="@id/buttonStop"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/buttonDone"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/done"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:visibility="visible"
+                        app:icon="@drawable/ic_baseline_done_24"
+                        app:iconTint="?android:attr/textColorSecondary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
+                        app:layout_constraintStart_toEndOf="@id/buttonStop"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
                         android:id="@+id/buttonEdit"
                         style="?android:attr/borderlessButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Modifier"
+                        android:text="@string/edit"
                         android:textColor="?android:attr/textColorSecondary"
                         app:icon="@android:drawable/ic_menu_edit"
                         app:iconTint="?android:attr/textColorSecondary"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

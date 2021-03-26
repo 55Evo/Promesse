@@ -10,10 +10,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
-import androidx.test.platform.app.InstrumentationRegistry
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.model.Promise
-import fr.gof.promesse.model.State
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

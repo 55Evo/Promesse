@@ -73,16 +73,57 @@ class PromiseAdapter(
         //holder.layoutButtonEdit.visibility = deployed
         holder.progressBar.max = holder.promise.subtasks.size
         holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
+
+        when(holder.promise.state) {
+            State.IN_PROGRESS -> {
+                holder.buttonStart.visibility = View.GONE
+                holder.buttonStop.visibility = View.VISIBLE
+                holder.buttonDone.visibility = View.VISIBLE
+                holder.buttonRedo.visibility = View.GONE
+                holder.layout.setBackgroundResource(
+                        if (holder.promise.priority) {
+                            R.drawable.layout_border_important_inprogress
+                        } else {
+                            R.drawable.layout_border_inprogress
+                        }
+                )
+                holder.textViewInprogress.visibility = View.VISIBLE
+            }
+            State.DONE -> {
+                holder.buttonStart.visibility = View.GONE
+                holder.buttonStop.visibility = View.GONE
+                holder.buttonDone.visibility = View.GONE
+                holder.buttonRedo.visibility = View.VISIBLE
+                holder.layout.setBackgroundResource(
+                        if (holder.promise.priority) {
+                            R.drawable.layout_border_important_done
+                        } else {
+                            R.drawable.layout_border_done
+                        }
+                )
+                holder.textViewInprogress.visibility = View.GONE
+            }
+            State.TODO -> {
+                holder.buttonStart.visibility = View.VISIBLE
+                holder.buttonStop.visibility = View.GONE
+                holder.buttonDone.visibility = View.GONE
+                holder.buttonRedo.visibility = View.GONE
+                holder.layout.setBackgroundResource(
+                        if (holder.promise.priority) {
+                            R.drawable.layout_border_important
+                        } else {
+                            R.drawable.layout_border
+                        }
+                )
+                holder.textViewInprogress.visibility = View.GONE
+            }
+        }
+
         holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
         holder.rvSubtasks.setHasFixedSize(true)
         holder.rvSubtasks.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
        // holder.rvSubtasks.visibility = deployed
-        holder.layout.setBackgroundResource(if (holder.promise.priority) {
-            if (holder.promise.state == State.DONE) R.drawable.layout_border_important_done else R.drawable.layout_border_important
-        } else {
-            if (holder.promise.state == State.DONE) R.drawable.layout_border_done else R.drawable.layout_border
-        })
         holder.imageViewCategoryGlobal.setBackgroundResource(R.drawable.layout_bubble1)
         if (lastPosition < 3)
             lastPosition = holder.adapterPosition
@@ -344,6 +385,11 @@ class PromiseAdapter(
         var layout: LinearLayout = view.findViewById(R.id.linearlayoutitem)
         var layoutButtonEdit: ConstraintLayout = view.findViewById(R.id.layoutButtonEdit)
         var buttonEdit: Button = view.findViewById(R.id.buttonEdit)
+        var buttonStart: Button = view.findViewById(R.id.buttonStart)
+        var buttonRedo: Button = view.findViewById(R.id.buttonRedo)
+        var buttonStop: Button = view.findViewById(R.id.buttonStop)
+        var buttonDone: Button = view.findViewById(R.id.buttonDone)
+        var textViewInprogress: TextView = view.findViewById(R.id.textViewInProgress)
         var progressBar: ProgressBar = view.findViewById(R.id.progressBar)
         var rvSubtasks: RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
         var deployed : LinearLayout = view.findViewById(R.id.deployedLayout)
@@ -352,6 +398,10 @@ class PromiseAdapter(
             view.setOnClickListener(this)
             view.setOnLongClickListener(this)
             buttonEdit.setOnClickListener(this)
+            buttonStart.setOnClickListener(this)
+            buttonDone.setOnClickListener(this)
+            buttonRedo.setOnClickListener(this)
+            buttonStop.setOnClickListener(this)
             checkBox.setOnClickListener(this)
         }
 
@@ -366,7 +416,17 @@ class PromiseAdapter(
                 } else {
                     if (posAdapter != RecyclerView.NO_POSITION) {
                         if (v is Button) {
-                            listener.onItemButtonEditClick(posAdapter, this@PromiseAdapter)
+                            when (v.id) {
+                                R.id.buttonEdit -> listener.onItemButtonEditClick(posAdapter, this@PromiseAdapter)
+                                R.id.buttonStart -> listener.onItemButtonStartClick(posAdapter, this@PromiseAdapter)
+                                R.id.buttonStop -> listener.onItemButtonStopClick(posAdapter, this@PromiseAdapter)
+                                R.id.buttonRedo -> listener.onItemButtonRedoClick(posAdapter, this@PromiseAdapter)
+                                R.id.buttonDone -> listener.onItemButtonDoneClick(posAdapter, this@PromiseAdapter)
+                            }
+                            if (v.id == R.id.buttonEdit)
+                                listener.onItemButtonEditClick(posAdapter, this@PromiseAdapter)
+                            if (v.id == R.id.buttonStart)
+                                listener.onItemButtonStartClick(posAdapter, this@PromiseAdapter)
                         } else {
                             displayAnimation = true
                             listener.onItemClick(posAdapter, this@PromiseAdapter)
@@ -425,6 +485,11 @@ class PromiseAdapter(
             subtaskAdapter: SubtaskAdapter,
             promiseAdapter: PromiseAdapter
         )
+
+        fun onItemButtonStartClick(posAdapter: Int, promiseAdapter: PromiseAdapter)
+        fun onItemButtonStopClick(posAdapter: Int, promiseAdapter: PromiseAdapter)
+        fun onItemButtonRedoClick(posAdapter: Int, promiseAdapter: PromiseAdapter)
+        fun onItemButtonDoneClick(posAdapter: Int, promiseAdapter: PromiseAdapter)
     }
     internal class WidthProperty : Property<View, Int>(Int::class.java, "width") {
 

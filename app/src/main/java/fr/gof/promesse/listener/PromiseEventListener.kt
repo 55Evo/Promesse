@@ -2,18 +2,20 @@ package fr.gof.promesse.listener
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fr.gof.promesse.adapter.SubtaskAdapter
-import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.MainActivity
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.PromiseManagerActivity
 import fr.gof.promesse.R
+import fr.gof.promesse.adapter.PromiseAdapter
+import fr.gof.promesse.adapter.SubtaskAdapter
 import fr.gof.promesse.model.Promise
+import fr.gof.promesse.model.State
 
 /**
  * Promise event listener
@@ -22,16 +24,16 @@ import fr.gof.promesse.model.Promise
  * @property context
  * @constructor Create empty Promise event listener
  */
-class PromiseEventListener (var listPromesses : MutableList<Promise>, var context : Activity) : PromiseAdapter.OnItemClickListener {
+class PromiseEventListener(var listPromesses: MutableList<Promise>, var context: Activity) : PromiseAdapter.OnItemClickListener {
 
-    override fun onItemClick(position: Int, adapter : PromiseAdapter) {
+    override fun onItemClick(position: Int, adapter: PromiseAdapter) {
         val clickedItem = listPromesses[position]
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
         var bundle = Bundle()
         bundle.putBoolean("click", true)
         adapter.notifyItemChanged(position, bundle);
     }
-    fun uncheckitems(adapter : PromiseAdapter){
+    fun uncheckitems(adapter: PromiseAdapter){
         var bundle = Bundle()
         bundle.putBoolean("longclick", true)
         for (i in 0..(listPromesses.size)){
@@ -39,7 +41,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
         }
     }
 
-    override fun onItemLongClick(position: Int, adapter : PromiseAdapter) {
+    override fun onItemLongClick(position: Int, adapter: PromiseAdapter) {
         var clickedItem = listPromesses[position]
         if(!adapter.inSelection){
             clickedItem.isChecked = true
@@ -47,7 +49,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
             adapter.inSelection = true
 
             //adapter.notifyItemChanged(position)
-            Log.d("_______________________1__________________________________________oooo","la")
+            Log.d("_______________________1__________________________________________oooo", "la")
             val deleteButton : FloatingActionButton = context.findViewById(R.id.deleteButton)
             deleteButton.visibility = View.VISIBLE
             if (context is MainActivity) {
@@ -61,7 +63,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
             }
 
         } else {
-            Log.d("___________________nnnon______________________________________________oooo","la")
+            Log.d("___________________nnnon______________________________________________oooo", "la")
             uncheckItem(clickedItem, adapter)
         }
     }
@@ -107,10 +109,10 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     }
 
     override fun onCheckSubtaskChanged(
-        position: Int,
-        promise :Promise,
-        subtaskAdapter: SubtaskAdapter,
-        promiseAdapter: PromiseAdapter
+            position: Int,
+            promise: Promise,
+            subtaskAdapter: SubtaskAdapter,
+            promiseAdapter: PromiseAdapter
     ) {
         var clickedItem = subtaskAdapter.subtaskList[position]
         clickedItem.done = !clickedItem.done
@@ -119,6 +121,51 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
         var bundle = Bundle()
         bundle.putBoolean("clicksubtask", true)
         promiseAdapter.notifyItemChanged(promiseAdapter.promiseList.lastIndexOf(promise), bundle)
+    }
+
+    override fun onItemButtonStartClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
+        var clickedItem = listPromesses[posAdapter]
+        clickedItem.state = State.IN_PROGRESS
+        user.updatePromise(clickedItem)
+        promiseAdapter.notifyItemChanged(posAdapter)
+    }
+
+    private fun planeMode(enable: Boolean) {
+        // Checking if permission is not granted
+        if (context.checkSelfPermission("com.android.permission.WRITE_SECURE_SETTINGS") == PackageManager.PERMISSION_DENIED) {
+            context.requestPermissions(arrayOf("com.android.permission.WRITE_SECURE_SETTINGS") , 0);
+        }
+        val isPlaneMode = Settings.Global.getInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON) == 1
+        if (enable) {
+            Settings.Global.putInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, if (isPlaneMode) 0 else 1)
+        } else {
+            Settings.Global.putInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, if (!isPlaneMode) 1 else 0)
+        }
+
+        val intent: Intent = Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED)
+        intent.putExtra("state", !isPlaneMode)
+        context.sendBroadcast(intent)
+    }
+
+    override fun onItemButtonStopClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
+        var clickedItem = listPromesses[posAdapter]
+        clickedItem.state = State.TODO
+        user.updatePromise(clickedItem)
+        promiseAdapter.notifyItemChanged(posAdapter)
+    }
+
+    override fun onItemButtonRedoClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
+        var clickedItem = listPromesses[posAdapter]
+        clickedItem.state = State.TODO
+        user.updatePromise(clickedItem)
+        promiseAdapter.notifyItemChanged(posAdapter)
+    }
+
+    override fun onItemButtonDoneClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
+        var clickedItem = listPromesses[posAdapter]
+        clickedItem.state = State.DONE
+        user.updatePromise(clickedItem)
+        promiseAdapter.notifyItemChanged(posAdapter)
     }
 }
 
