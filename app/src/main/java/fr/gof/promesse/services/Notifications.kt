@@ -59,7 +59,7 @@ class Notifications : JobService() {
         val bundle = PersistableBundle()
         bundle.putString("email", user.email)
         val jobInbo = JobInfo.Builder(0, serviceComponent)
-                .setPersisted(true)
+                //.setPersisted(true)
                 .setPeriodic(oneDayInMilis) // Temps d'attente entre deux déclenchements (1 jour)
                 .setExtras(bundle)
                 .build()
