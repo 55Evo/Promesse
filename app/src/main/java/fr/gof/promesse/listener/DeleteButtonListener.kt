@@ -75,8 +75,13 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
             })
             .setNegativeButton("Non", DialogInterface.OnClickListener { dialog, _ ->
                 dialog.cancel()
+                for(l in listPromesses){
+                    l.isChecked = false
+                    adapter.nbPromisesChecked = 0
+                }
             })
         val alert = dialogBuilder.create()
+
         alert.setTitle("Suppression de promesses")
         alert.show()
     }

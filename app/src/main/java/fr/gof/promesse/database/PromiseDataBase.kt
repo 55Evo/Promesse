@@ -232,8 +232,8 @@ class PromiseDataBase (context : Context){
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
-        val select = arrayOf("%$name%")
-        val curs: Cursor = dbreadable.query("Promise", col, "Title LIKE ?", select, null, null, null)
+        val select = arrayOf("%$name%",user.email)
+        val curs: Cursor = dbreadable.query("Promise", col, "Title LIKE ? AND Email=?", select, null, null, null)
         return when(choiceOfSort){
             Sort.DATE -> user.getPromisesSortedByDate( getPromise(curs, dbreadable))
             Sort.NAME -> user.getPromisesSortedByName( getPromise(curs, dbreadable))

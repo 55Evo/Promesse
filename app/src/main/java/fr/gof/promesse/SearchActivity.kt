@@ -73,8 +73,6 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this)
         customSuggestionAdapter.suggestions = listPromesses
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
-        customSuggestionAdapter.suggestions = user.getAllPromise().toList()
-        materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
         materialSearchBar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 //materialSearchBar.clearSuggestions()
@@ -143,6 +141,8 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         materialSearchBar.clearSuggestions()
         materialSearchBar.hideSuggestionsList()
         hideKeyboard(this)
+        listPromesses  = user.getAllPromise().toMutableList()
+        customSuggestionAdapter.suggestions = listPromesses
         materialSearchBar.closeSearch()
     }
 

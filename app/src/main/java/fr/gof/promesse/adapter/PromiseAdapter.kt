@@ -1,18 +1,28 @@
 package fr.gof.promesse.adapter
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.app.Activity
 import android.content.Context
+import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.util.Property
 import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import fr.gof.promesse.MainActivity
 import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
+import fr.gof.promesse.listener.SlideAnimation
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import java.util.*
@@ -45,33 +55,36 @@ class PromiseAdapter(
     override fun onBindViewHolder(holder: PromiseViewHolder, position: Int) {
 
         holder.promise = promiseList[position]
+        if (holder.promise.isDescDeployed) holder.logo.layoutParams.width = 210 else holder.logo.layoutParams.width = 150
+        if (holder.promise.isDescDeployed) holder.logo.layoutParams.height = 210 else holder.logo.layoutParams.height = 150
         holder.date.text = holder.promise.getDateToString()
         holder.titre.text = holder.promise.title
+        if (holder.promise.isDescDeployed) holder.titre.textSize = 25f else holder.titre.textSize =18f
         holder.description.text = holder.promise.description
         holder.logo.setImageResource(holder.promise.category.image_drawable)
         holder.imageViewCategoryGlobal.setImageResource(holder.promise.category.image_drawable)
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
-        holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
-        holder.description.minLines = 3
+        holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+//        holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
+       // holder.description.minLines = 3
         val deployed = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-        holder.layoutButtonEdit.visibility = deployed
+        holder.deployed.visibility = deployed
+        //holder.layoutButtonEdit.visibility = deployed
         holder.progressBar.max = holder.promise.subtasks.size
         holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
         holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
         holder.rvSubtasks.setHasFixedSize(true)
         holder.rvSubtasks.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        holder.progressBar.visibility = deployed
-
-        holder.rvSubtasks.visibility = deployed
+       // holder.rvSubtasks.visibility = deployed
         holder.layout.setBackgroundResource(if (holder.promise.priority) {
             if (holder.promise.state == State.DONE) R.drawable.layout_border_important_done else R.drawable.layout_border_important
         } else {
             if (holder.promise.state == State.DONE) R.drawable.layout_border_done else R.drawable.layout_border
         })
         holder.imageViewCategoryGlobal.setBackgroundResource(R.drawable.layout_bubble1)
-        if (lastPosition < 4)
+        if (lastPosition < 3)
             lastPosition = holder.adapterPosition
         else if (holder.adapterPosition > lastPosition) {
             val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
@@ -80,8 +93,7 @@ class PromiseAdapter(
         }
         if (!displayDate)
             holder.date.visibility = View.GONE
-        holder.description.visibility =
-            if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+        //holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
 
         if (sortedCategory) {
             holder.logo.visibility = View.GONE
@@ -96,6 +108,14 @@ class PromiseAdapter(
         } else {
             holder.imageViewCategoryGlobal.visibility = View.GONE
         }
+//        var choice = if (holder.promise.isDescDeployed) R.anim.zoomin else R.anim.zoomout
+//        if (holder.promise.isDescDeployed) {
+//            holder.logo.animation = AnimationUtils.loadAnimation(context, choice)
+//            holder.logo.startAnimation(holder.logo.animation)
+//        } else {
+//            holder.logo.animation = AnimationUtils.loadAnimation(context, choice)
+//            holder.logo.startAnimation(holder.logo.animation)
+//        }
 
     }
 
@@ -104,41 +124,173 @@ class PromiseAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (payloads != null && payloads.isNotEmpty()) {  // update payloads, partial rebind
+        Log.d("_______________________________yyyyyyyyyyyyyyyyyyyyyyyyy__________________________________oooo",
+            "la")
+        if (payloads != null && payloads.isNotEmpty()) {
+            var bundle = payloads[0] as Bundle
+            var click: Boolean? = bundle.getBoolean("click")
+            var long: Boolean? = bundle.getBoolean("longclick")
+            var subtask: Boolean? = bundle.getBoolean("clicksubtask")
             var lastPayload =
-                payloads.get(payloads.size - 1) // in this case only last payload is meaningful
-            if (lastPayload as Boolean)
-                bindUnfoldedState(holder, lastPayload)
-        } else
-            onBindViewHolder(holder, position)   // regular binding of item
-    }
-    private fun bindUnfoldedState(holder: PromiseViewHolder, fold: Boolean) {
-        holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
-        holder.description.minLines = 3
-        holder.description.visibility =
-            if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-        val deployed = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-        holder.layoutButtonEdit.visibility = deployed
-        holder.layoutButtonEdit.animation =
-            AnimationUtils.loadAnimation(context, R.anim.deployed_item)
-        holder.progressBar.animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
+                payloads[payloads.size - 1]
+            if (click as Boolean){
+                println("testeeee")
+                if (click){
+                    println("test<0")
+                    refreshPromise(holder, click)
+                }}
+            if (long as Boolean){
+                println("testeeee")
+                if (long){
+                    refreshDelete(holder, long)
+                }
+            }
+            if (subtask as Boolean){
+                println("")
+                if (subtask){
+                    refreshSubtask(holder, subtask)
+                }
+            }
 
-        holder.rvSubtasks.animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
-        holder.progressBar.visibility = deployed
-        holder.rvSubtasks.visibility = deployed
+        } else
+            onBindViewHolder(holder, position)
+    }
+
+    fun refreshSubtask(holder: PromiseViewHolder, fold: Boolean){
+        holder.progressBar.max = holder.promise.subtasks.size
+        holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
+        holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
+        holder.rvSubtasks.setHasFixedSize(true)
+        holder.rvSubtasks.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+    fun showOffDdelete(){
+        val deleteButton : FloatingActionButton = (context as Activity).findViewById(R.id.deleteButton)
+        deleteButton.visibility = View.GONE
+        if (context is MainActivity) {
+            val addButton : FloatingActionButton = context.findViewById(R.id.buttonAdd)
+            addButton.visibility = View.VISIBLE
+        }
+    }
+    fun refreshDelete(holder: PromiseViewHolder, fold: Boolean) {
+        holder.promise = promiseList[holder.adapterPosition]
+        holder.checkBox.isChecked = holder.promise.isChecked
+        holder.checkBox.isVisible = inSelection
+        //holder.promise = promiseList[position]
+    }
+    private fun refreshPromise(holder: PromiseViewHolder, fold: Boolean) {
+
+        holder.promise = promiseList[holder.adapterPosition]
+        var isdepl = holder.promise.isDescDeployed
+//        var choice = if (isdepl) R.anim.zoomin else R.anim.zoomout
+        val currentWidth: Int = 100
+        val currentWidthEnd =250
+        val currentWidthStart = 150
+        if (holder.promise.isDescDeployed) holder.titre.textSize = 22f else holder.titre.textSize = 18f
+
+        if (holder.promise.isDescDeployed) {
+                        val animator1: ObjectAnimator =
+                ObjectAnimator.ofInt(holder.logo, WidthProperty(), currentWidthStart, currentWidthEnd)
+            animator1.duration = 300
+            animator1.interpolator = DecelerateInterpolator()
+            animator1.start()
+            } else {
+            val animator1: ObjectAnimator =
+                ObjectAnimator.ofInt(holder.logo, WidthProperty(), currentWidthEnd, currentWidthStart)
+            animator1.duration = 300
+            animator1.interpolator = DecelerateInterpolator()
+            animator1.start()
+            }
+        if (!isdepl){
+
+            var animation = SlideAnimation(holder.deployed)
+            var animation1 = SlideAnimation(holder.description)
+//            animation1.expand(holder.promise.isDescDeployed)
+            animation.expand(holder.promise.isDescDeployed)
+            val tv = holder.titre
+            val endSize = 18f
+            val startSize = 25f
+            val animationDuration = 300 // Animation duration in ms
+            val animator: ValueAnimator = ObjectAnimator.ofFloat(tv, "textSize", startSize, endSize)
+            animator.duration = animationDuration.toLong()
+            animator.start()
+            Log.d("-------------------------------------------------------------- :::::::: ",currentWidth.toString())
+            holder.titre.animate()
+            Handler().postDelayed({
+                holder.deployed.visibility =
+                    if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+
+            }, 300)
+        }
+        else{
+            holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+            //holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
+            var animation1 = SlideAnimation(holder.description)
+//            animation1.expand(holder.promise.isDescDeployed)
+            var animation = SlideAnimation(holder.deployed)
+            animation.expand(holder.promise.isDescDeployed)
+            holder.titre.animate()
+            holder.deployed.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+            holder.layoutButtonEdit.animation = AnimationUtils.loadAnimation(context,
+                R.anim.deployed_item)
+            holder.progressBar.animation = AnimationUtils.loadAnimation(context,
+                R.anim.deployed_item)
+
+            holder.rvSubtasks.animation = AnimationUtils.loadAnimation(context,
+                R.anim.deployed_item)
         holder.layoutButtonEdit.animate()
         holder.progressBar.animate()
         holder.rvSubtasks.animate()
-        var choice = if (holder.promise.isDescDeployed) R.anim.zoomin else R.anim.zoomout
-        if (holder.promise.isDescDeployed) {
-            android.os.Handler().postDelayed({
-                holder.logo.animation = AnimationUtils.loadAnimation(context, choice)
-                holder.logo.startAnimation(holder.logo.animation)
-            }, 100)
-        } else {
-            holder.logo.animation = AnimationUtils.loadAnimation(context, choice)
-            holder.logo.startAnimation(holder.logo.animation)
+
+            val tv = holder.titre
+
+            val endSize = 25f
+            val startSize = 18f
+            val animationDuration = 300 // Animation duration in ms
+
+
+            val animator: ValueAnimator = ObjectAnimator.ofFloat(tv, "textSize", startSize, endSize)
+            animator.duration = animationDuration.toLong()
+
+            animator.start()
+
         }
+//        if (holder.promise.isDescDeployed) holder.titre.textSize = 22f else holder.titre.textSize = 18f
+        //holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
+        //holder.description.minLines = 3
+
+//        Handler().postDelayed({
+//            holder.deployed.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+////            holder.description.visibility =
+////                if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+////            val deployed = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+////            holder.layoutButtonEdit.visibility = deployed
+//            holder.layoutButtonEdit.animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
+//            holder.progressBar.animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
+//
+//            holder.rvSubtasks.animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
+////            holder.progressBar.visibility = deployed
+////            holder.rvSubtasks.visibility = deployed
+//        }, 700)
+
+//        holder.layoutButtonEdit.animate()
+//        holder.progressBar.animate()
+//        holder.rvSubtasks.animate()
+
+//        var animation = SlideAnimation(holder.deployed)
+//        animation.expand(holder.promise.isDescDeployed)
+
+// this interpolator only speeds up as it keeps going
+
+// this interpolator only speeds up as it keeps going
+//        animation.interpolator = AccelerateInterpolator()
+        //animation.duration = 3000
+//        messageView.setAnimation(animation)
+//        messageView.startAnimation(animation)
+
+
+       // holder.layout.animation = animation
+        //holder.layout.startAnimation(animation)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseViewHolder {
@@ -194,6 +346,7 @@ class PromiseAdapter(
         var buttonEdit: Button = view.findViewById(R.id.buttonEdit)
         var progressBar: ProgressBar = view.findViewById(R.id.progressBar)
         var rvSubtasks: RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
+        var deployed : LinearLayout = view.findViewById(R.id.deployedLayout)
         var posAdapter: Int = 0
         init {
             view.setOnClickListener(this)
@@ -272,6 +425,18 @@ class PromiseAdapter(
             subtaskAdapter: SubtaskAdapter,
             promiseAdapter: PromiseAdapter
         )
+    }
+    internal class WidthProperty : Property<View, Int>(Int::class.java, "width") {
+
+        override fun get(view: View): Int {
+            return view.width
+        }
+
+        override fun set(view: View, value: Int?) {
+            view.layoutParams.width = value!!
+            view.layoutParams.height= value!!
+            view.layoutParams = view.layoutParams
+        }
     }
 
 
