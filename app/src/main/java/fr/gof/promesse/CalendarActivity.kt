@@ -35,8 +35,8 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     OnDateSelectedListener {
 
     lateinit var customCalendar: CustomCalendar
-    lateinit var promises: MutableList<Promise>
-    lateinit var promisesOfTheSelectedDay: MutableList<Promise>
+    lateinit var promises: TreeSet<Promise>
+    lateinit var promisesOfTheSelectedDay: TreeSet<Promise>
     lateinit var recyclerView: RecyclerView
     lateinit var adapter : PromiseAdapter
     private lateinit var deleteButton : FloatingActionButton
@@ -72,7 +72,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         setDaysInFrench()
         slidr = Slidr.attach(this, utils.config);
         monthDisplay = findViewById(R.id.monthTextView)
-        promisesOfTheSelectedDay = user.getPromisesOfTheDay(Date(System.currentTimeMillis())).toMutableList()
+        promisesOfTheSelectedDay = user.getPromisesOfTheDay(Date(System.currentTimeMillis()))
         customCalendar = findViewById(R.id.custom_calendar)
         customCalendar.background = getResources().getDrawable(R.drawable.calendar_background)
         recyclerView = findViewById(R.id.recyclerViewPromises)
@@ -190,7 +190,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         month: Calendar,
         selectedDay: Int = 0
     ) {
-        promises = user.getAllPromisesOfTheMonth(user.email,month.time).toMutableList()
+        promises = user.getAllPromisesOfTheMonth(user.email,month.time)
         var occurencePromises = IntArray(32) {0}
         for (promise: Promise in promises) {
             occurencePromises[promise.dateTodo.date]++
@@ -229,7 +229,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     private fun autoSelectionWhenMonthChanged(month: Calendar, selectedDay: Int, occurencePromises: IntArray, dateHashMap: MutableMap<Int, Any>) {
         if (month.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
                 selectedDay == 0 && month.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
-            promisesOfTheSelectedDay = user.getPromisesOfTheDay(today.time).toMutableList()
+            promisesOfTheSelectedDay = user.getPromisesOfTheDay(today.time)
             when (occurencePromises[today.get(Calendar.DAY_OF_MONTH)]) {
                 0 -> dateHashMap[today.get(Calendar.DAY_OF_MONTH)] = "default_selected"
                 in 1..2 -> dateHashMap[today.get(Calendar.DAY_OF_MONTH)] = "first_selected"
@@ -244,7 +244,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
             cld.set(Calendar.YEAR, month.get(Calendar.YEAR))
             cld.set(Calendar.MONTH, month.get(Calendar.MONTH))
             cld.set(Calendar.DAY_OF_MONTH, 1)
-            promisesOfTheSelectedDay = user.getPromisesOfTheDay(cld.time).toMutableList()
+            promisesOfTheSelectedDay = user.getPromisesOfTheDay(cld.time)
             when (occurencePromises[1]) {
                 0 -> dateHashMap[1] = "default_selected"
                 in 1..2 -> dateHashMap[1] = "first_selected"
@@ -282,7 +282,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      */
     override fun onResume() {
         super.onResume()
-        promises = user.getPromisesOfTheDay(calendar.time).toMutableList()
+        promises = user.getPromisesOfTheDay(calendar.time)
         adapter = PromiseAdapter(promises, PromiseEventListener(promises, this),this)
         deleteListener = DeleteButtonListener(adapter, this)
         deleteButton.setOnClickListener(deleteListener)
@@ -300,7 +300,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      */
     override fun onDateSelected(view: View?, selectedDate: Calendar?, desc: Any?) {
         if (selectedDate != null) {
-            promisesOfTheSelectedDay = user.getPromisesOfTheDay(selectedDate.time).toMutableList()
+            promisesOfTheSelectedDay = user.getPromisesOfTheDay(selectedDate.time)
             updateCalendarWithPromises(dateHashMap, calendar, selectedDate.get(Calendar.DAY_OF_MONTH))
         } else {
             updateCalendarWithPromises(dateHashMap, calendar)

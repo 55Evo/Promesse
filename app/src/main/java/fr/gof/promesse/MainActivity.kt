@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var slidr: SlidrInterface
 
     lateinit var adapter : PromiseAdapter
-    lateinit var listPromesse : MutableList<Promise>
+    lateinit var listPromesse : TreeSet<Promise>
     lateinit var layout : ConstraintLayout
     var dateOfTheDay : Date? = null
 
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = llm
         layout = findViewById(R.id.ConstraintLayout)
         user.loadPromises(promiseDataBase)
-        listPromesse = user.getAllPromisesOfTheDay().toMutableList()
+        listPromesse = user.getAllPromisesOfTheDay()
         adapter = PromiseAdapter(listPromesse,
             PromiseEventListener(listPromesse, this),
             this,
@@ -141,16 +141,17 @@ class MainActivity : AppCompatActivity() {
         val swipeToReportOrDone: SwipeToReportOrDone = object : SwipeToReportOrDone(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
-                var promise = listPromesse[position]
+                var promise = listPromesse.elementAt(position)
                 var date = promise.dateTodo
                 var message = ""
                 when(i){ // promise done
-                    16 -> {
+
+                    utils.LEFT -> {
                         message = getString(R.string.promiseDone)
                         promise.state = State.DONE
                         user.updatePromise(promise)
                     }
-                    32 -> { // add 1 day to the date to do to postpone it
+                    utils.RIGHT -> { // add 1 day to the date to do to postpone it
                         message = getString(R.string.promisePostponed)
                         promise.dateTodo = Date(System.currentTimeMillis() + 86400000)
                         user.updatePromiseDate(promise)
@@ -170,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     adapter.showOffDdelete()
                 }
-                listPromesse.removeAt(position)
+                listPromesse.remove(listPromesse.elementAt(position))
                 adapter.notifyItemRemoved(position)
                 adapter.notifyItemRangeChanged(position, listPromesse.size)
                 snackbarUndo(message, i, promise, date, position)
@@ -188,16 +189,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 adapter.nbPromisesChecked = 0
                 adapter.inSelection = false
-                adapter.promiseList[source.adapterPosition].isChecked = false
+                adapter.promiseList.elementAt(source.adapterPosition).isChecked = false
                 var bundle = Bundle()
                 bundle.putBoolean("longclick", true)
                 for (i in 0..adapter.promiseList.size )
                     adapter.notifyItemChanged(i,bundle)
                 adapter.showOffDdelete()
                 // Notify the adapter of the move
-
-
-
 
                 adapter.onItemMove(source.adapterPosition, target.adapterPosition)
                 return true
@@ -212,10 +210,10 @@ class MainActivity : AppCompatActivity() {
                 val snackbar = Snackbar
                         .make(layout, message, Snackbar.LENGTH_LONG)
                 snackbar.setAction(getString(R.string.cancel)) {
-                    if (i == 32) {
+                    if (i == utils.RIGHT) {
                         promise.dateTodo = date
                         adapter.restoreItem(promise, position, promiseDataBase)
-                    } else {
+                    } else if (i == utils.LEFT){
                         // j'enlève le done
                         adapter.restoreItem(promise, position, promiseDataBase)
                         promise.state = State.TODO
@@ -238,7 +236,7 @@ class MainActivity : AppCompatActivity() {
 //        linkBackground()
 //        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
         //user.loadPromises( promiseDataBase)
-        listPromesse = user.getAllPromisesOfTheDay().toMutableList()
+        listPromesse = user.getAllPromisesOfTheDay()
         adapter = PromiseAdapter(listPromesse,
             PromiseEventListener(listPromesse, this),
             this,

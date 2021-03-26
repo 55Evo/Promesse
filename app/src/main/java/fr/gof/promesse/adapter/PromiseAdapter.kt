@@ -26,6 +26,7 @@ import fr.gof.promesse.listener.SlideAnimation
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import java.util.*
+import fr.gof.promesse.MainActivity.Companion.user
 
 
 /**
@@ -36,7 +37,7 @@ import java.util.*
  * @constructor Create empty Promise adapter
  */
 class PromiseAdapter(
-    var promiseList: MutableList<Promise>,
+    var promiseList: TreeSet<Promise>,
     val listener: OnItemClickListener,
     val context: Context,
     var displayDate: Boolean = true
@@ -54,7 +55,7 @@ class PromiseAdapter(
     //Affichage d'un item (appelé quand la liste defile ou quand on notifie un changement)
     override fun onBindViewHolder(holder: PromiseViewHolder, position: Int) {
 
-        holder.promise = promiseList[position]
+        holder.promise = promiseList.elementAt(position)
         if (holder.promise.isDescDeployed) holder.logo.layoutParams.width = 210 else holder.logo.layoutParams.width = 150
         if (holder.promise.isDescDeployed) holder.logo.layoutParams.height = 210 else holder.logo.layoutParams.height = 150
         holder.date.text = holder.promise.getDateToString()
@@ -99,7 +100,7 @@ class PromiseAdapter(
             holder.logo.visibility = View.GONE
 
             if ((position != 0) and (position != -1)) {
-                if (holder.promise.category.nom == promiseList[position - 1].category.nom)
+                if (holder.promise.category.nom == promiseList.elementAt(position - 1).category.nom)
                     holder.imageViewCategoryGlobal.visibility = View.GONE
                 else {
                     setMargins(holder.layout, 0, 0, 0, 0)
@@ -164,6 +165,8 @@ class PromiseAdapter(
         holder.rvSubtasks.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
+
+
     fun showOffDdelete(){
         val deleteButton : FloatingActionButton = (context as Activity).findViewById(R.id.deleteButton)
         deleteButton.visibility = View.GONE
@@ -173,14 +176,14 @@ class PromiseAdapter(
         }
     }
     fun refreshDelete(holder: PromiseViewHolder, fold: Boolean) {
-        holder.promise = promiseList[holder.adapterPosition]
+        holder.promise = promiseList.elementAt(holder.adapterPosition)
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
         //holder.promise = promiseList[position]
     }
     private fun refreshPromise(holder: PromiseViewHolder, fold: Boolean) {
 
-        holder.promise = promiseList[holder.adapterPosition]
+        holder.promise = promiseList.elementAt(holder.adapterPosition)
         var isdepl = holder.promise.isDescDeployed
 //        var choice = if (isdepl) R.anim.zoomin else R.anim.zoomout
         val currentWidth: Int = 100
@@ -309,17 +312,30 @@ class PromiseAdapter(
     }
 
     fun restoreItem(promise: Promise, position: Int, dataBase: PromiseDataBase) {
-        promiseList.add(position, promise)
+        promiseList.add(promise)
         dataBase.updateDate(promise)
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        Collections.swap(promiseList, fromPosition, toPosition)
+        Collections.swap(promiseList.toMutableList(), fromPosition, toPosition)
+        var save = promiseList.elementAt(fromPosition).dateTodo
+        promiseList.elementAt(fromPosition).dateTodo = promiseList.elementAt(toPosition).dateTodo
+        promiseList.elementAt(toPosition).dateTodo = save
+        var fromPos = promiseList.elementAt(toPosition)
+        var toPos = promiseList.elementAt(fromPosition)
+        promiseList.remove(fromPos)
+        promiseList.remove(toPos)
+        promiseList.add(fromPos)
+        promiseList.add(toPos)
+        user.updatePromise(fromPos)
+        user.updatePromise(toPos)
         notifyItemMoved(fromPosition, toPosition)
+
+
     }
 
     override fun onItemDismiss(position: Int) {
-        promiseList.removeAt(position)
+        promiseList.remove(promiseList.elementAt(position))
         notifyItemRemoved(position)
     }
 

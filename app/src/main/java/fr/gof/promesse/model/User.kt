@@ -17,7 +17,7 @@ import kotlin.collections.HashSet
  * @constructor Create empty User
  */
 data class User(var email: String, var name: String, var password: String, var mascot: Mascot){
-lateinit var listPromise:MutableList<Promise>
+lateinit var listPromise:TreeSet<Promise>
 lateinit var db : PromiseDataBase
     /**
      * Add promise
@@ -37,6 +37,7 @@ lateinit var db : PromiseDataBase
     private fun listAddPromise(promise: Promise) {
         var res = removePromise(promise)
         Log.d("----------------ici-------------------------------------",res.toString())
+        print("coucouuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu$res")
 
         listPromise.add(promise)
     }
@@ -47,7 +48,7 @@ lateinit var db : PromiseDataBase
 
     fun loadPromises(db: PromiseDataBase){
         this.db = db
-        listPromise = db.getAllPromises(email).toMutableList()
+        listPromise = db.getAllPromises(email)
     }
     /**
      * Get all promise
@@ -55,8 +56,8 @@ lateinit var db : PromiseDataBase
      * @param db
      * @return
      */
-    fun getAllPromise() : MutableList<Promise>{
-        return listPromise
+    fun getAllPromise() : TreeSet<Promise>{
+        return listPromise.clone() as TreeSet<Promise>
     }
 
 
@@ -66,18 +67,15 @@ lateinit var db : PromiseDataBase
      * @param db
      * @return
      */
-    fun getAllPromisesOfTheDay() : Set<Promise>{
-        val sdf = SimpleDateFormat("dd/MM/yyyy")
+    fun getAllPromisesOfTheDay() : TreeSet<Promise>{
         var dateTodayEvening = Date()
         dateTodayEvening.hours = 23
         dateTodayEvening.seconds = 59
         dateTodayEvening.minutes = 59
-        var res = HashSet<Promise>()
+        var res = TreeSet<Promise>()
         for (promise in listPromise) {
-            if (promise.dateTodo !=null){
             if (promise.dateTodo.before(dateTodayEvening) && promise.dateTodo.after(Date(dateTodayEvening.time-(86400000 * 4))) && promise.state != State.DONE) {
                 res.add(promise)
-            }
             }
         }
         return res
@@ -104,12 +102,12 @@ lateinit var db : PromiseDataBase
         return res
     }
 
-    fun getAllPromisesOfTheMonth(email: String, date: Date): Set<Promise>{
-        return db.getAllPromisesOfTheMonth(email,date)
+    fun getAllPromisesOfTheMonth(email: String, date: Date): TreeSet<Promise>{
+        return db.getAllPromisesOfTheMonth(email,date) as TreeSet<Promise>
     }
 
-    fun getPromisesOfTheDay(date: Date = Date(System.currentTimeMillis())): Set<Promise> {
-        return db.getPromisesOfTheDay(email, date)
+    fun getPromisesOfTheDay(date: Date = Date(System.currentTimeMillis())): TreeSet<Promise> {
+        return db.getPromisesOfTheDay(email, date) as TreeSet<Promise>
     }
 
     /**
@@ -218,7 +216,7 @@ lateinit var db : PromiseDataBase
      * @return
      */
     fun getSearchResultsSorted(name: String, choiceOfSort: Sort) =
-        db.getAllPromisesNameLike(name, choiceOfSort, this)
+        (db.getAllPromisesNameLike(name, choiceOfSort, this)) as TreeSet<Promise>
 
     /**
      * Update promise

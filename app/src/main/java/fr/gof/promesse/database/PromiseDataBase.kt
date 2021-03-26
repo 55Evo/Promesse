@@ -148,8 +148,8 @@ class PromiseDataBase (context : Context){
      * @param dbreadable
      * @return
      */
-    fun getPromise(curs: Cursor, dbreadable: SQLiteDatabase): Set<Promise>{
-        var promiseList = HashSet<Promise>()
+    fun getPromise(curs: Cursor, dbreadable: SQLiteDatabase): TreeSet<Promise>{
+        var promiseList = TreeSet<Promise>()
         try {
             while (curs.moveToNext()) {
                 val id = curs.getInt(curs.getColumnIndexOrThrow("Id_Promise"))
@@ -210,7 +210,7 @@ class PromiseDataBase (context : Context){
      * @param email
      * @return
      */
-    fun getAllPromises(email : String) : Set<Promise> {
+    fun getAllPromises(email : String) : TreeSet<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
         val col = arrayOf("Id_Promise", "Title", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")

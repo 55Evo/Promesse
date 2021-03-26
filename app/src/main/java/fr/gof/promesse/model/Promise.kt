@@ -65,9 +65,12 @@ data class Promise(
     fun getDateToString()= dfl.format(dateTodo)
 
     override fun compareTo(other: Promise): Int {
-        return if (this.id==other.id) return 1 else return -1
+        return if (this.id==other.id) return 0 else return compare(other)
     }
 
+    private fun compare(other : Promise) : Int{
+        if (this.dateTodo.before(other.dateTodo)) return -1 else return 1
+    }
     override fun hashCode(): Int {
         return id
     }
