@@ -2,8 +2,14 @@ package fr.gof.promesse
 
 import SwipeToReportOrDone
 import SwipeupDown
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -26,7 +32,9 @@ import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import fr.gof.promesse.model.User
+import fr.gof.promesse.services.NotificationReceiver
 import fr.gof.promesse.services.Notifications
+import utils.NOTIFICATION_CHANNEL_ID
 import utils.config
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
@@ -46,13 +54,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     lateinit var mascotView : ImageView
     val promiseDataBase = PromiseDataBase(this@MainActivity)
-    var notifications = Notifications()
+    //var notifications = Notifications()
     lateinit var slidr: SlidrInterface
 
     lateinit var adapter : PromiseAdapter
     lateinit var listPromesse : MutableList<Promise>
     lateinit var layout : ConstraintLayout
     var dateOfTheDay : Date? = null
+
+    private lateinit var mHandler: Handler
+    private lateinit var mRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,29 +86,43 @@ class MainActivity : AppCompatActivity() {
             false)
 
         val del = findViewById<FloatingActionButton>(R.id.deleteButton)
-        var date = findViewById<TextView>(R.id.dateDayView)
-        val dt = Date()
-        val dfs = DateFormatSymbols(Locale.FRANCE)
-        val dateFormat = SimpleDateFormat("EEEE dd MMMM", dfs)
-        val date1 = dateFormat.format(dt)
-        println(date1)
-        var res =""
-        val formatter = SimpleDateFormat("YYYY")
-        val date2 = formatter.format(Date())
-        res +=date2
-        res +="\n" + date1.substring(0,1).toUpperCase() + date1.substring(1).toLowerCase();
-        date.text = res
+//        updateDate()
+//        linkBackground()
+        mHandler = Handler()
+        mRunnable = Runnable{
+            linkBackground()
+            updateDate()
+            mHandler.postDelayed(mRunnable, 1000)
+        }
+        mRunnable.run()
+        //mHandler.postDelayed(mRunnable, 1000)
 
         recyclerView.adapter = adapter
         deleteListener = DeleteButtonListener(adapter, this)
         del.setOnClickListener(deleteListener)
         enableSwipeToDoneOrReport()
         //enableSwipeUpDown()
-        notifications.scheduleJob(this, user)
-
+        sendDailyNotification()
+        //notifications.scheduleJob(this, user)
         //user.generatePromises()
 
     }
+
+    private fun updateDate() {
+        var date = findViewById<TextView>(R.id.dateDayView)
+        val dt = Date()
+        val dfs = DateFormatSymbols(Locale.FRANCE)
+        val dateFormat = SimpleDateFormat("EEEE dd MMMM", dfs)
+        val date1 = dateFormat.format(dt)
+        println(date1)
+        var res = ""
+        val formatter = SimpleDateFormat("YYYY")
+        val date2 = formatter.format(Date())
+        res += date2
+        res += "\n" + date1.substring(0, 1).toUpperCase() + date1.substring(1).toLowerCase();
+        date.text = res
+    }
+
     private fun lockSlider(){
         slidr.lock()
     }
@@ -185,6 +210,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+//        linkBackground()
 //        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
         //user.loadPromises( promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay().toMutableList()
@@ -195,6 +221,16 @@ class MainActivity : AppCompatActivity() {
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
+    }
+
+    private fun linkBackground(){
+        val constraintLayout: ConstraintLayout = findViewById(R.id.ConstraintLayout)
+        val now = Calendar.getInstance()
+        if(now.get(Calendar.HOUR_OF_DAY) in 6..20){
+            constraintLayout.background = getDrawable(R.drawable.day)
+        } else {
+            constraintLayout.background = getDrawable(R.drawable.night)
+        }
     }
 
     /**
@@ -239,5 +275,44 @@ class MainActivity : AppCompatActivity() {
     fun onClickCalendarButton(v: View){
         val intent = Intent(this, CalendarActivity::class.java)
         startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mHandler.removeCallbacks(mRunnable)
+    }
+
+    private fun sendDailyNotification(){
+        createNotificationChannel()
+        var calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 16)
+        calendar.set(Calendar.MINUTE, 0)
+
+        var intent = Intent(applicationContext, NotificationReceiver::class.java)
+        intent.action = "MY_NOTIFICATION_MESSAGE"
+        var pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            100,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+        var alarmManager: AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 }
