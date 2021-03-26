@@ -68,10 +68,14 @@ lateinit var db : PromiseDataBase
      */
     fun getAllPromisesOfTheDay() : Set<Promise>{
         val sdf = SimpleDateFormat("dd/MM/yyyy")
+        var dateTodayEvening = Date()
+        dateTodayEvening.hours = 23
+        dateTodayEvening.seconds = 59
+        dateTodayEvening.minutes = 59
         var res = HashSet<Promise>()
         for (promise in listPromise) {
             if (promise.dateTodo !=null){
-            if (promise.dateTodo.time < System.currentTimeMillis() && promise.dateTodo.time >System.currentTimeMillis()-(86400000 * 3+1) && promise.state != State.DONE) {
+            if (promise.dateTodo.before(dateTodayEvening) && promise.dateTodo.after(Date(dateTodayEvening.time-(86400000 * 4))) && promise.state != State.DONE) {
                 res.add(promise)
             }
             }

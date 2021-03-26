@@ -1,7 +1,6 @@
 package fr.gof.promesse
 
 import SwipeToReportOrDone
-import SwipeupDown
 import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -64,6 +63,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mHandler: Handler
     private lateinit var mRunnable: Runnable
+    private lateinit var del : FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             this,
             false)
 
-        val del = findViewById<FloatingActionButton>(R.id.deleteButton)
+        del = findViewById(R.id.deleteButton)
 //        updateDate()
 //        linkBackground()
         mHandler = Handler()
@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity() {
         //notifications.scheduleJob(this, user)
         //user.generatePromises()
 
+
     }
 
     private fun updateDate() {
@@ -122,10 +123,7 @@ class MainActivity : AppCompatActivity() {
         res += "\n" + date1.substring(0, 1).toUpperCase() + date1.substring(1).toLowerCase();
         date.text = res
 
-        recyclerView.adapter = adapter
-        deleteListener = DeleteButtonListener(adapter, this)
-        del.setOnClickListener(deleteListener)
-        enableSwipeToDoneOrReport()
+
         //notifications.scheduleJob(this, user)
 
         //user.generatePromises()
@@ -245,6 +243,10 @@ class MainActivity : AppCompatActivity() {
             PromiseEventListener(listPromesse, this),
             this,
             false)
+
+
+
+
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
