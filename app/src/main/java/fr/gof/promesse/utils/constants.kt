@@ -9,7 +9,7 @@ import fr.gof.promesse.model.User
 
 
 
-val NOTIFICATION_CHANNEL_ID = "1"
+const val NOTIFICATION_CHANNEL_ID = "100"
 var  config : SlidrConfig =  SlidrConfig.Builder()
     .position(SlidrPosition.TOP)
     .sensitivity(1f)
