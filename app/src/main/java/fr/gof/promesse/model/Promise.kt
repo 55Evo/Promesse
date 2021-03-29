@@ -72,7 +72,7 @@ data class Promise(
         if (this.dateTodo.before(other.dateTodo)) return -1 else return 1
     }
     override fun hashCode(): Int {
-        return id
+        return id.hashCode()
     }
 
     fun getNbStDone(): Int {

@@ -37,7 +37,7 @@ import fr.gof.promesse.MainActivity.Companion.user
  * @constructor Create empty Promise adapter
  */
 class PromiseAdapter(
-    var promiseList: TreeSet<Promise>,
+    val promiseList: TreeSet<Promise>,
     val listener: OnItemClickListener,
     val context: Context,
     var displayDate: Boolean = true
@@ -56,8 +56,8 @@ class PromiseAdapter(
     override fun onBindViewHolder(holder: PromiseViewHolder, position: Int) {
 
         holder.promise = promiseList.elementAt(position)
-        if (holder.promise.isDescDeployed) holder.logo.layoutParams.width = 210 else holder.logo.layoutParams.width = 150
-        if (holder.promise.isDescDeployed) holder.logo.layoutParams.height = 210 else holder.logo.layoutParams.height = 150
+        if (holder.promise.isDescDeployed) holder.logo.layoutParams.width = 250 else holder.logo.layoutParams.width = 150
+        if (holder.promise.isDescDeployed) holder.logo.layoutParams.height = 250 else holder.logo.layoutParams.height = 150
         holder.date.text = holder.promise.getDateToString()
         holder.titre.text = holder.promise.title
         if (holder.promise.isDescDeployed) holder.titre.textSize = 25f else holder.titre.textSize =18f
@@ -66,7 +66,7 @@ class PromiseAdapter(
         holder.imageViewCategoryGlobal.setImageResource(holder.promise.category.image_drawable)
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
-        holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+//        holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
 //        holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
        // holder.description.minLines = 3
         val deployed = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
@@ -226,7 +226,7 @@ class PromiseAdapter(
             }, 300)
         }
         else{
-            holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+            //holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
             //holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
             var animation1 = SlideAnimation(holder.description)
 //            animation1.expand(holder.promise.isDescDeployed)
