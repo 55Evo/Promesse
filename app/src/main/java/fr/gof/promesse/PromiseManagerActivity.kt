@@ -2,7 +2,6 @@ package fr.gof.promesse
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
-import android.graphics.Color
 
 import android.os.Bundle
 import android.util.Log
@@ -16,9 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.r0adkll.slidr.Slidr
-import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrInterface
-import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.CategoryAdapter
 import fr.gof.promesse.adapter.SubtaskEditorAdapter
@@ -30,6 +27,7 @@ import fr.gof.promesse.model.Promise
 
 import fr.gof.promesse.model.State
 import fr.gof.promesse.model.Subtask
+import fr.gof.promesse.services.DndManager
 import java.text.DateFormat
 import java.util.*
 
@@ -67,7 +65,8 @@ class PromiseManagerActivity : AppCompatActivity() {
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
     var promise : Promise?= null
     lateinit var date : Date
-    val dfl = DateFormat.getDateInstance(DateFormat.FULL);
+    val dfl = DateFormat.getDateInstance(DateFormat.FULL)
+    lateinit var priority: Switch
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +78,13 @@ class PromiseManagerActivity : AppCompatActivity() {
         rvCategory.setHasFixedSize(true)
         rvSubtask = findViewById(R.id.recycler_subtask)
         rvSubtask.setHasFixedSize(true)
-
+        priority = findViewById(R.id.switchPriority)
+        priority.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                var dndMngr =  DndManager(this)
+                dndMngr.askPermission()
+            }
+        }
 
 
 
@@ -121,8 +126,6 @@ class PromiseManagerActivity : AppCompatActivity() {
            adapterCategory.listCategory[adapterCategory.listCategory.lastIndexOf(Category.DEFAUT)].check = true
 
         }
-//        adapter.listCategory[adapter.listCategory.indexOf(adapter.chosenCategory)].background = R.drawable.cuisine
-//        adapter.notifyDataSetChanged()
 
         adapterSubtask = SubtaskEditorAdapter(subtasks, SubtaskListener(subtasks, this), this)
         rvSubtask.adapter = adapterSubtask
@@ -233,6 +236,7 @@ class PromiseManagerActivity : AppCompatActivity() {
                 switchProfessional,
                 editTextDescription
             )
+
         } else { //creation nouvelle promesse
             subtasks = mutableListOf()
             for (st : Subtask in adapterSubtask.subtaskList) {
@@ -257,7 +261,7 @@ class PromiseManagerActivity : AppCompatActivity() {
 
             user.addPromise(promise)
         }
-
+        user.stopDnd(this)
         finish()
     }
 

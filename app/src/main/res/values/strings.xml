@@ -51,4 +51,17 @@
     <string name="calendar_legend_img_3">Image color of an orange day</string>
     <string name="subtaskName">Nom de la sous-tâche</string>
     <string name="subtaskTitle">Sous-tâches</string>
+    <string name="start">Démarrer</string>
+    <string name="edit">Modifier</string>
+    <string name="stop">Abandonner</string>
+    <string name="redo">Refaire</string>
+    <string name="done">Finir</string>
+    <string name="inprogress">En cours</string>
+    <string name="permissionRequired">Demande de permission</string>
+    <string name="permissionRequiredMessage">
+        Désirez-vous permettre à l\'application Promesse de bloquer les notifications pendant la réalisation des promesses prioritaires ?
+        Si c\'est le cas, activez Promesse dans la liste qui s\'ouvrira après avoir cliqué sur Autoriser
+    </string>
+    <string name="allow">Autoriser</string>
+    <string name="deny">Refuser</string>
 </resources>

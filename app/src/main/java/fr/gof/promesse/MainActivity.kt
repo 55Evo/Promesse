@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity() {
         val dfs = DateFormatSymbols(Locale.FRANCE)
         val dateFormat = SimpleDateFormat("EEEE dd MMMM", dfs)
         val date1 = dateFormat.format(dt)
-        println(date1)
         var res = ""
         val formatter = SimpleDateFormat("YYYY")
         val date2 = formatter.format(Date())
@@ -150,12 +149,14 @@ class MainActivity : AppCompatActivity() {
                         message = getString(R.string.promiseDone)
                         promise.state = State.DONE
                         user.updatePromise(promise)
+                        user.stopDnd(this@MainActivity)
                     }
                     utils.RIGHT -> { // add 1 day to the date to do to postpone it
                         message = getString(R.string.promisePostponed)
                         promise.dateTodo = Date(System.currentTimeMillis() + 86400000)
-                        user.updatePromiseDate(promise)
-
+                        promise.state = State.TODO
+                        user.updatePromise(promise)
+                        user.stopDnd(this@MainActivity)
                     }
                 }
                 if (adapter.inSelection){
@@ -196,6 +197,9 @@ class MainActivity : AppCompatActivity() {
                     adapter.notifyItemChanged(i,bundle)
                 adapter.showOffDdelete()
                 // Notify the adapter of the move
+
+
+
 
                 adapter.onItemMove(source.adapterPosition, target.adapterPosition)
                 return true
