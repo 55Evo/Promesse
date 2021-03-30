@@ -100,6 +100,16 @@
 
                 </LinearLayout>
 
+                <Button
+                    android:id="@+id/buttonStart"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:visibility="visible"
+                    app:icon="@android:drawable/ic_media_play"
+                    app:iconTint="?android:attr/textColorSecondary" />
+
                 <CheckBox
                     android:id="@+id/delCheckBox"
                     android:layout_width="37dp"
@@ -158,21 +168,6 @@
                         app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Button
-                        android:id="@+id/buttonStart"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/start"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:visibility="gone"
-                        app:icon="@android:drawable/ic_media_play"
-                        app:iconTint="?android:attr/textColorSecondary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
-                        app:layout_constraintStart_toEndOf="@id/buttonStop"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
