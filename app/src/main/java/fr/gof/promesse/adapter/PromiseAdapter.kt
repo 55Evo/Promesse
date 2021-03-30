@@ -238,7 +238,7 @@ class PromiseAdapter(
         //holder.promise = promiseList[position]
     }
     fun refreshState(holder: PromiseViewHolder) {
-        holder.promise = promiseList[holder.adapterPosition]
+        holder.promise = promiseList.elementAt(holder.adapterPosition)
         statePromiseUpdate(holder)
     }
     private fun refreshPromise(holder: PromiseViewHolder, fold: Boolean) {

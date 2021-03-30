@@ -107,6 +107,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
                 adapter.notifyItemRangeChanged(pos, listPromesses.size)
             }
         }
+        user.stopDnd(context)
 
 
     }
