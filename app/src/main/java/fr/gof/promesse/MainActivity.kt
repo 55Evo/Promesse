@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     lateinit var mascotView : ImageView
     val promiseDataBase = PromiseDataBase(this@MainActivity)
-    //var notifications = Notifications()
+    var notifications = Notifications()
     lateinit var slidr: SlidrInterface
 
     lateinit var adapter : PromiseAdapter
@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity() {
         del.setOnClickListener(deleteListener)
         enableSwipeToDoneOrReport()
         //enableSwipeUpDown()
-        sendDailyNotification()
-        //notifications.scheduleJob(this, user)
+//        sendDailyNotification()
+        notifications.scheduleJob(this, user)
         //user.generatePromises()
 
 
@@ -311,25 +311,25 @@ class MainActivity : AppCompatActivity() {
         mHandler.removeCallbacks(mRunnable)
     }
 
-    private fun sendDailyNotification(){
-        createNotificationChannel()
-        var calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 16)
-        calendar.set(Calendar.MINUTE, 0)
-
-        var intent = Intent(applicationContext, NotificationReceiver::class.java)
-        intent.action = "MY_NOTIFICATION_MESSAGE"
-        var pendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
-            100,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
-        var alarmManager: AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent)
-    }
+//    private fun sendDailyNotification(){
+//        createNotificationChannel()
+//        var calendar = Calendar.getInstance()
+//        calendar.set(Calendar.HOUR_OF_DAY, 16)
+//        calendar.set(Calendar.MINUTE, 0)
+//
+//        var intent = Intent(applicationContext, NotificationReceiver::class.java)
+//        intent.action = "MY_NOTIFICATION_MESSAGE"
+//        var pendingIntent = PendingIntent.getBroadcast(
+//            applicationContext,
+//            100,
+//            intent,
+//            PendingIntent.FLAG_UPDATE_CURRENT)
+//        var alarmManager: AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+//        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+//            calendar.timeInMillis,
+//            AlarmManager.INTERVAL_DAY,
+//            pendingIntent)
+//    }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -31,7 +31,7 @@ class Notifications : JobService() {
     var context : Context = this
     lateinit var listPromises : MutableList<Promise>
     lateinit var email : String
-    private val oneDayInMilis: Long = 3600000L
+    private val oneDayInMilis: Long = 86400000L
 
 
     override fun onStartJob(params: JobParameters?): Boolean {
@@ -42,9 +42,9 @@ class Notifications : JobService() {
         updateListPromises()
 
         if(listPromises.size > 0){
-            val now = Calendar.getInstance()
+//            val now = Calendar.getInstance()
             //Send notification if it's 8 A.M
-            if(now.get(Calendar.HOUR_OF_DAY) == 8)
+//            if(now.get(Calendar.HOUR_OF_DAY) == 8)
                 sendNotification(listPromises)
         }
         return true
