@@ -377,12 +377,12 @@ class PromiseAdapter(
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        Collections.swap(promiseList.toMutableList(), fromPosition, toPosition)
+        //Collections.swap(promiseList.toMutableList(), fromPosition, toPosition)
         var save = promiseList.elementAt(fromPosition).dateTodo
         promiseList.elementAt(fromPosition).dateTodo = promiseList.elementAt(toPosition).dateTodo
         promiseList.elementAt(toPosition).dateTodo = save
-        var fromPos = promiseList.elementAt(toPosition)
-        var toPos = promiseList.elementAt(fromPosition)
+        var fromPos = promiseList.elementAt(fromPosition)
+        var toPos = promiseList.elementAt(toPosition)
         promiseList.remove(fromPos)
         promiseList.remove(toPos)
         promiseList.add(fromPos)

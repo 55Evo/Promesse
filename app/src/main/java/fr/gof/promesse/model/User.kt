@@ -60,7 +60,12 @@ lateinit var db : PromiseDataBase
      * @return
      */
     fun getAllPromise() : TreeSet<Promise>{
-        return listPromise.clone() as TreeSet<Promise>
+        var res : TreeSet<Promise> = TreeSet()
+        for( p in listPromise){
+            res.add(p)
+        }
+
+        return res
     }
 
 
