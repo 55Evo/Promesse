@@ -14,6 +14,7 @@ import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.PromiseManagerActivity
 import fr.gof.promesse.R
 import fr.gof.promesse.model.Promise
+import java.util.*
 
 /**
  * Promise event listener
@@ -22,10 +23,10 @@ import fr.gof.promesse.model.Promise
  * @property context
  * @constructor Create empty Promise event listener
  */
-class PromiseEventListener (var listPromesses : MutableList<Promise>, var context : Activity) : PromiseAdapter.OnItemClickListener {
+class PromiseEventListener (var listPromesses : TreeSet<Promise>, var context : Activity) : PromiseAdapter.OnItemClickListener {
 
     override fun onItemClick(position: Int, adapter : PromiseAdapter) {
-        val clickedItem = listPromesses[position]
+        val clickedItem = listPromesses.elementAt(position)
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
         var bundle = Bundle()
         bundle.putBoolean("click", true)
@@ -40,7 +41,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     }
 
     override fun onItemLongClick(position: Int, adapter : PromiseAdapter) {
-        var clickedItem = listPromesses[position]
+        var clickedItem = listPromesses.elementAt(position)
         if(!adapter.inSelection){
             clickedItem.isChecked = true
             adapter.nbPromisesChecked++
@@ -67,7 +68,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     }
 
     override fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter) {
-        var clickedItem = promiseAdapter.promiseList[position]
+        var clickedItem = promiseAdapter.promiseList.elementAt(position)
         var p = clickedItem.copy()
 
         val intent = Intent(context, PromiseManagerActivity::class.java)
@@ -76,7 +77,7 @@ class PromiseEventListener (var listPromesses : MutableList<Promise>, var contex
     }
 
     override fun onItemCheckedChanged(position: Int, adapter: PromiseAdapter) {
-        val clickedItem = listPromesses[position]
+        val clickedItem = listPromesses.elementAt(position)
         uncheckItem(clickedItem, adapter)
     }
 

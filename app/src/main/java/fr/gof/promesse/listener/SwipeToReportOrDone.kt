@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
+import java.lang.Math.abs
 import kotlin.math.roundToInt
 
 abstract class SwipeToReportOrDone internal constructor(var mContext: Context) : ItemTouchHelper.Callback() {
@@ -16,10 +17,12 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     private val mBackground: ColorDrawable = ColorDrawable()
     private val backgroundColorReport: String = "DE8282"
     private val backgroundColorDone: String = "A1C26C"
+    private val backgroundColorMoove: String = "#F22B00"
     private var reportDrawable: Drawable
     private var doneDrawable : Drawable
     private val iconWidthDone: Int
     private val iconHeightDone: Int
+    private val space = 50
 
     private val iconWidthReport : Int
     private val iconHeightReport : Int
@@ -33,6 +36,8 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         iconHeightReport = reportDrawable.intrinsicHeight
         iconWidthDone = doneDrawable.intrinsicWidth
         iconHeightDone = doneDrawable.intrinsicHeight
+        doneDrawable.alpha = 0
+        reportDrawable.alpha = 0
 
     }
 
@@ -52,13 +57,39 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     }
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-        if (dX<0){ // left case
-               leftTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        when {
+            dX<0 -> { // left case
+                leftTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
-       else if (dX>0){ //right treatment
+            dX>0 -> { //right treatment
                 rightTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
+            dY!=(0F)-> {
+                onMooveTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+        }
 
+    }
+
+    private fun onMooveTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean){
+        val itemView = viewHolder.itemView
+        val itemHeight = itemView.height
+        val isCancelled = dY == 0f && !isCurrentlyActive
+        if (isCancelled) {
+            clearCanvas(c, itemView.left.toFloat(), itemView.top.toFloat(), itemView.left.toFloat(), itemView.bottom.toFloat())
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            return
+        }
+        setBackgroundMoove(itemView, c,dY)
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+    }
+
+    private fun setBackgroundMoove(itemView: View, c: Canvas, dY: Float){
+        mBackground.color = Color.parseColor(backgroundColorMoove)
+
+        mBackground.setBounds(itemView.left -space, itemView.top+30 + dY.toInt(), itemView.left-3, itemView.bottom-30 + dY.toInt())
+        mBackground.alpha = 200
+        mBackground.draw(c)
     }
 
     private fun leftTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
@@ -108,10 +139,20 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         if (calcul.length < 2){
             calcul = "0$calcul"
         }
+
             if (dX<=-1000 || (dX >=1000)){
                 calcul = "FF"
             }
+        if( (dX < 1000) || (dX >=1000)){
+            doneDrawable.alpha = kotlin.math.abs(dX / 4)
+            reportDrawable.alpha = kotlin.math.abs(dX / 4)
+        }
+        else if(calcul == "FF"){
+            doneDrawable.alpha =  255
+            reportDrawable.alpha = 255
+        }
         mBackground.color = Color.parseColor("#$calcul$colorString")
+
         }
     private fun setBackgroundReport(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
         giveColor (backgroundColorReport, true, dX.toInt())

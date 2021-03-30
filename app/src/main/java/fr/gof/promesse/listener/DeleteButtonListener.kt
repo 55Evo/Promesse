@@ -13,6 +13,7 @@ import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.model.Promise
+import java.util.*
 
 
 /**
@@ -63,7 +64,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
         }, 1000)
     }
 
-    private fun displayPopup(listPromesses: MutableList<Promise>) {
+    private fun displayPopup(listPromesses: TreeSet<Promise>) {
         val dialogBuilder = AlertDialog.Builder(context)
         dialogBuilder.setMessage(
             "Attention, au moins une promesse possède des sous-tâches. " +
@@ -93,7 +94,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
      * @param listPromesses
      * @param promiseDataBase
      */
-    private fun deletePromises(listPromesses : MutableList<Promise>) {
+    private fun deletePromises(listPromesses : TreeSet<Promise>) {
         val it = listPromesses.iterator()
         while(it.hasNext()) {
             var p = it.next()

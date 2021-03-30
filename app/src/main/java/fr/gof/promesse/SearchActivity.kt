@@ -29,12 +29,13 @@ import fr.gof.promesse.listener.PromiseEventListener
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.DeleteButtonListener
 import fr.gof.promesse.model.*
+import java.util.*
 
 
 class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, CustomSuggestionAdapter.OnItemClickListener {
 
     lateinit var customSuggestionAdapter: CustomSuggestionAdapter
-    lateinit var listPromesses: MutableList<Promise>
+    lateinit var listPromesses: TreeSet<Promise>
     var promiseDataBase = PromiseDataBase(this@SearchActivity)
     lateinit var recyclerView : RecyclerView
     lateinit var adapter : PromiseAdapter
@@ -68,10 +69,10 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         materialSearchBar.inflateMenu(R.menu.app_menu)
         materialSearchBar.menu.setOnMenuItemClickListener(this as PopupMenu.OnMenuItemClickListener)
         materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
-        listPromesses = user.getAllPromise().toMutableList()
+        listPromesses = user.getAllPromise()
         val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this)
-        customSuggestionAdapter.suggestions = listPromesses
+        customSuggestionAdapter.suggestions = listPromesses.toMutableList()
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
         materialSearchBar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -132,7 +133,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         }
 
         valeurActuelle = text
-        listPromesses = user.getSearchResultsSorted(text, choiceOfSort).toMutableList()
+        listPromesses = user.getSearchResultsSorted(text, choiceOfSort)
         deleteButton.visibility = View.INVISIBLE
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
         deleteListener.adapter = adapter
@@ -141,8 +142,8 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         materialSearchBar.clearSuggestions()
         materialSearchBar.hideSuggestionsList()
         hideKeyboard(this)
-        listPromesses  = user.getAllPromise().toMutableList()
-        customSuggestionAdapter.suggestions = listPromesses
+        listPromesses  = user.getAllPromise()
+        customSuggestionAdapter.suggestions = listPromesses.toMutableList()
         materialSearchBar.closeSearch()
     }
 
@@ -169,7 +170,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
 
     override fun onResume() {
         super.onResume()
-        listPromesses = user.getAllPromise().toMutableList()
+        listPromesses = user.getAllPromise()
         adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
         deleteListener = DeleteButtonListener(adapter, this)
         deleteButton.setOnClickListener(deleteListener)
