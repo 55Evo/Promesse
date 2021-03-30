@@ -87,7 +87,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     private fun setBackgroundMoove(itemView: View, c: Canvas, dY: Float){
         mBackground.color = Color.parseColor(backgroundColorMoove)
 
-        mBackground.setBounds(itemView.right +5, itemView.top  + dY.toInt(), itemView.right+space, itemView.bottom + dY.toInt())
+        mBackground.setBounds(itemView.left -space, itemView.top+30 + dY.toInt(), itemView.left-3, itemView.bottom-30 + dY.toInt())
         mBackground.alpha = 200
         mBackground.draw(c)
     }
