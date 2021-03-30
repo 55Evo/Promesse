@@ -2,16 +2,12 @@ package fr.gof.promesse.listener
 
 import android.app.Activity
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.AudioManager
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContextCompat.startActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fr.gof.promesse.MainActivity
 import fr.gof.promesse.MainActivity.Companion.user
@@ -132,11 +128,12 @@ class PromiseEventListener(var listPromesses: MutableList<Promise>, var context:
     override fun onItemButtonStartClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = listPromesses[posAdapter]
         clickedItem.state = State.IN_PROGRESS
-        clickedItem.isDescDeployed = true
         user.updatePromise(clickedItem)
-        promiseAdapter.notifyItemChanged(posAdapter)
+        var bundle = Bundle()
+        bundle.putBoolean("changestate", true)
+        promiseAdapter.notifyItemChanged(posAdapter, bundle)
         if (clickedItem.priority) {
-            setRingMode(AudioManager.RINGER_MODE_SILENT)
+            user.startDnd(context)
         }
     }
 
@@ -157,44 +154,35 @@ class PromiseEventListener(var listPromesses: MutableList<Promise>, var context:
         context.sendBroadcast(intent)
     }
 
-    private fun setRingMode(ringerMode: Int) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (!notificationManager.isNotificationPolicyAccessGranted) {
-            val intent = Intent(
-                    Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-            context.startActivity(intent)
-        }
-        val am: AudioManager
-        am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        am.ringerMode = ringerMode
-    }
 
     override fun onItemButtonStopClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = listPromesses[posAdapter]
         clickedItem.state = State.TODO
         user.updatePromise(clickedItem)
-        promiseAdapter.notifyItemChanged(posAdapter)
-        if (clickedItem.priority) {
-            setRingMode(AudioManager.RINGER_MODE_NORMAL)
-        }
+        var bundle = Bundle()
+        bundle.putBoolean("changestate", true)
+        promiseAdapter.notifyItemChanged(posAdapter, bundle)
+        user.stopDnd(context)
     }
 
     override fun onItemButtonRedoClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = listPromesses[posAdapter]
         clickedItem.state = State.TODO
         user.updatePromise(clickedItem)
-        promiseAdapter.notifyItemChanged(posAdapter)
+        var bundle = Bundle()
+        bundle.putBoolean("changestate", true)
+        promiseAdapter.notifyItemChanged(posAdapter, bundle)
     }
 
     override fun onItemButtonDoneClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = listPromesses[posAdapter]
         clickedItem.state = State.DONE
         user.updatePromise(clickedItem)
-        promiseAdapter.notifyItemChanged(posAdapter)
-        if (clickedItem.priority) {
-            setRingMode(AudioManager.RINGER_MODE_NORMAL)
-        }
+        var bundle = Bundle()
+        bundle.putBoolean("changestate", true)
+        promiseAdapter.notifyItemChanged(posAdapter, bundle)
+        user.stopDnd(context)
     }
 }
 

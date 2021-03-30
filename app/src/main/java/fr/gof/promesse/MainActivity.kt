@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity() {
         val dfs = DateFormatSymbols(Locale.FRANCE)
         val dateFormat = SimpleDateFormat("EEEE dd MMMM", dfs)
         val date1 = dateFormat.format(dt)
-        println(date1)
         var res = ""
         val formatter = SimpleDateFormat("YYYY")
         val date2 = formatter.format(Date())
@@ -145,16 +144,18 @@ class MainActivity : AppCompatActivity() {
                 var date = promise.dateTodo
                 var message = ""
                 when(i){ // promise done
-                    16 -> {
+                    4 -> {
                         message = getString(R.string.promiseDone)
                         promise.state = State.DONE
                         user.updatePromise(promise)
+                        user.stopDnd(this@MainActivity)
                     }
-                    32 -> { // add 1 day to the date to do to postpone it
+                    8 -> { // add 1 day to the date to do to postpone it
                         message = getString(R.string.promisePostponed)
                         promise.dateTodo = Date(System.currentTimeMillis() + 86400000)
-                        user.updatePromiseDate(promise)
-
+                        promise.state = State.TODO
+                        user.updatePromise(promise)
+                        user.stopDnd(this@MainActivity)
                     }
                 }
                 if (adapter.inSelection){
@@ -212,7 +213,7 @@ class MainActivity : AppCompatActivity() {
                 val snackbar = Snackbar
                         .make(layout, message, Snackbar.LENGTH_LONG)
                 snackbar.setAction(getString(R.string.cancel)) {
-                    if (i == 32) {
+                    if (i == 8) {
                         promise.dateTodo = date
                         adapter.restoreItem(promise, position, promiseDataBase)
                     } else {
@@ -243,9 +244,6 @@ class MainActivity : AppCompatActivity() {
             PromiseEventListener(listPromesse, this),
             this,
             false)
-
-
-
 
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter

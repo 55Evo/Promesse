@@ -1,7 +1,10 @@
 package fr.gof.promesse.model
 
+import android.app.Activity
+import android.app.NotificationManager
 import android.util.Log
 import fr.gof.promesse.database.PromiseDataBase
+import fr.gof.promesse.services.DndManager
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -147,6 +150,21 @@ lateinit var db : PromiseDataBase
      *///Fonction pour renvoyer les promesses du jour triées par priorité puis date d'exécution
     fun getListPromises() : Set<Promise>{
         return getPromisesSortedByPriority(getAllPromisesOfTheDay())
+    }
+
+    fun stopDnd(context: Activity) {
+        val notifMngr = DndManager(context)
+        for(promise in getAllPromise()) {
+            if (promise.priority && (promise.state == State.IN_PROGRESS)) {
+                return
+            }
+        }
+        notifMngr.setRingMode(NotificationManager.INTERRUPTION_FILTER_ALL)
+    }
+
+    fun startDnd(context: Activity) {
+        val notifMngr = DndManager(context)
+        notifMngr.setRingMode(NotificationManager.INTERRUPTION_FILTER_NONE)
     }
 
     /**

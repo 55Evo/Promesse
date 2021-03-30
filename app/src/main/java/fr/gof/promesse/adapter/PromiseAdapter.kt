@@ -74,50 +74,7 @@ class PromiseAdapter(
         holder.progressBar.max = holder.promise.subtasks.size
         holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
 
-        when(holder.promise.state) {
-            State.IN_PROGRESS -> {
-                holder.buttonStart.visibility = View.GONE
-                holder.buttonStop.visibility = View.VISIBLE
-                holder.buttonDone.visibility = View.VISIBLE
-                holder.buttonRedo.visibility = View.GONE
-                holder.layout.setBackgroundResource(
-                        if (holder.promise.priority) {
-                            R.drawable.layout_border_important_inprogress
-                        } else {
-                            R.drawable.layout_border_inprogress
-                        }
-                )
-                holder.textViewInprogress.visibility = View.VISIBLE
-            }
-            State.DONE -> {
-                holder.buttonStart.visibility = View.GONE
-                holder.buttonStop.visibility = View.GONE
-                holder.buttonDone.visibility = View.GONE
-                holder.buttonRedo.visibility = View.VISIBLE
-                holder.layout.setBackgroundResource(
-                        if (holder.promise.priority) {
-                            R.drawable.layout_border_important_done
-                        } else {
-                            R.drawable.layout_border_done
-                        }
-                )
-                holder.textViewInprogress.visibility = View.GONE
-            }
-            State.TODO -> {
-                holder.buttonStart.visibility = View.VISIBLE
-                holder.buttonStop.visibility = View.GONE
-                holder.buttonDone.visibility = View.GONE
-                holder.buttonRedo.visibility = View.GONE
-                holder.layout.setBackgroundResource(
-                        if (holder.promise.priority) {
-                            R.drawable.layout_border_important
-                        } else {
-                            R.drawable.layout_border
-                        }
-                )
-                holder.textViewInprogress.visibility = View.GONE
-            }
-        }
+        statePromiseUpdate(holder)
 
         holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
         holder.rvSubtasks.setHasFixedSize(true)
@@ -160,6 +117,56 @@ class PromiseAdapter(
 
     }
 
+    private fun statePromiseUpdate(holder: PromiseViewHolder) {
+        when (holder.promise.state) {
+            State.IN_PROGRESS -> {
+                holder.buttonStart.visibility = View.GONE
+                holder.buttonStop.visibility = View.VISIBLE
+                holder.buttonDone.visibility = View.VISIBLE
+                holder.buttonRedo.visibility = View.GONE
+                holder.layout.setBackgroundResource(
+                        if (holder.promise.priority) {
+                            R.drawable.layout_border_important_inprogress
+                        } else {
+                            R.drawable.layout_border_inprogress
+                        }
+                )
+                holder.notifDisabled.visibility = if(holder.promise.priority) if (inSelection) View.GONE else View.VISIBLE else View.GONE
+                holder.textViewInprogress.visibility = View.VISIBLE
+            }
+            State.DONE -> {
+                holder.buttonStart.visibility = View.GONE
+                holder.buttonStop.visibility = View.GONE
+                holder.buttonDone.visibility = View.GONE
+                holder.buttonRedo.visibility = View.VISIBLE
+                holder.layout.setBackgroundResource(
+                        if (holder.promise.priority) {
+                            R.drawable.layout_border_important_done
+                        } else {
+                            R.drawable.layout_border_done
+                        }
+                )
+                holder.textViewInprogress.visibility = View.GONE
+                holder.notifDisabled.visibility = View.GONE
+            }
+            State.TODO -> {
+                holder.buttonStart.visibility = if (inSelection) View.GONE else View.VISIBLE
+                holder.buttonStop.visibility = View.GONE
+                holder.buttonDone.visibility = View.GONE
+                holder.buttonRedo.visibility = View.GONE
+                holder.layout.setBackgroundResource(
+                        if (holder.promise.priority) {
+                            R.drawable.layout_border_important
+                        } else {
+                            R.drawable.layout_border
+                        }
+                )
+                holder.textViewInprogress.visibility = View.GONE
+                holder.notifDisabled.visibility = View.GONE
+            }
+        }
+    }
+
     override fun onBindViewHolder(
         holder: PromiseViewHolder,
         position: Int,
@@ -172,6 +179,7 @@ class PromiseAdapter(
             var click: Boolean? = bundle.getBoolean("click")
             var long: Boolean? = bundle.getBoolean("longclick")
             var subtask: Boolean? = bundle.getBoolean("clicksubtask")
+            var changeState: Boolean? = bundle.getBoolean("changestate")
             var lastPayload =
                 payloads[payloads.size - 1]
             if (click as Boolean){
@@ -190,6 +198,12 @@ class PromiseAdapter(
                 println("")
                 if (subtask){
                     refreshSubtask(holder, subtask)
+                }
+            }
+            if (changeState as Boolean){
+                println("")
+                if (changeState){
+                    refreshState(holder)
                 }
             }
 
@@ -217,7 +231,12 @@ class PromiseAdapter(
         holder.promise = promiseList[holder.adapterPosition]
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
+        refreshState(holder)
         //holder.promise = promiseList[position]
+    }
+    fun refreshState(holder: PromiseViewHolder) {
+        holder.promise = promiseList[holder.adapterPosition]
+        statePromiseUpdate(holder)
     }
     private fun refreshPromise(holder: PromiseViewHolder, fold: Boolean) {
 
@@ -393,6 +412,7 @@ class PromiseAdapter(
         var progressBar: ProgressBar = view.findViewById(R.id.progressBar)
         var rvSubtasks: RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
         var deployed : LinearLayout = view.findViewById(R.id.deployedLayout)
+        var notifDisabled : ImageView = view.findViewById(R.id.notifDisabled)
         var posAdapter: Int = 0
         init {
             view.setOnClickListener(this)
@@ -423,10 +443,6 @@ class PromiseAdapter(
                                 R.id.buttonRedo -> listener.onItemButtonRedoClick(posAdapter, this@PromiseAdapter)
                                 R.id.buttonDone -> listener.onItemButtonDoneClick(posAdapter, this@PromiseAdapter)
                             }
-                            if (v.id == R.id.buttonEdit)
-                                listener.onItemButtonEditClick(posAdapter, this@PromiseAdapter)
-                            if (v.id == R.id.buttonStart)
-                                listener.onItemButtonStartClick(posAdapter, this@PromiseAdapter)
                         } else {
                             displayAnimation = true
                             listener.onItemClick(posAdapter, this@PromiseAdapter)
