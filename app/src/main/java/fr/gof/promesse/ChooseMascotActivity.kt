@@ -26,6 +26,11 @@ class ChooseMascotActivity : AppCompatActivity() {
         Mascot.EUSTACHE
     )
 
+    /**
+     * On create
+     *
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mascot)

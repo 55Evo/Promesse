@@ -22,13 +22,14 @@ import kotlin.collections.HashSet
 data class User(var email: String, var name: String, var password: String, var mascot: Mascot){
 private lateinit var listPromise:TreeSet<Promise>
 lateinit var db : PromiseDataBase
+
+
     /**
      * Add promise
      *
      * @param promise
      * @param db
      */
-
     fun addPromise(promise: Promise) {
         promise.id = db.addPromise(email, promise).toInt()
         Log.d("----------------------id---------------",promise.id.toString())
@@ -36,7 +37,11 @@ lateinit var db : PromiseDataBase
 
     }
 
-
+    /**
+     * List add promise
+     *
+     * @param promise
+     */
     private fun listAddPromise(promise: Promise) {
         var res = removePromise(promise)
         Log.d("----------------ici-------------------------------------",res.toString())
@@ -45,10 +50,21 @@ lateinit var db : PromiseDataBase
         listPromise.add(promise)
     }
 
+    /**
+     * Remove promise
+     *
+     * @param promise
+     * @return
+     */
     private fun removePromise(promise: Promise) : Boolean{
         return listPromise.remove(promise)
     }
 
+    /**
+     * Load promises
+     *
+     * @param db
+     */
     fun loadPromises(db: PromiseDataBase){
         this.db = db
         listPromise = db.getAllPromises(email)
@@ -89,6 +105,11 @@ lateinit var db : PromiseDataBase
         return res
     }
 
+    /**
+     * Get all promises of the day category
+     *
+     * @return
+     */
     fun getAllPromisesOfTheDayCategory() : MutableList<Promise>{
         var lP = this.getAllPromisesOfTheDay()
         var res = mutableListOf<Promise>()
@@ -110,10 +131,23 @@ lateinit var db : PromiseDataBase
         return res
     }
 
+    /**
+     * Get all promises of the month
+     *
+     * @param email
+     * @param date
+     * @return
+     */
     fun getAllPromisesOfTheMonth(email: String, date: Date): TreeSet<Promise>{
         return db.getAllPromisesOfTheMonth(email,date) as TreeSet<Promise>
     }
 
+    /**
+     * Get promises of the day
+     *
+     * @param date
+     * @return
+     */
     fun getPromisesOfTheDay(date: Date = Date(System.currentTimeMillis())): TreeSet<Promise> {
         return db.getPromisesOfTheDay(email, date) as TreeSet<Promise>
     }
@@ -155,6 +189,11 @@ lateinit var db : PromiseDataBase
         return getPromisesSortedByPriority(getAllPromisesOfTheDay())
     }
 
+    /**
+     * Stop dnd
+     *
+     * @param context
+     */
     fun stopDnd(context: Activity) {
         val notifMngr = DndManager(context)
         for(promise in getAllPromise()) {
@@ -165,6 +204,11 @@ lateinit var db : PromiseDataBase
         notifMngr.setRingMode(NotificationManager.INTERRUPTION_FILTER_ALL)
     }
 
+    /**
+     * Start dnd
+     *
+     * @param context
+     */
     fun startDnd(context: Activity) {
         val notifMngr = DndManager(context)
         notifMngr.setRingMode(NotificationManager.INTERRUPTION_FILTER_NONE)
@@ -203,7 +247,7 @@ lateinit var db : PromiseDataBase
      * @param db
      * @param setToSort
      * @return
-     *///Trier par date
+     */
     fun getPromisesSortedByDate( setToSort: Set<Promise>) : Set<Promise>{
         var setSorted : TreeSet<Promise> = TreeSet { p1, p2 ->
             if(p1.state ==  State.DONE && p2.state != State.DONE)
@@ -217,8 +261,12 @@ lateinit var db : PromiseDataBase
         setSorted.addAll(setToSort)
         return setSorted
     }
-    fun generatePromises(){
 
+    /**
+     * Generate promises
+     *
+     */
+    fun generatePromises(){
         for (nm in 1..10){
             var listSubTask = mutableListOf<Subtask>()
             listSubTask.add(Subtask(1000+nm,"sous tache numéro 1", false))
@@ -264,6 +312,11 @@ lateinit var db : PromiseDataBase
 
     }
 
+    /**
+     * Set to done
+     *
+     * @param promise
+     */
     fun setToDone(promise: Promise) {
         promise.state = State.DONE
         db.updatePromise(email, promise)
@@ -278,12 +331,23 @@ lateinit var db : PromiseDataBase
 
     }
 
+    /**
+     * Update promise date
+     *
+     * @param promise
+     */
     fun updatePromiseDate(promise: Promise) {
         db.updateDate(promise)
         listAddPromise(promise)
 
     }
 
+    /**
+     * Update done subtask
+     *
+     * @param clickedItem
+     * @param done
+     */
     fun updateDoneSubtask(clickedItem: Subtask, done: Boolean) {
         db.updateSubtask(clickedItem.id, clickedItem.done)
     }

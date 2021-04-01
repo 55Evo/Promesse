@@ -51,19 +51,19 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var deleteListener: DeleteButtonListener
     lateinit var recyclerView: RecyclerView
-    lateinit var mascotView : ImageView
+    lateinit var mascotView: ImageView
     val promiseDataBase = PromiseDataBase(this@MainActivity)
     var notifications = Notifications()
     lateinit var slidr: SlidrInterface
 
-    lateinit var adapter : PromiseAdapter
-    lateinit var listPromesse : TreeSet<Promise>
-    lateinit var layout : ConstraintLayout
-    var dateOfTheDay : Date? = null
+    lateinit var adapter: PromiseAdapter
+    lateinit var listPromesse: TreeSet<Promise>
+    lateinit var layout: ConstraintLayout
+    var dateOfTheDay: Date? = null
 
     private lateinit var mHandler: Handler
     private lateinit var mRunnable: Runnable
-    private lateinit var del : FloatingActionButton
+    private lateinit var del: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,34 +81,37 @@ class MainActivity : AppCompatActivity() {
         user.loadPromises(promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay()
         adapter = PromiseAdapter(listPromesse,
-            PromiseEventListener(listPromesse, this),
-            this,
-            false)
+                PromiseEventListener(listPromesse, this),
+                this,
+                false)
 
         del = findViewById(R.id.deleteButton)
-//        updateDate()
-//        linkBackground()
+        threadLinkBackground()
+        recyclerView.adapter = adapter
+        deleteListener = DeleteButtonListener(adapter, this)
+        del.setOnClickListener(deleteListener)
+        enableSwipeToDoneOrReport()
+        notifications.scheduleJob(this, user)
+    }
+
+    /**
+     * Thread to link the background and refresh the date every second
+     *
+     */
+    private fun threadLinkBackground() {
         mHandler = Handler()
-        mRunnable = Runnable{
+        mRunnable = Runnable {
             linkBackground()
             updateDate()
             mHandler.postDelayed(mRunnable, 1000)
         }
         mRunnable.run()
-        //mHandler.postDelayed(mRunnable, 1000)
-
-        recyclerView.adapter = adapter
-        deleteListener = DeleteButtonListener(adapter, this)
-        del.setOnClickListener(deleteListener)
-        enableSwipeToDoneOrReport()
-        //enableSwipeUpDown()
-//        sendDailyNotification()
-        notifications.scheduleJob(this, user)
-        //user.generatePromises()
-
-
     }
 
+    /**
+     * Update date on the main activity
+     *
+     */
     private fun updateDate() {
         var date = findViewById<TextView>(R.id.dateDayView)
         val dt = Date()
@@ -121,30 +124,36 @@ class MainActivity : AppCompatActivity() {
         res += date2
         res += "\n" + date1.substring(0, 1).toUpperCase() + date1.substring(1).toLowerCase();
         date.text = res
-
-
-        //notifications.scheduleJob(this, user)
-
-        //user.generatePromises()
-
     }
-    private fun lockSlider(){
+
+    /**
+     * Lock slider
+     *
+     */
+    private fun lockSlider() {
         slidr.lock()
     }
-    private fun unLockSlider(){
+
+    /**
+     * Un lock slider
+     *
+     */
+    private fun unLockSlider() {
         slidr.unlock()
     }
 
-
-    private fun enableSwipeToDoneOrReport(){
+    /**
+     * Enable swipe to done or report
+     *
+     */
+    private fun enableSwipeToDoneOrReport() {
         val swipeToReportOrDone: SwipeToReportOrDone = object : SwipeToReportOrDone(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
                 var promise = listPromesse.elementAt(position)
                 var date = promise.dateTodo
                 var message = ""
-                when(i){ // promise done
-
+                when (i) { // promise done
                     utils.LEFT -> {
                         message = getString(R.string.promiseDone)
                         promise.state = State.DONE
@@ -159,15 +168,15 @@ class MainActivity : AppCompatActivity() {
                         user.stopDnd(this@MainActivity)
                     }
                 }
-                if (adapter.inSelection){
-                    for(l in adapter.promiseList){
+                if (adapter.inSelection) {
+                    for (l in adapter.promiseList) {
                         l.isChecked = false
                     }
                     adapter.nbPromisesChecked = 0
                     adapter.inSelection = false
                     var bundle = Bundle()
                     bundle.putBoolean("longclick", true)
-                    for (i in 0..(adapter.promiseList.size)){
+                    for (i in 0..(adapter.promiseList.size)) {
                         adapter.notifyItemChanged(i, bundle);
                     }
                     adapter.showOffDdelete()
@@ -176,15 +185,21 @@ class MainActivity : AppCompatActivity() {
                 adapter.notifyItemRemoved(position)
                 adapter.notifyItemRangeChanged(position, listPromesse.size)
                 snackbarUndo(message, i, promise, date, position)
-
-
             }
+
+            /**
+             * On move
+             *
+             * @param recyclerView
+             * @param source
+             * @param target
+             * @return
+             */
             override fun onMove(
-                recyclerView: RecyclerView,
-                source: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+                    recyclerView: RecyclerView,
+                    source: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
             ): Boolean {
-                //adapter.inDrag = true
                 if (source.itemViewType != target.itemViewType) {
                     return false
                 }
@@ -193,23 +208,28 @@ class MainActivity : AppCompatActivity() {
                 adapter.promiseList.elementAt(source.adapterPosition).isChecked = false
                 var bundle = Bundle()
                 bundle.putBoolean("longclick", true)
-                for (i in 0..adapter.promiseList.size )
-                    adapter.notifyItemChanged(i,bundle)
+                for (i in 0..adapter.promiseList.size)
+                    adapter.notifyItemChanged(i, bundle)
                 adapter.showOffDdelete()
-                // Notify the adapter of the move
-
-
-
-
                 adapter.onItemMove(source.adapterPosition, target.adapterPosition)
                 return true
             }
+
+            /**
+             * Snackbar undo
+             *
+             * @param message
+             * @param i
+             * @param promise
+             * @param date
+             * @param position
+             */
             private fun snackbarUndo(
-                message: String,
-                i: Int,
-                promise: Promise,
-                date: Date,
-                position: Int
+                    message: String,
+                    i: Int,
+                    promise: Promise,
+                    date: Date,
+                    position: Int
             ) {
                 val snackbar = Snackbar
                         .make(layout, message, Snackbar.LENGTH_LONG)
@@ -217,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                     if (i == utils.RIGHT) {
                         promise.dateTodo = date
                         adapter.restoreItem(promise, position, promiseDataBase)
-                    } else if (i == utils.LEFT){
+                    } else if (i == utils.LEFT) {
                         // j'enlève le done
                         adapter.restoreItem(promise, position, promiseDataBase)
                         promise.state = State.TODO
@@ -229,40 +249,38 @@ class MainActivity : AppCompatActivity() {
                 snackbar.setActionTextColor(Color.GREEN);
                 snackbar.show();
             }
-
         }
         val itemReport = ItemTouchHelper(swipeToReportOrDone)
         itemReport.attachToRecyclerView(recyclerView)
     }
 
+
     override fun onResume() {
         super.onResume()
-//        linkBackground()
-//        listPromesse = user.getAllPromisesOfTheDay(promiseDataBase, dateOfTheDay!!).toMutableList()
-        //user.loadPromises( promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay()
         adapter = PromiseAdapter(listPromesse,
-            PromiseEventListener(listPromesse, this),
-            this,
-            false)
-
-
-
-
+                PromiseEventListener(listPromesse, this),
+                this,
+                false)
         deleteListener.adapter = adapter
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
-    private fun linkBackground(){
+    /**
+     * Link the background to the time of day
+     *
+     */
+    private fun linkBackground() {
         val constraintLayout: ConstraintLayout = findViewById(R.id.ConstraintLayout)
         val now = Calendar.getInstance()
-        if(now.get(Calendar.HOUR_OF_DAY) in 6..20){
+        if (now.get(Calendar.HOUR_OF_DAY) in 6..20) {
             constraintLayout.background = getDrawable(R.drawable.day)
         } else {
             constraintLayout.background = getDrawable(R.drawable.night)
         }
     }
+
 
     /**
      * On add button clicked
@@ -279,9 +297,9 @@ class MainActivity : AppCompatActivity() {
      *
      * @param v
      */
-    fun onClickMascot(v: View){
-       var bubble : TextView = findViewById(R.id.mascotBubbleTextView)
-        bubble.text = "Coucou c'est moi "+user.mascot.nom + " !"
+    fun onClickMascot(v: View) {
+        var bubble: TextView = findViewById(R.id.mascotBubbleTextView)
+        bubble.text = "Coucou c'est moi ${user.mascot.nom} !"
         bubble.visibility = View.VISIBLE
         Handler().postDelayed({
             bubble.visibility = View.GONE
@@ -293,7 +311,7 @@ class MainActivity : AppCompatActivity() {
      *
      * @param v
      */
-    fun onClickSearchButton(v: View){
+    fun onClickSearchButton(v: View) {
         val intent = Intent(this, SearchActivity::class.java)
         startActivity(intent)
     }
@@ -303,7 +321,12 @@ class MainActivity : AppCompatActivity() {
         a.notifyDataSetChanged()
     }
 
-    fun onClickCalendarButton(v: View){
+    /**
+     * On click calendar button
+     *
+     * @param v
+     */
+    fun onClickCalendarButton(v: View) {
         val intent = Intent(this, CalendarActivity::class.java)
         startActivity(intent)
     }
@@ -311,39 +334,5 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mHandler.removeCallbacks(mRunnable)
-    }
-
-//    private fun sendDailyNotification(){
-//        createNotificationChannel()
-//        var calendar = Calendar.getInstance()
-//        calendar.set(Calendar.HOUR_OF_DAY, 16)
-//        calendar.set(Calendar.MINUTE, 0)
-//
-//        var intent = Intent(applicationContext, NotificationReceiver::class.java)
-//        intent.action = "MY_NOTIFICATION_MESSAGE"
-//        var pendingIntent = PendingIntent.getBroadcast(
-//            applicationContext,
-//            100,
-//            intent,
-//            PendingIntent.FLAG_UPDATE_CURRENT)
-//        var alarmManager: AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-//        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-//            calendar.timeInMillis,
-//            AlarmManager.INTERVAL_DAY,
-//            pendingIntent)
-//    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_name)
-            val descriptionText = getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
     }
 }

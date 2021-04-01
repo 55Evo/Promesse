@@ -41,6 +41,12 @@ data class Promise(
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
 
 
+    /**
+     * Equals
+     *
+     * @param other
+     * @return
+     */
     override fun equals(other: Any?): Boolean {
         if( other is Promise){
             return other.id == this.id
@@ -62,19 +68,42 @@ data class Promise(
      * Get date creation to string
      *
      */
-    fun getDateToString()= dfl.format(dateTodo)
+    fun getDateToString() = dfl.format(dateTodo)
 
+    /**
+     * Compare to
+     *
+     * @param other
+     * @return
+     */
     override fun compareTo(other: Promise): Int {
         return if (this.id==other.id) return 0 else return compare(other)
     }
 
+    /**
+     * Compare
+     *
+     * @param other
+     * @return
+     */
     private fun compare(other : Promise) : Int{
         if (this.dateTodo.before(other.dateTodo)) return -1 else return 1
     }
+
+    /**
+     * Hash code
+     *
+     * @return
+     */
     override fun hashCode(): Int {
         return id.hashCode()
     }
 
+    /**
+     * Get nb st done
+     *
+     * @return
+     */
     fun getNbStDone(): Int {
         var nbDone = 0
         for (st: Subtask in this.subtasks) {
