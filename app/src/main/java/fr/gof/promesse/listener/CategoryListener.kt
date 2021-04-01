@@ -14,8 +14,6 @@ import fr.gof.promesse.model.Category
  * @constructor Create empty Mascot listener
  */
 class CategoryListener(var listCategory: List<Category>, var context: Activity): CategoryAdapter.OnItemClickListener {
-
-
     override fun onItemClick(position: Int, adapter: CategoryAdapter, database: PromiseDataBase) {
         var category : Category = listCategory[position]
         adapter.chosenCategory = category

@@ -8,10 +8,12 @@ import android.view.animation.Transformation
 
 
 class SlideAnimation(var mview: View)  : Animation() {
-
+    /**
+     * Expand
+     *
+     * @param choice
+     */
     fun expand(choice : Boolean) {
-
-
         if (choice){
             val animation = expandAction(mview)
             animation.duration = 300
@@ -27,6 +29,12 @@ class SlideAnimation(var mview: View)  : Animation() {
 
     }
 
+    /**
+     * Expand action
+     *
+     * @param view
+     * @return
+     */
     private fun expandAction(view: View): Animation {
         view.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         val actualHeight = view.measuredHeight
@@ -44,6 +52,12 @@ class SlideAnimation(var mview: View)  : Animation() {
         return animation
     }
 
+    /**
+     * Collapse view
+     *
+     * @param view
+     * @return
+     */
     fun collapseView(view: View):Animation {
         val actualHeight = view.measuredHeight
         val animation: Animation = object : Animation() {

@@ -20,7 +20,6 @@ import java.util.*
  * @param context
  */
 class PromiseDataBase (context : Context){
-
     val database = PromiseDataBaseHelper(context)
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 

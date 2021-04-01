@@ -41,20 +41,51 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
 
     }
 
-
+    /**
+     * Get movement flags
+     *
+     * @param recyclerView
+     * @param viewHolder
+     * @return
+     */
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
         val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         return makeMovementFlags(dragFlags, swipeFlags)
     }
 
+    /**
+     * Is long press drag enabled
+     *
+     * @return
+     */
     override fun isLongPressDragEnabled(): Boolean {
         return true
     }
 
+    /**
+     * On move
+     *
+     * @param recyclerView
+     * @param viewHolder
+     * @param viewHolder1
+     * @return
+     */
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, viewHolder1: RecyclerView.ViewHolder): Boolean {
             return true;
     }
+
+    /**
+     * On child draw
+     *
+     * @param c
+     * @param recyclerView
+     * @param viewHolder
+     * @param dX
+     * @param dY
+     * @param actionState
+     * @param isCurrentlyActive
+     */
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         when {
@@ -71,6 +102,17 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
 
     }
 
+    /**
+     * On moove treatment
+     *
+     * @param c
+     * @param recyclerView
+     * @param viewHolder
+     * @param dX
+     * @param dY
+     * @param actionState
+     * @param isCurrentlyActive
+     */
     private fun onMooveTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean){
         val itemView = viewHolder.itemView
         val itemHeight = itemView.height
@@ -84,6 +126,13 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
+    /**
+     * Set background moove
+     *
+     * @param itemView
+     * @param c
+     * @param dY
+     */
     private fun setBackgroundMoove(itemView: View, c: Canvas, dY: Float){
         mBackground.color = Color.parseColor(backgroundColorMoove)
 
@@ -92,6 +141,17 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         mBackground.draw(c)
     }
 
+    /**
+     * Left treatment
+     *
+     * @param c
+     * @param recyclerView
+     * @param viewHolder
+     * @param dX
+     * @param dY
+     * @param actionState
+     * @param isCurrentlyActive
+     */
     private fun leftTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         val itemView = viewHolder.itemView
@@ -106,6 +166,17 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
+    /**
+     * Right treatment
+     *
+     * @param c
+     * @param recyclerView
+     * @param viewHolder
+     * @param dX
+     * @param dY
+     * @param actionState
+     * @param isCurrentlyActive
+     */
     private fun rightTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         val itemView = viewHolder.itemView
         val itemHeight = itemView.height
@@ -119,6 +190,14 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
+    /**
+     * Set background done
+     *
+     * @param itemView
+     * @param dX
+     * @param c
+     * @param itemHeight
+     */
     private fun setBackgroundDone(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
         giveColor (backgroundColorDone, false, dX.toInt())
 
@@ -132,6 +211,14 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         doneDrawable.setBounds(doneIconLeft, doneIconTop, doneIconRight, deleteIconBottom)
         doneDrawable.draw(c)
     }
+
+    /**
+     * Give color
+     *
+     * @param colorString
+     * @param isRight
+     * @param dX
+     */
     private fun giveColor (colorString : String, isRight : Boolean, dX : Int){
         var minus : Int = -1000
         if (isRight) minus = 1000
@@ -154,6 +241,15 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         mBackground.color = Color.parseColor("#$calcul$colorString")
 
         }
+
+    /**
+     * Set background report
+     *
+     * @param itemView
+     * @param dX
+     * @param c
+     * @param itemHeight
+     */
     private fun setBackgroundReport(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
         giveColor (backgroundColorReport, true, dX.toInt())
 
@@ -168,11 +264,25 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         reportDrawable.draw(c)
     }
 
+    /**
+     * Clear canvas
+     *
+     * @param c
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     */
     private fun clearCanvas(c: Canvas, left: Float, top: Float, right: Float, bottom: Float) {
         c.drawRect(left, top, right, bottom, mClearPaint)
     }
 
-    // Returns the fraction that the user should move the View to be considered as swiped.
+    /**
+     * Get swipe threshold
+     *
+     * @param viewHolder
+     * @return Returns the fraction that the user should move the View to be considered as swiped.
+     */
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
         return 0.7f
     }

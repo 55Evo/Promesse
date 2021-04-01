@@ -17,14 +17,32 @@ class SubtaskAdapter(
     val promiseAdapter: PromiseAdapter
 ): RecyclerView.Adapter<SubtaskAdapter.SubtaskViewHolder>() {
     var subtaskList: MutableList<Subtask> = promise.subtasks
+
+    /**
+     * Get item count
+     *
+     */
     override fun getItemCount() = subtaskList.size
 
+    /**
+     * On bind view holder
+     *
+     * @param holder
+     * @param position
+     */
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
         holder.subtask = subtaskList[position]
         holder.checkBox.isChecked = holder.subtask.done
         holder.checkBox.text = holder.subtask.title
     }
 
+    /**
+     * On create view holder
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtaskViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.subtask_item,
@@ -32,7 +50,6 @@ class SubtaskAdapter(
             false)
         return SubtaskViewHolder(itemView)
     }
-
 
     /**
      * Promise view holder
@@ -51,6 +68,11 @@ class SubtaskAdapter(
             checkBox.setOnClickListener(this)
         }
 
+        /**
+         * On click
+         *
+         * @param v
+         */
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {

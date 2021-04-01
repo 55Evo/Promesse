@@ -28,7 +28,12 @@ import java.util.*
  * @constructor Create empty Promise event listener
  */
 class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Activity) : PromiseAdapter.OnItemClickListener {
-
+    /**
+     * On item click
+     *
+     * @param position
+     * @param adapter
+     */
     override fun onItemClick(position: Int, adapter: PromiseAdapter) {
         val clickedItem = listPromesses.elementAt(position)
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
@@ -36,6 +41,12 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         bundle.putBoolean("click", true)
         adapter.notifyItemChanged(position, bundle);
     }
+
+    /**
+     * Uncheckitems
+     *
+     * @param adapter
+     */
     fun uncheckitems(adapter: PromiseAdapter){
         var bundle = Bundle()
         bundle.putBoolean("longclick", true)
@@ -44,6 +55,12 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         }
     }
 
+    /**
+     * On item long click
+     *
+     * @param position
+     * @param adapter
+     */
     override fun onItemLongClick(position: Int, adapter: PromiseAdapter) {
         var clickedItem = listPromesses.elementAt(position)
         if(!adapter.inSelection){
@@ -71,6 +88,12 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         }
     }
 
+    /**
+     * On item button edit click
+     *
+     * @param position
+     * @param promiseAdapter
+     */
     override fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = promiseAdapter.promiseList.elementAt(position)
         var p = clickedItem.copy()
@@ -80,11 +103,23 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         context.startActivity(intent)
     }
 
+    /**
+     * On item checked changed
+     *
+     * @param position
+     * @param adapter
+     */
     override fun onItemCheckedChanged(position: Int, adapter: PromiseAdapter) {
         val clickedItem = listPromesses.elementAt(position)
         uncheckItem(clickedItem, adapter)
     }
 
+    /**
+     * Uncheck item
+     *
+     * @param clickedItem
+     * @param adapter
+     */
     private fun uncheckItem(clickedItem: Promise, adapter: PromiseAdapter) {
         if (clickedItem.isChecked) adapter.nbPromisesChecked--
         else adapter.nbPromisesChecked++
@@ -111,6 +146,14 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
 
     }
 
+    /**
+     * On check subtask changed
+     *
+     * @param position
+     * @param promise
+     * @param subtaskAdapter
+     * @param promiseAdapter
+     */
     override fun onCheckSubtaskChanged(
             position: Int,
             promise: Promise,
@@ -126,6 +169,12 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         promiseAdapter.notifyItemChanged(promiseAdapter.promiseList.lastIndexOf(promise), bundle)
     }
 
+    /**
+     * On item button start click
+     *
+     * @param posAdapter
+     * @param promiseAdapter
+     */
     override fun onItemButtonStartClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = listPromesses.elementAt(posAdapter)
         clickedItem.state = State.IN_PROGRESS
@@ -138,6 +187,11 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         }
     }
 
+    /**
+     * Plane mode
+     *
+     * @param enable
+     */
     private fun planeMode(enable: Boolean) {
         // Checking if permission is not granted
         if (context.checkSelfPermission("com.android.permission.WRITE_SECURE_SETTINGS") == PackageManager.PERMISSION_DENIED) {
@@ -156,7 +210,12 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
     }
 
 
-
+    /**
+     * On item button stop click
+     *
+     * @param posAdapter
+     * @param promiseAdapter
+     */
     override fun onItemButtonStopClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = listPromesses.elementAt(posAdapter)
         clickedItem.state = State.TODO
@@ -167,6 +226,12 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         user.stopDnd(context)
     }
 
+    /**
+     * On item button redo click
+     *
+     * @param posAdapter
+     * @param promiseAdapter
+     */
     override fun onItemButtonRedoClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = listPromesses.elementAt(posAdapter)
         clickedItem.state = State.TODO
@@ -176,6 +241,12 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         promiseAdapter.notifyItemChanged(posAdapter, bundle)
     }
 
+    /**
+     * On item button done click
+     *
+     * @param posAdapter
+     * @param promiseAdapter
+     */
     override fun onItemButtonDoneClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
         var clickedItem = listPromesses.elementAt(posAdapter)
         clickedItem.state = State.DONE

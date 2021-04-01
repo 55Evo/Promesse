@@ -23,3 +23,5 @@ var  config : SlidrConfig =  SlidrConfig.Builder()
     .edge(true)
     .edgeSize(0.15f) // The % of the screen that counts as the edge, default 18%
     .build();
+const val currentWidthStart = 150
+const val currentWidthEnd = 250

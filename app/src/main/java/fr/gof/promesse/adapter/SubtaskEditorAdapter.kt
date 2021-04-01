@@ -51,11 +51,9 @@ class SubtaskEditorAdapter(
     inner class SubtaskViewHolder(view: View): RecyclerView.ViewHolder(view),
             View.OnClickListener, TextWatcher {
         lateinit var subtask:Subtask
-
         var substask : EditText = view.findViewById(R.id.editTextSubtask)
         var checkBox : CheckBox = view.findViewById(R.id.checkBoxDone)
         var buttonDelete : ImageButton = view.findViewById(R.id.buttonDelete)
-
         init {
             buttonDelete.setOnClickListener(this)
             checkBox.setOnClickListener(this)
@@ -84,7 +82,6 @@ class SubtaskEditorAdapter(
             if (position != RecyclerView.NO_POSITION) {
                 listener.onItemTextChanged(position, this@SubtaskEditorAdapter, s.toString())
             }
-
         }
 
         override fun afterTextChanged(s: Editable?) {}
@@ -113,7 +110,5 @@ class SubtaskEditorAdapter(
         fun onItemCheckedChanged(position: Int, promiseAdapter: SubtaskEditorAdapter)
         fun onItemTextChanged(position: Int, subtaskEditorAdapter: SubtaskEditorAdapter, text: String)
     }
-
-
 
 }

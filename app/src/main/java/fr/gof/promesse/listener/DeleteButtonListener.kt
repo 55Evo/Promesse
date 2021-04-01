@@ -52,6 +52,11 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
         updateView(v)
     }
 
+    /**
+     * Update view
+     *
+     * @param v
+     */
     private fun updateView(v: View?) {
         adapter.inSelection = false
         Handler().postDelayed({adapter.notifyDataSetChanged()}, 450)
@@ -64,6 +69,11 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
         }, 1000)
     }
 
+    /**
+     * Display popup
+     *
+     * @param listPromesses
+     */
     private fun displayPopup(listPromesses: TreeSet<Promise>) {
         val dialogBuilder = AlertDialog.Builder(context)
         dialogBuilder.setMessage(
