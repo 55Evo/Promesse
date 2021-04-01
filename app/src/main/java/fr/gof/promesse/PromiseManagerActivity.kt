@@ -49,8 +49,6 @@ class PromiseManagerActivity : AppCompatActivity() {
 
     )
     private lateinit var slidr: SlidrInterface
-
-
     lateinit var adapterCategory : CategoryAdapter
     lateinit var adapterSubtask : SubtaskEditorAdapter
     lateinit var rvCategory:  RecyclerView
@@ -58,8 +56,6 @@ class PromiseManagerActivity : AppCompatActivity() {
     lateinit var backgroundImage : ImageView
     var choosenCategory: Category = Category.DEFAUT
     lateinit var subtasks : MutableList<Subtask>
-
-
     val promiseDataBase = PromiseDataBase(this@PromiseManagerActivity)
     lateinit var textViewDate : TextView
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
@@ -69,6 +65,11 @@ class PromiseManagerActivity : AppCompatActivity() {
     lateinit var priority: Switch
 
 
+    /**
+     * On create
+     *
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.promise_manager_activity)
@@ -85,10 +86,6 @@ class PromiseManagerActivity : AppCompatActivity() {
                 dndMngr.askPermission()
             }
         }
-
-
-
-
         var titleBar : TextView = findViewById(R.id.textViewTitleBar)
         if (intent.getSerializableExtra("Promise") != null) {
             promise = intent.getSerializableExtra("Promise") as Promise
@@ -103,8 +100,6 @@ class PromiseManagerActivity : AppCompatActivity() {
             textViewDate.text = getDateToString(Date(System.currentTimeMillis()))
             subtasks = mutableListOf()
         }
-
-
 
         if (promiseNm != null) {
             backgroundImage.setImageResource(promiseNm.category.background)
@@ -132,12 +127,29 @@ class PromiseManagerActivity : AppCompatActivity() {
         rvSubtask.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
 
     }
+
+    /**
+     * Lock slider
+     *
+     */
     private fun lockSlider(){
         slidr.lock()
     }
+
+    /**
+     * Un lock slider
+     *
+     */
     private fun unLockSlider(){
         slidr.unlock()
     }
+
+    /**
+     * Set promise in fields
+     *
+     * @param titleBar
+     * @param promiseNm
+     */
     private fun setPromiseInFields(
         titleBar: TextView,
         promiseNm: Promise
@@ -220,14 +232,8 @@ class PromiseManagerActivity : AppCompatActivity() {
             editTextTitle.error = getString(R.string.emptyField)
             return
         }
-
-        Log.d("ttttttttttttttt","yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
-
-
         val promiseNm = promise
-
         if (promiseNm != null) {
-//            promiseNm.category = adapterCategory.chosenCategory
             updatePromise(
                 promiseNm,
                 editTextTitle,
@@ -236,7 +242,6 @@ class PromiseManagerActivity : AppCompatActivity() {
                 switchProfessional,
                 editTextDescription
             )
-
         } else { //creation nouvelle promesse
             subtasks = mutableListOf()
             for (st : Subtask in adapterSubtask.subtaskList) {
@@ -257,14 +262,22 @@ class PromiseManagerActivity : AppCompatActivity() {
                     calendar.time,
                     subtasks
             )
-
-
             user.addPromise(promise)
         }
         user.stopDnd(this)
         finish()
     }
 
+    /**
+     * Update promise
+     *
+     * @param promiseNm
+     * @param editTextTitle
+     * @param editTextDuration
+     * @param switchPriority
+     * @param switchProfessional
+     * @param editTextDescription
+     */
     private fun updatePromise(
         promiseNm: Promise,
         editTextTitle: TextView,
@@ -302,6 +315,11 @@ class PromiseManagerActivity : AppCompatActivity() {
         finish()
     }
 
+    /**
+     * On click button add subtask
+     *
+     * @param v
+     */
     fun onClickButtonAddSubtask (v : View) {
         var position = subtasks.size
         subtasks.add(Subtask(-1, "", false))

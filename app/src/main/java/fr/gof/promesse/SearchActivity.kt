@@ -55,7 +55,13 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         .distanceThreshold(0.25f)
         .edge(true)
         .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
-        .build();
+        .build()
+
+    /**
+     * On create
+     *
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -99,6 +105,11 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         })
 
         materialSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener {
+            /**
+             * On search state changed
+             *
+             * @param enabled
+             */
             override fun onSearchStateChanged(enabled: Boolean) {
                 if (!enabled) {
                     recyclerView.adapter = adapter
@@ -106,26 +117,47 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                 //materialSearchBar.clearSuggestions()
             }
 
+            /**
+             * On search confirmed
+             *
+             * @param text
+             */
             override fun onSearchConfirmed(text: CharSequence?) {
                 startResearch(text.toString())
             }
+
+            /**
+             * On button clicked
+             *
+             * @param buttonCode
+             */
             override fun onButtonClicked(buttonCode: Int) {
-//                adapter.notifyDataSetChanged()
-//
-//                materialSearchBar.closeSearch()
-//                materialSearchBar.clearSuggestions()
-//                materialSearchBar.hideSuggestionsList()
-
-
             }
         })
     }
+
+    /**
+     * Lock slider
+     *
+     */
     private fun lockSlider(){
         slidr.lock()
     }
+
+    /**
+     * Un lock slider
+     *
+     */
     private fun unLockSlider(){
         slidr.unlock()
     }
+
+    /**
+     * Start research
+     *
+     * @param text
+     * @param relaunch
+     */
     private fun startResearch(text: String, relaunch : Boolean = true) {
         if (relaunch)
         {
@@ -148,6 +180,11 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         materialSearchBar.closeSearch()
     }
 
+    /**
+     * Hide keyboard
+     *
+     * @param activity
+     */
     private fun hideKeyboard(activity: Activity) {
         val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         //Find the currently focused view, so we can grab the correct window token from it.
@@ -159,6 +196,12 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    /**
+     * On menu item click
+     *
+     * @param item
+     * @return
+     */
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId){
             R.id.menudate -> choiceOfSort = Sort.DATE
@@ -169,6 +212,10 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         return true
     }
 
+    /**
+     * On resume
+     *
+     */
     override fun onResume() {
         super.onResume()
         listPromesses = user.getAllPromise()
@@ -180,11 +227,21 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
     }
 
+    /**
+     * On add button clicked
+     *
+     * @param v
+     */
     fun onAddButtonClicked (v : View) {
         val intent = Intent(this, PromiseManagerActivity::class.java)
         startActivity(intent)
     }
 
+    /**
+     * On item click
+     *
+     * @param v
+     */
     override fun onItemClick(v: View?) {
         var text = (v as TextView).text.toString()
         startResearch(text)

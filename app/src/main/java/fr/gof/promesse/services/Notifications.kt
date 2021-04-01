@@ -34,26 +34,35 @@ class Notifications : JobService() {
     private val oneDayInMilis: Long = 86400000L
 
 
+    /**
+     * Method called when the Job Service is created
+     *
+     * @param params is used to get the email of user to update promises
+     */
     override fun onStartJob(params: JobParameters?): Boolean {
         if (params != null) {
             this.email = params.extras.getString("email").toString()
         }
         createNotificationChannel()
         updateListPromises()
-
         if(listPromises.size > 0){
-//            val now = Calendar.getInstance()
-            //Send notification if it's 8 A.M
-//            if(now.get(Calendar.HOUR_OF_DAY) == 8)
-                sendNotification(listPromises)
+            sendNotification(listPromises)
         }
         return true
     }
 
+    /**
+     * Method called when the Job Service finish
+     *
+     * @return true to restart it later
+     */
     override fun onStopJob(params: JobParameters?): Boolean {
         return true
     }
 
+    /**
+     * Method called to launch the Job Service
+     */
     fun scheduleJob(context: Context, user: User) {
         val serviceComponent = ComponentName(context, Notifications::class.java)
         val bundle = PersistableBundle()
@@ -68,11 +77,11 @@ class Notifications : JobService() {
     }
 
     /**
-     * Send notification
+     * Send notification for promises of the day
      *
      * @param promises
      */
-    fun sendNotification(promises: MutableList<Promise>){
+    private fun sendNotification(promises: MutableList<Promise>){
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -96,6 +105,9 @@ class Notifications : JobService() {
         }
     }
 
+    /**
+     * Create a notification channel to send notifications
+     */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.channel_name)
@@ -110,12 +122,11 @@ class Notifications : JobService() {
         }
     }
 
+    /**
+     * Update list promises
+     *
+     */
     private fun updateListPromises(){
         listPromises = promiseDataBase.getAllPromisesOfTheDay(email, Date(System.currentTimeMillis())).toMutableList()
-    }
-
-    private fun dateNearToNow(date: Date) : Boolean {
-        val now = Date(System.currentTimeMillis())
-        return date.day == now.day
     }
 }

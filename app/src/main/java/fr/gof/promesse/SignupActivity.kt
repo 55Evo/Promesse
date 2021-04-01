@@ -15,12 +15,22 @@ class SignupActivity : AppCompatActivity() {
 
     val promiseDataBase = PromiseDataBase(this@SignupActivity)
 
+    /**
+     * On create
+     *
+     * @param savedInstanceState
+     */
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
     }
 
+    /**
+     * On click signup
+     *
+     * @param v
+     */
     fun onClickSignup(v: View) {
         val email = findViewById<TextInputLayout>(R.id.email).editText
         val nom = findViewById<TextInputLayout>(R.id.name).editText
@@ -78,6 +88,11 @@ class SignupActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
+    /**
+     * On click cancel
+     *
+     * @param v
+     */
     fun onClickCancel(v: View) {
         finish()
     }

@@ -11,17 +11,31 @@ import fr.gof.promesse.R
 class DndManager(var context: Activity) {
     private lateinit var mNotificationManager: NotificationManager
 
+    /**
+     * Set ring mode
+     *
+     * @param ringerMode
+     */
     fun setRingMode(ringerMode: Int) {
         mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         changeInterruptionFiler(ringerMode)
     }
 
+    /**
+     * Change interruption filer
+     *
+     * @param interruptionFilterNone
+     */
     private fun changeInterruptionFiler(interruptionFilterNone: Int) {
         if (mNotificationManager.isNotificationPolicyAccessGranted) {
             mNotificationManager.setInterruptionFilter(interruptionFilterNone)
         }
     }
 
+    /**
+     * Ask permission
+     *
+     */
     fun askPermission() {
         mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (!mNotificationManager.isNotificationPolicyAccessGranted) {

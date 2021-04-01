@@ -12,6 +12,11 @@ class SigninActivity : AppCompatActivity() {
 
     val promiseDataBase = PromiseDataBase(this@SigninActivity)
 
+    /**
+     * On create
+     *
+     * @param savedInstanceState
+     */
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         if(promiseDataBase.userIsEmpty()) {
@@ -23,11 +28,21 @@ class SigninActivity : AppCompatActivity() {
         setContentView(R.layout.activity_signin)
     }
 
+    /**
+     * Onclick no account
+     *
+     * @param v
+     */
     fun onclickNoAccount(v:View) {
         val myIntent = Intent(this, SignupActivity::class.java)
         startActivity(myIntent)
     }
 
+    /**
+     * Onclick sign in
+     *
+     * @param v
+     */
     fun onclickSignIn(v:View) {
         val email = findViewById<TextInputLayout>(R.id.email).editText
         val password = findViewById<TextInputLayout>(R.id.password).editText
