@@ -33,6 +33,7 @@ class PromiseDataBase (context : Context){
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
         val values = ContentValues()
         values.put("Email", user.email)
+        values.put("Username", user.username)
         values.put("Mascot", user.mascot.name)
         values.put("Name", user.name)
         values.put("Password",user.password )
@@ -300,6 +301,24 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
     }
 
+    /**
+     * Email or username exists
+     *
+     * @param usernameOrEmail
+     */
+    fun emailOrUsernameExists(usernameOrEmail: String) =
+            if(usernameOrEmail.contains("@")){
+                emailExist(usernameOrEmail)
+            } else {
+                usernameExist(usernameOrEmail)
+            }
+
+    /**
+     * Email exist
+     *
+     * @param email
+     * @return
+     */
     fun emailExist(email : String): Boolean {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
@@ -313,6 +332,30 @@ class PromiseDataBase (context : Context){
         return curs.count != 0
     }
 
+    /**
+     * Username exist
+     *
+     * @param username
+     * @return
+     */
+    fun usernameExist(username : String): Boolean {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Username")
+        val select = arrayOf(username)
+
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Username = ?",
+                select, null, null, null)
+        //Si il y en a, retourne true
+        return curs.count != 0
+    }
+
+    /**
+     * User is empty
+     *
+     * @return
+     */
     fun userIsEmpty(): Boolean {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
@@ -325,7 +368,28 @@ class PromiseDataBase (context : Context){
         return curs.count == 0
     }
 
-    fun checkPassword(email: String, password: String): Boolean {
+    /**
+     * Check username
+     *
+     * @param email
+     * @param username
+     * @return
+     */
+    fun check(usernameOfEmail: String, password: String) =
+        if(usernameOfEmail.contains("@")){
+            checkEmail(usernameOfEmail, password)
+        } else {
+            checkUsername(usernameOfEmail, password)
+        }
+
+    /**
+     * Check email
+     *
+     * @param email
+     * @param password
+     * @return
+     */
+    private fun checkEmail(email: String, password: String): Boolean {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
         val col = arrayOf("Email")
@@ -337,21 +401,85 @@ class PromiseDataBase (context : Context){
         return curs.count != 0
     }
 
-    fun getUser(email: String): User {
+    /**
+     * Check username
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    private fun checkUsername(username: String, password: String): Boolean {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
-        val col = arrayOf("Email", "Name", "Mascot")
+        val col = arrayOf("Email")
+        val select = arrayOf(username, password)
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Username = ? AND Password = ?",
+                select, null, null, null)
+        //Si il y en a, retourne true
+        return curs.count != 0
+    }
+
+    /**
+     * Get user
+     *
+     * @param usernameOrEmail
+     */
+    fun getUser(usernameOrEmail: String) =
+            if(usernameOrEmail.contains("@")){
+                getUserByEmail(usernameOrEmail)
+            } else {
+                getUserByUsername(usernameOrEmail)
+            }
+
+    /**
+     * Get user by email
+     *
+     * @param email
+     * @return
+     */
+    private fun getUserByEmail(email: String): User {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email", "Username", "Name", "Mascot")
         val select = arrayOf(email)
         val curs: Cursor = dbreadable.query("Account", col,
                 "Email = ? ",
                 select, null, null, null)
         curs.moveToFirst()
         //Si il y en a, retourne true
-        return User(email,
+        return User(
+                curs.getString(curs.getColumnIndexOrThrow("Email")),
+                curs.getString(curs.getColumnIndexOrThrow("Username")),
                 curs.getString(curs.getColumnIndexOrThrow("Name")),
                 "",
                 Mascot.valueOf(curs.getString(curs.getColumnIndexOrThrow("Mascot")))
                 )
+    }
+
+    /**
+     * Get user by username
+     *
+     * @param email
+     * @return
+     */
+    private fun getUserByUsername(username: String): User {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+        //Execution requête
+        val col = arrayOf("Email", "Username", "Name", "Mascot")
+        val select = arrayOf(username)
+        val curs: Cursor = dbreadable.query("Account", col,
+                "Username = ? ",
+                select, null, null, null)
+        curs.moveToFirst()
+        //Si il y en a, retourne true
+        return User(
+                curs.getString(curs.getColumnIndexOrThrow("Email")),
+                curs.getString(curs.getColumnIndexOrThrow("Username")),
+                curs.getString(curs.getColumnIndexOrThrow("Name")),
+                "",
+                Mascot.valueOf(curs.getString(curs.getColumnIndexOrThrow("Mascot")))
+        )
     }
 
     fun getAllPromisesOfTheMonth(email: String, date: Date): Set<Promise> { // récupère les promesses de la journée et celles des trois jours précédents si elles ne sont pas finies
