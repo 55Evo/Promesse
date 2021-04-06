@@ -46,7 +46,7 @@ import java.util.*
  */
 class MainActivity : AppCompatActivity() {
     companion object {
-        var user = User("a", "a", "", Mascot.JACOU)
+        var user = User("a","Alexislebg", "a", "", Mascot.JACOU)
     }
 
     lateinit var deleteListener: DeleteButtonListener

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -125,7 +124,6 @@ class PromiseManagerActivity : AppCompatActivity() {
         adapterSubtask = SubtaskEditorAdapter(subtasks, SubtaskListener(subtasks, this), this)
         rvSubtask.adapter = adapterSubtask
         rvSubtask.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
-
     }
 
     /**

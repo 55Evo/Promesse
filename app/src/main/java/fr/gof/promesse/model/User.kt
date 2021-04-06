@@ -19,7 +19,7 @@ import kotlin.collections.HashSet
  * @property mascot
  * @constructor Create empty User
  */
-data class User(var email: String, var name: String, var password: String, var mascot: Mascot){
+data class User(var email: String, var username: String, var name: String, var password: String, var mascot: Mascot){
 private lateinit var listPromise:TreeSet<Promise>
 lateinit var db : PromiseDataBase
 

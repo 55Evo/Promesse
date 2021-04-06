@@ -3,7 +3,9 @@ package fr.gof.promesse
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import fr.gof.promesse.adapter.MascotAdapter
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.MascotListener
@@ -40,6 +42,9 @@ class ChooseMascotActivity : AppCompatActivity() {
         adapter = MascotAdapter(this, listMascot,MascotListener(listMascot, this) , promiseDataBase)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+        //for snap in center (magnetisme)
+        var helper : SnapHelper = LinearSnapHelper()
+        helper.attachToRecyclerView(recyclerView)
     }
 
 

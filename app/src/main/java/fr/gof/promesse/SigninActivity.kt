@@ -1,7 +1,9 @@
 package fr.gof.promesse
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.preference.PreferenceManager
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
@@ -11,6 +13,7 @@ import fr.gof.promesse.database.PromiseDataBase
 class SigninActivity : AppCompatActivity() {
 
     val promiseDataBase = PromiseDataBase(this@SigninActivity)
+    private lateinit var preferences: SharedPreferences
 
     /**
      * On create
@@ -24,8 +27,20 @@ class SigninActivity : AppCompatActivity() {
             startActivity(myIntent)
             finish()
         }
+        preferences = PreferenceManager.getDefaultSharedPreferences(this@SigninActivity)
+        autoSignin()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
+    }
+
+    private fun autoSignin(){
+        val userEmail = preferences.getString("userEmail", "")
+        if(userEmail != ""){
+            user = promiseDataBase.getUser(userEmail!!)
+            val myIntent = Intent(this, MainActivity::class.java)
+            startActivity(myIntent)
+            finish()
+        }
     }
 
     /**
@@ -59,7 +74,7 @@ class SigninActivity : AppCompatActivity() {
         if (error) {
             return
         }
-        if(!promiseDataBase.emailExist(email?.text.toString())) {
+        if(!promiseDataBase.emailOrUsernameExists(email?.text.toString())) {
             email?.error = getString(R.string.unknownEmail)
             error = true
         }
@@ -67,9 +82,9 @@ class SigninActivity : AppCompatActivity() {
         if (error) {
             return
         }
-        if(promiseDataBase.checkPassword(email?.text.toString(), password?.text.toString())) {
-
+        if(promiseDataBase.check(email?.text.toString(), password?.text.toString())) {
             user = promiseDataBase.getUser(email?.text.toString())
+            preferences.edit().putString("userEmail", user.email).apply()
             val myIntent = Intent(this, MainActivity::class.java)
             startActivity(myIntent)
         } else {

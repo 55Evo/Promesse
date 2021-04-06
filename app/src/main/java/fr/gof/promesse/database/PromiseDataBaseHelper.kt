@@ -16,6 +16,7 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
 
     val createAccount = "CREATE TABLE Account(\n" +
             "   Email VARCHAR(320),\n" +
+            "   Username VARCHAR(20) UNIQUE,\n" +
             "   Mascot VARCHAR(50) NOT NULL,\n" +
             "   Name VARCHAR(50) NOT NULL,\n" +
             "   Password VARCHAR(100) NOT NULL,\n" +
