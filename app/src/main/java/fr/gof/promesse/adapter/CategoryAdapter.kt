@@ -24,7 +24,7 @@ import fr.gof.promesse.model.Category
  */
 class CategoryAdapter(var context: Context, var listCategory: List<Category>, val listener : OnItemClickListener, val database : PromiseDataBase,var backgroundImage : ImageView, var chosenCategory: Category = Category.DEFAUT) :RecyclerView.Adapter<CategoryAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.category_item, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
         return MyViewHolder(itemView)
     }
     @SuppressLint("ResourceAsColor")

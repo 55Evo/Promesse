@@ -71,7 +71,7 @@ class PromiseManagerActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.promise_manager_activity)
+        setContentView(R.layout.activity_promise_manager)
         slidr = Slidr.attach(this, utils.config);
         backgroundImage = findViewById(R.id.backgroundImage)
         rvCategory = findViewById(R.id.recycler_Category)

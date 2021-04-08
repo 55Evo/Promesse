@@ -545,4 +545,29 @@ class PromiseDataBase (context : Context){
         dbwritable.update("Subtask", values,"Id_Subtask = '$id'", null)
         dbwritable.close()
     }
+
+    fun getNotification(): HashSet<Notification> {
+        val dbreadable : SQLiteDatabase = this.database.readableDatabase
+
+        //Execution requête
+        val col = arrayOf("Username", "Titre", "Date_Notification", "Read", "Author")
+        val select = arrayOf(user.username)
+        val curs: Cursor = dbreadable.query("Notification", col,
+                "Username = ?",
+                select, null, null, null)
+        var notifList = HashSet<Notification>()
+        try {
+            while (curs.moveToNext()) {
+                val username = curs.getString(curs.getColumnIndexOrThrow("Username"))
+                val titre = curs.getString(curs.getColumnIndexOrThrow("Titre"))
+                val date = dateFormat.parse(curs.getString(curs.getColumnIndexOrThrow("Date_Notification")))
+                val read = curs.getInt(curs.getColumnIndexOrThrow("Username")) == 1
+                val author = curs.getString(curs.getColumnIndexOrThrow("Author"))
+                notifList.add(Notification(username, author, date, titre, read))
+            }
+        } finally {
+            curs.close()
+        }
+        return notifList
+    }
 }

@@ -23,7 +23,7 @@ import fr.gof.promesse.model.Mascot
  */
 class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val listener : OnItemClickListener, val database : PromiseDataBase) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.mascot_item, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_mascot, parent, false)
         return MyViewHolder(itemView)
     }
 

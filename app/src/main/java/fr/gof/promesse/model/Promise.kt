@@ -57,7 +57,7 @@ data class Promise(
     override fun toString(): String {
         return title
     }
-    val dfl = DateFormat.getDateInstance(DateFormat.FULL);
+    val dfl = DateFormat.getDateInstance(DateFormat.FULL)
 
     /**
      * Get date to do to string

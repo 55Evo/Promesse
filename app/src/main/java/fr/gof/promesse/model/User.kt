@@ -359,4 +359,8 @@ lateinit var db : PromiseDataBase
         if (id != -1L)
             db.deleteNotification(id)
     }
+
+    fun getNotification(): HashSet<Notification> {
+        return db.getNotification()
+    }
 }

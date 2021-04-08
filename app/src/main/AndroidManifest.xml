@@ -19,9 +19,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchActivity"  android:theme="@style/Theme.SliderActivity">
-
             <intent-filter>
-
+                <action android:name="android.intent.action.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ProfileActivity" >
+            <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>

@@ -25,7 +25,6 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
     val createNotification = "CREATE TABLE Notification(\n" +
             "   Id_Notification INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Username VARCHAR(20),\n" +
-            "   Email VARCHAR(20),\n" +
             "   Titre VARCHAR(50) NOT NULL,\n" +
             "   Read LOGICAL NOT NULL,\n" +
             "   Date_Notification DATE,\n" +
