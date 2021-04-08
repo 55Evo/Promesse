@@ -35,7 +35,7 @@ class SubtaskEditorAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtaskViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.subtaskeditor_item,
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_subtaskeditor,
                 parent,
                 false)
         return SubtaskViewHolder(itemView)

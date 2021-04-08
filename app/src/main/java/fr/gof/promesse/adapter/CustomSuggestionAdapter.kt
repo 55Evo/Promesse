@@ -24,7 +24,7 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
         holder.title.text = promise.title
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder {
-        val view: View = layoutInflater.inflate(R.layout.suggest_item, parent, false)
+        val view: View = layoutInflater.inflate(R.layout.item_suggest, parent, false)
 
         return SuggestionHolder(view)
     }

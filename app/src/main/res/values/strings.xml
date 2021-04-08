@@ -72,4 +72,8 @@
     <string name="deny">Refuser</string>
     <string name="dayMascotMessage">Bonjour, j\'espère que tu vas bien !</string>
     <string name="nightMascotMessage">Bonsoir, tu viens tard ! Ou tôt, tout dépend du point de vue.</string>
+    <string name="oldPassword">Ancien mot de passe</string>
+    <string name="newPassword">Nouveau mot de passe</string>
+    <string name="EditInfo">Modifier Informations</string>
+    <string name="notifification">Notification</string>
 </resources>

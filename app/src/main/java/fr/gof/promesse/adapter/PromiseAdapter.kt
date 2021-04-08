@@ -434,7 +434,7 @@ class PromiseAdapter(
      * @return
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.promise_item,
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_promise,
             parent,
             false)
         return PromiseViewHolder(itemView)

@@ -67,7 +67,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.calendar_activity)
+        setContentView(R.layout.activity_calendar)
         deleteButton = findViewById(R.id.deleteButton)
         setDaysInFrench()
         slidr = Slidr.attach(this, utils.config);
@@ -108,14 +108,14 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      */
     private fun initProperty() {
         var map = HashMap<String,Int>()
-        map["default"] = R.layout.default_view
-        map["first"] = R.layout.first_level_view
-        map["second"] = R.layout.second_level_view
-        map["third"] = R.layout.third_level_view
-        map["default_selected"] = R.layout.default_selected_view
-        map["first_selected"] = R.layout.first_selected_view
-        map["second_selected"] = R.layout.second_selected_view
-        map["third_selected"] = R.layout.third_selected_view
+        map["default"] = R.layout.view_default
+        map["first"] = R.layout.view_first_level
+        map["second"] = R.layout.view_second_level
+        map["third"] = R.layout.view_third_level
+        map["default_selected"] = R.layout.view_default_selected
+        map["first_selected"] = R.layout.view_first_selected
+        map["second_selected"] = R.layout.view_second_selected
+        map["third_selected"] = R.layout.view_third_selected
 
         for ((key,value) in map){
             var defaultProperty = Property()
