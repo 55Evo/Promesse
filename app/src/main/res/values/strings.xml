@@ -68,4 +68,6 @@
     </string>
     <string name="allow">Autoriser</string>
     <string name="deny">Refuser</string>
+    <string name="dayMascotMessage">Bonjour, j\'espère que tu vas bien !</string>
+    <string name="nightMascotMessage">Bonsoir, tu viens tard ! Ou tôt, tout dépend du point de vue.</string>
 </resources>

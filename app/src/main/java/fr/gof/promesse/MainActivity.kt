@@ -92,6 +92,12 @@ class MainActivity : AppCompatActivity() {
         del.setOnClickListener(deleteListener)
         enableSwipeToDoneOrReport()
         notifications.scheduleJob(this, user)
+        val now = Calendar.getInstance()
+        if (now.get(Calendar.HOUR_OF_DAY) in 6..20) {
+            displayMascotMessage(getString(R.string.dayMascotMessage))
+        } else {
+            displayMascotMessage(getString(R.string.nightMascotMessage))
+        }
     }
 
     /**
@@ -293,17 +299,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
+     * Display mascot message
+     *
+     * @param message to display
+     */
+    private fun displayMascotMessage(message: String){
+        var bubble: TextView = findViewById(R.id.mascotBubbleTextView)
+        bubble.text = message
+        bubble.visibility = View.VISIBLE
+        Handler().postDelayed({
+            bubble.visibility = View.GONE
+        }, 5000)
+    }
+
+    /**
      * On click mascot
      *
      * @param v
      */
     fun onClickMascot(v: View) {
-        var bubble: TextView = findViewById(R.id.mascotBubbleTextView)
-        bubble.text = "Coucou c'est moi ${user.mascot.nom} !"
-        bubble.visibility = View.VISIBLE
-        Handler().postDelayed({
-            bubble.visibility = View.GONE
-        }, 5000)
+        displayMascotMessage("Coucou c'est moi ${user.mascot.nom} !")
     }
 
     /**
