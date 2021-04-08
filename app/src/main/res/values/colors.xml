@@ -20,5 +20,6 @@
     <color name="light_green">#ACEC48</color>
     <color name="light_grey">#AAAAAA</color>
     <color name="divider">#89000000</color>
+    <color name="transparent_dark">#50000000</color>
 
 </resources>
