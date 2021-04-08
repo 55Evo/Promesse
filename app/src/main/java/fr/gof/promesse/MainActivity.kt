@@ -329,6 +329,11 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun onClickProfileButton(v: View) {
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
+    }
+
     fun isDone(p: Promise, a: PromiseAdapter) {
         user.setToDone(p)
         a.notifyDataSetChanged()
