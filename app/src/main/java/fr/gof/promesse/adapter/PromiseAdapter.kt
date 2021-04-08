@@ -83,6 +83,8 @@ class PromiseAdapter(
             250 else holder.logo.layoutParams.height = 150
         holder.date.text = holder.promise.getDateToString()
         holder.titre.text = holder.promise.title
+        if (holder.promise.recipient.isNotEmpty())
+        holder.recipient.text = context.getString(R.string.recipient) + ": "+holder.promise.recipient
         if (holder.promise.isDescDeployed) holder.titre.textSize = 25f else holder.titre.textSize =
             18f
         holder.description.text = holder.promise.description
@@ -513,6 +515,7 @@ class PromiseAdapter(
         lateinit var promise: Promise
         lateinit var savePromise: Promise
         var titre: TextView = view.findViewById(R.id.title)
+        var recipient: TextView = view.findViewById(R.id.textViewUsernameRecipient)
         var logo: ImageView = view.findViewById(R.id.logo)
         var imageViewCategoryGlobal: ImageView = view.findViewById(R.id.imageViewCategoryGlobal)
         var date: TextView = view.findViewById(R.id.date)

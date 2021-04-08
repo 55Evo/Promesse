@@ -155,6 +155,8 @@ class PromiseManagerActivity : AppCompatActivity() {
         titleBar.setText(R.string.titleEditPromise)
         val title: EditText = findViewById(R.id.editTextTitle)
         title.setText(promiseNm.title)
+        val recipient: EditText = findViewById(R.id.editTextRecipient)
+        recipient.setText(promiseNm.recipient)
         val duration: EditText = findViewById(R.id.editTextDuration)
         if (promise?.duration != null)
             duration.setText(promise?.duration.toString())
@@ -222,6 +224,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         //Recuperation des éléments
         choosenCategory = adapterCategory.chosenCategory
         val editTextTitle : TextView = findViewById(R.id.editTextTitle)
+        val editTextRecipient : EditText = findViewById(R.id.editTextRecipient)
         val editTextDuration : TextView = findViewById(R.id.editTextDuration)
         val switchPriority : Switch = findViewById(R.id.switchPriority)
         val switchProfessional : Switch = findViewById(R.id.switchProfessional)
@@ -235,6 +238,7 @@ class PromiseManagerActivity : AppCompatActivity() {
             updatePromise(
                 promiseNm,
                 editTextTitle,
+                editTextRecipient,
                 editTextDuration,
                 switchPriority,
                 switchProfessional,
@@ -250,6 +254,7 @@ class PromiseManagerActivity : AppCompatActivity() {
             val promise = Promise(
                     -1,
                     editTextTitle.text.toString(),
+                    editTextRecipient.text.toString(),
                     adapterCategory.chosenCategory,
                     if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString().toInt(),
                     State.TODO,
@@ -279,12 +284,14 @@ class PromiseManagerActivity : AppCompatActivity() {
     private fun updatePromise(
         promiseNm: Promise,
         editTextTitle: TextView,
+        editTextRecipient : TextView,
         editTextDuration: TextView,
         switchPriority: Switch,
         switchProfessional: Switch,
         editTextDescription: TextView
     ) {
         promiseNm.title = editTextTitle.text.toString()
+        promiseNm.recipient = editTextRecipient.text.toString()
         promiseNm.category = adapterCategory.chosenCategory
         promiseNm.duration =
             if (editTextDuration.text.toString() == "") null else editTextDuration.text.toString()

@@ -49,7 +49,10 @@ lateinit var db : PromiseDataBase
 
         listPromise.add(promise)
     }
-
+    fun unreadNotification(promise : Promise) : Long{
+        if(promise.recipient.isNotEmpty()) return db.createNotification(promise)
+        return -1
+    }
     /**
      * Remove promise
      *
@@ -272,7 +275,7 @@ lateinit var db : PromiseDataBase
             listSubTask.add(Subtask(1000+nm,"sous tache numéro 1", false))
             listSubTask.add(Subtask(700+nm,"sous tache numéro 2", false))
             listSubTask.add(Subtask(400+nm,"sous tache numéro 3", false))
-            var promesse = Promise(-1,"Promesse numero $nm" ,Category.values()[nm%5],1,State.TODO, false,
+            var promesse = Promise(-1,"Promesse numero $nm","" ,Category.values()[nm%5],1,State.TODO, false,
                 "Ceci est la derscription de la premiere promesse, bon courage a vous pour la réaliser ! :)",false, Date(),Date(),listSubTask)
             this.addPromise(promesse)
         }
@@ -350,5 +353,10 @@ lateinit var db : PromiseDataBase
      */
     fun updateDoneSubtask(clickedItem: Subtask, done: Boolean) {
         db.updateSubtask(clickedItem.id, clickedItem.done)
+    }
+
+    fun removeNotification(id: Long) {
+        if (id != -1L)
+            db.deleteNotification(id)
     }
 }

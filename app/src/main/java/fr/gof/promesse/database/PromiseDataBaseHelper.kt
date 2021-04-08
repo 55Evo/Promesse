@@ -22,10 +22,20 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
             "   Password VARCHAR(100) NOT NULL,\n" +
             "   PRIMARY KEY(Email)\n" +
             ");"
+    val createNotification = "CREATE TABLE Notification(\n" +
+            "   Id_Notification INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+            "   Username VARCHAR(20),\n" +
+            "   Email VARCHAR(20),\n" +
+            "   Titre VARCHAR(50) NOT NULL,\n" +
+            "   Read LOGICAL NOT NULL,\n" +
+            "   Date_Notification DATE,\n" +
+            "   Author VARCHAR(20)\n" +
+            ");"
 
     val createPromise = "CREATE TABLE Promise(\n" +
             "   Id_Promise INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Title VARCHAR(50) NOT NULL,\n" +
+            "   Recipient VARCHAR(50),\n"+
             "   Category VARCHAR(50) NOT NULL,\n" +
             "   Duration INT,\n" +
             "   State CHAR(10) NOT NULL,\n" +
@@ -48,12 +58,14 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
     val dropAccount = "DROP TABLE IF EXISTS Account;"
     val dropPromise = "DROP TABLE IF EXISTS Promise;"
     val dropSubtask = "DROP TABLE IF EXISTS Subtask;"
+    val dropNotification = "DROP TABLE IF EXISTS Notification;"
 
     //Creation base de données
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(createAccount)
         db?.execSQL(createPromise)
         db?.execSQL(createSubtask)
+        db?.execSQL(createNotification)
     }
 
     //Suppression des anciennes tables et création de nouvelles
@@ -61,9 +73,11 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
         db?.execSQL(dropSubtask)
         db?.execSQL(dropPromise)
         db?.execSQL(dropAccount)
+        db?.execSQL(dropNotification)
         db?.execSQL(createAccount)
         db?.execSQL(createPromise)
         db?.execSQL(createSubtask)
+        db?.execSQL(createNotification)
     }
 
 }

@@ -1,14 +1,8 @@
 package fr.gof.promesse
 
 import SwipeToReportOrDone
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -31,9 +25,7 @@ import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
 import fr.gof.promesse.model.User
-import fr.gof.promesse.services.NotificationReceiver
 import fr.gof.promesse.services.Notifications
-import utils.NOTIFICATION_CHANNEL_ID
 import utils.config
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
@@ -147,17 +139,21 @@ class MainActivity : AppCompatActivity() {
      *
      */
     private fun enableSwipeToDoneOrReport() {
+        var idNotification = -1L
+
         val swipeToReportOrDone: SwipeToReportOrDone = object : SwipeToReportOrDone(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
                 var promise = listPromesse.elementAt(position)
                 var date = promise.dateTodo
                 var message = ""
+
                 when (i) { // promise done
                     utils.LEFT -> {
                         message = getString(R.string.promiseDone)
                         promise.state = State.DONE
                         user.updatePromise(promise)
+                        idNotification = user.unreadNotification(promise)
                         user.stopDnd(this@MainActivity)
                     }
                     utils.RIGHT -> { // add 1 day to the date to do to postpone it
@@ -242,12 +238,14 @@ class MainActivity : AppCompatActivity() {
                         adapter.restoreItem(promise, position, promiseDataBase)
                         promise.state = State.TODO
                         user.updatePromise(promise)
+                        user.removeNotification(idNotification)
                     }
                     recyclerView.scrollToPosition(position)
                     adapter.notifyItemRangeChanged(position, listPromesse.size)
                 }
                 snackbar.setActionTextColor(Color.GREEN);
                 snackbar.show();
+               //
             }
         }
         val itemReport = ItemTouchHelper(swipeToReportOrDone)

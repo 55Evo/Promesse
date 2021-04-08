@@ -88,6 +88,25 @@
                     android:layout_height="10dp" />
 
                 <TextView
+                    android:id="@+id/textViewRecipient"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recipient"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/editTextRecipient"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/recipient"
+                    android:inputType="textPersonName" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <TextView
                     android:id="@+id/textViewDuration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
