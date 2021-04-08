@@ -255,6 +255,7 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         bundle.putBoolean("changestate", true)
         promiseAdapter.notifyItemChanged(posAdapter, bundle)
         user.stopDnd(context)
+        user.unreadNotification(clickedItem)
     }
 }
 

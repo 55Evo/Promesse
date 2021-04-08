@@ -24,6 +24,7 @@ import java.util.*
 data class Promise(
     var id: Int,
     var title: String,
+    var recipient : String,
     var category: Category,
     var duration: Int?,
     var state: State,

@@ -41,6 +41,20 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
     }
 
+    fun createNotification(promise : Promise) : Long{
+        if (!usernameExist(promise.recipient)) return -1L
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Username", promise.recipient)
+        values.put("Titre", promise.title)
+        values.put("Read", 0)
+        values.put("Author", user.username)
+        values.put("Date_Notification", dateFormat.format(System.currentTimeMillis()))
+        val id= dbwritable.insert("Notification", null, values)
+        dbwritable.close()
+        return id
+    }
+
     /**
      * Update mascot
      *
@@ -55,6 +69,8 @@ class PromiseDataBase (context : Context){
         dbwritable.close()
         user.mascot = mascot
     }
+
+
     fun updateCategory(categorie : Category, promesse : Promise){
 
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
@@ -131,6 +147,7 @@ class PromiseDataBase (context : Context){
     ) {
         values.put("Email", email)
         values.put("Title", promise.title)
+        values.put("Recipient", promise.recipient)
         values.put("Category", promise.category.nom)
         values.put("Duration", promise.duration)
         values.put("State", promise.state.toString())
@@ -154,6 +171,7 @@ class PromiseDataBase (context : Context){
             while (curs.moveToNext()) {
                 val id = curs.getInt(curs.getColumnIndexOrThrow("Id_Promise"))
                 val title = curs.getString(curs.getColumnIndexOrThrow("Title"))
+                val recipient = curs.getString(curs.getColumnIndexOrThrow("Recipient"))
                 val category = curs.getString(curs.getColumnIndexOrThrow("Category"))
                 val duration = curs.getInt(curs.getColumnIndexOrThrow("Duration"))
 
@@ -178,11 +196,10 @@ class PromiseDataBase (context : Context){
                 } finally {
                     curs2.close()
                 }
-                Log.d("----------------------------------------" , category)
                 promiseList.add(
-                        Promise(
-                                id,
+                        Promise(id,
                                 title,
+                                recipient,
                                 Category.valueOf(category.toUpperCase()),
                                 duration,
                                 state,
@@ -213,7 +230,7 @@ class PromiseDataBase (context : Context){
     fun getAllPromises(email : String) : TreeSet<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
-        val col = arrayOf("Id_Promise", "Title", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val col = arrayOf("Id_Promise", "Title","Recipient", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         val curs: Cursor = dbreadable.query("Promise", col, "Email = ?", select, null, null, null)
         return getPromise(curs, dbreadable)
@@ -231,7 +248,7 @@ class PromiseDataBase (context : Context){
     fun getAllPromisesNameLike(name : String, choiceOfSort : Sort, user: User) : Set<Promise> {
         val dbreadable : SQLiteDatabase = this.database.readableDatabase
         //Execution requête
-        val col = arrayOf("Id_Promise", "Title", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val col = arrayOf("Id_Promise", "Title", "Recipient", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf("%$name%",user.email)
         val curs: Cursor = dbreadable.query("Promise", col, "Title LIKE ? AND Email=?", select, null, null, null)
         return when(choiceOfSort){
@@ -252,7 +269,7 @@ class PromiseDataBase (context : Context){
         val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         val dateToDo = formatter.format(date)
         //Execution requête
-        val col = arrayOf("Id_Promise", "Title", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val col = arrayOf("Id_Promise", "Title","Recipient", "Category","Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
         //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
@@ -276,16 +293,16 @@ class PromiseDataBase (context : Context){
 
         val dbwritable : SQLiteDatabase = this.database.writableDatabase
         val values = ContentValues()
-
-        values.put("Title", promise.title)
-        values.put("Category", promise.category.nom)
-        values.put("Duration", promise.duration)
-        values.put("State", promise.state.toString())
-        values.put("Priority", if(promise.priority) 1 else 0)
-        values.put("Professional", if(promise.professional) 1 else 0)
-        values.put("Date_Creation", dateFormat.format(promise.dateCreation))
-        values.put("Date_Todo", dateFormat.format(promise.dateTodo))
-        values.put("Description", promise.description)
+        promiseToValues(values, email, promise)
+//        values.put("Title", promise.title)
+//        values.put("Category", promise.category.nom)
+//        values.put("Duration", promise.duration)
+//        values.put("State", promise.state.toString())
+//        values.put("Priority", if(promise.priority) 1 else 0)
+//        values.put("Professional", if(promise.professional) 1 else 0)
+//        values.put("Date_Creation", dateFormat.format(promise.dateCreation))
+//        values.put("Date_Todo", dateFormat.format(promise.dateTodo))
+//        values.put("Description", promise.description)
 
         dbwritable.update("Promise", values,"Email = '$email' AND Id_Promise = '${promise.id}'", null)
 
@@ -420,6 +437,13 @@ class PromiseDataBase (context : Context){
         return curs.count != 0
     }
 
+    fun deleteNotification(id : Long){
+        val dbwritable: SQLiteDatabase = this.database.writableDatabase
+        dbwritable.delete("Notification","Notification.Id_Notification = ${id}", null)
+
+        dbwritable.close()
+
+    }
     /**
      * Get user
      *
@@ -487,7 +511,7 @@ class PromiseDataBase (context : Context){
         val formatter = SimpleDateFormat("yyyy-MM-dd")
         val dateToDo = formatter.format(date)
         //Execution requête
-        val col = arrayOf("Id_Promise", "Title","Category", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val col = arrayOf("Id_Promise", "Title","Recipient","Category", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
         //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd
@@ -503,7 +527,7 @@ class PromiseDataBase (context : Context){
         val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         val dateToDo = formatter.format(date)
         //Execution requête
-        val col = arrayOf("Id_Promise", "Title","Category", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
+        val col = arrayOf("Id_Promise", "Title","Recipient","Category", "Duration", "State", "Priority", "Description", "Professional", "Date_Creation", "Date_Todo")
         val select = arrayOf(email)
         //DATE('now','-1 day') Retourne la date d'hier sous format yyyy-mm-dd
         //DATE(Date_Todo) Retourne la date de Date_Todo sous format yyyy-mm-dd

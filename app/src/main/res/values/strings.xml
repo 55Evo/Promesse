@@ -58,6 +58,8 @@
     <string name="start">Démarrer</string>
     <string name="edit">Modifier</string>
     <string name="stop">Abandonner</string>
+    <string name="recipient">Destinataire\u0020 </string>
+    <string name="parameters">Paramètres</string>
     <string name="redo">Refaire</string>
     <string name="done">Finir</string>
     <string name="inprogress">En cours</string>
