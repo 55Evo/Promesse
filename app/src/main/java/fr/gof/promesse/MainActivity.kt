@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -304,10 +305,14 @@ class MainActivity : AppCompatActivity() {
     private fun displayMascotMessage(message: String){
         var bubble: TextView = findViewById(R.id.mascotBubbleTextView)
         bubble.text = message
+        bubble.setTextColor(getColor(R.color.black))
         bubble.visibility = View.VISIBLE
+        bubble.animation = AnimationUtils.loadAnimation(this,
+            R.anim.displaybubble)
+        bubble.animate()
         Handler().postDelayed({
             bubble.visibility = View.GONE
-        }, 5000)
+        }, 10000)
     }
 
     /**

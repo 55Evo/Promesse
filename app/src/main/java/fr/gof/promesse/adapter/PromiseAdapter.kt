@@ -78,15 +78,15 @@ class PromiseAdapter(
      */
     private fun setHoldersElements(holder: PromiseViewHolder) {
         if (holder.promise.isDescDeployed) holder.logo.layoutParams.width =
-            250 else holder.logo.layoutParams.width = 150
+            utils.currentWidthEnd else holder.logo.layoutParams.width = utils.currentWidthStart
         if (holder.promise.isDescDeployed) holder.logo.layoutParams.height =
-            250 else holder.logo.layoutParams.height = 150
+            utils.currentWidthEnd else holder.logo.layoutParams.height = utils.currentWidthStart
         holder.date.text = holder.promise.getDateToString()
         holder.titre.text = holder.promise.title
         if (holder.promise.recipient.isNotEmpty())
         holder.recipient.text = context.getString(R.string.recipient) + ": "+holder.promise.recipient
-        if (holder.promise.isDescDeployed) holder.titre.textSize = 25f else holder.titre.textSize =
-            18f
+        if (holder.promise.isDescDeployed) holder.titre.textSize = utils.endSize else holder.titre.textSize =
+            utils.startSize
         holder.description.text = holder.promise.description
         holder.logo.setImageResource(holder.promise.category.image_drawable)
         holder.imageViewCategoryGlobal.setImageResource(holder.promise.category.image_drawable)
@@ -332,9 +332,8 @@ class PromiseAdapter(
 
         holder.promise = promiseList.elementAt(holder.adapterPosition)
         var isdepl = holder.promise.isDescDeployed
-        val currentWidthEnd =250
-        val currentWidthStart = 150
-        if (holder.promise.isDescDeployed) holder.titre.textSize = 22f else holder.titre.textSize = 18f
+
+        if (holder.promise.isDescDeployed) holder.titre.textSize = utils.endSize else holder.titre.textSize = utils.startSize
 
         improoveWidthLogo(holder)
         if (!isdepl){
@@ -369,10 +368,9 @@ class PromiseAdapter(
         holder.progressBar.animate()
         holder.rvSubtasks.animate()
         val tv = holder.titre
-        val endSize = 25f
-        val startSize = 18f
+
         val animationDuration = 300 // Animation duration in ms
-        val animator: ValueAnimator = ObjectAnimator.ofFloat(tv, "textSize", startSize, endSize)
+        val animator: ValueAnimator = ObjectAnimator.ofFloat(tv, "textSize", utils.startSize, utils.endSize)
         animator.duration = animationDuration.toLong()
         animator.start()
     }
@@ -386,10 +384,8 @@ class PromiseAdapter(
         var animation = SlideAnimation(holder.deployed)
         animation.expand(holder.promise.isDescDeployed)
         val tv = holder.titre
-        val endSize = 18f
-        val startSize = 25f
         val animationDuration = 300 // Animation duration in ms
-        val animator: ValueAnimator = ObjectAnimator.ofFloat(tv, "textSize", startSize, endSize)
+        val animator: ValueAnimator = ObjectAnimator.ofFloat(tv, "textSize", utils.endSize, utils.startSize)
         animator.duration = animationDuration.toLong()
         animator.start()
         holder.titre.animate()

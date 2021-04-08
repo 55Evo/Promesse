@@ -67,7 +67,7 @@
     <TextView
         android:id="@+id/mascotBubbleTextView"
         android:layout_width="169dp"
-        android:layout_height="68dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/layout_bubble"
         android:gravity="center"
         android:visibility="gone"

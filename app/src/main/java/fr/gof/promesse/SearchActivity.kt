@@ -75,10 +75,14 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         materialSearchBar.inflateMenu(R.menu.app_menu)
         materialSearchBar.menu.setOnMenuItemClickListener(this as PopupMenu.OnMenuItemClickListener)
         materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
+//        materialSearchBar.setTextColor(R.color.dark_blue)
+//        materialSearchBar.setTextHintColor(R.color.dark_blue)
+//        materialSearchBar.setDividerColor(R.color.dark_blue)
+//        materialSearchBar.setBackgroundColor(getColor(R.color.dark_blue))
        //user.loadPromises(db = promiseDataBase)
         listPromesses = user.getAllPromise()
         val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this)
+        customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this, this)
         customSuggestionAdapter.suggestions = listPromesses.toMutableList()
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
         materialSearchBar.addTextChangeListener(object : TextWatcher {
@@ -87,6 +91,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
                 //materialSearchBar.hideSuggestionsList()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (start > 0) {

@@ -25,3 +25,5 @@ var  config : SlidrConfig =  SlidrConfig.Builder()
     .build();
 const val currentWidthStart = 150
 const val currentWidthEnd = 250
+const val endSize = 20f
+const val startSize = 16f
