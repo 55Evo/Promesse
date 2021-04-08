@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
@@ -33,6 +34,7 @@ class ProfileActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
 
+        val mascot : ImageView = findViewById(R.id.imageViewMascotProfile)
         val textViewName : TextView = findViewById(R.id.textViewName)
         val textViewEmail : TextView = findViewById(R.id.textViewEmail)
         val textViewUsername : TextView = findViewById(R.id.textViewUsername)
@@ -40,6 +42,7 @@ class ProfileActivity : AppCompatActivity() {
         textViewName.text = user.name
         textViewEmail.text = user.email
         textViewUsername.text = user.username
+        mascot.setImageResource(user.mascot.image_drawable)
     }
 
     fun onClickLogout(v: View) {
