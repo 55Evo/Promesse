@@ -452,6 +452,7 @@ class PromiseDataBase (context : Context){
     fun getUser(usernameOrEmail: String) =
             if(usernameOrEmail.contains("@")){
                 getUserByEmail(usernameOrEmail)
+                getUserByEmail(usernameOrEmail)
             } else {
                 getUserByUsername(usernameOrEmail)
             }
@@ -543,6 +544,16 @@ class PromiseDataBase (context : Context){
         val values = ContentValues()
         values.put("Done", done)
         dbwritable.update("Subtask", values,"Id_Subtask = '$id'", null)
+        dbwritable.close()
+    }
+    fun updateUser() {
+        val dbwritable : SQLiteDatabase = this.database.writableDatabase
+        val values = ContentValues()
+        values.put("Name", user.name)
+        values.put("Username", user.username)
+        values.put("Password", user.password)
+
+        dbwritable.update("Account", values,"Email = '${user.email}'", null)
         dbwritable.close()
     }
 

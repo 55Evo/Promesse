@@ -81,4 +81,8 @@
     <string name="realisedAPromise">" a réalisé une promesse pour vous"</string>
     <string name="notificationListTitle">Liste des promesses réalisées pour vous</string>
     <string name="by">"Par "</string>
+    <string name="errUsername">\"merci de rentrer un username\"</string>
+    <string name="errName">\"merci de rentrer un nom\"</string>
+    <string name="usernameAlreadyExist">\"ce nom d\'utilisateur existe déjà\"</string>
+    <string name="updateMessage">\"Utilisateur mis à jour\"</string>
 </resources>

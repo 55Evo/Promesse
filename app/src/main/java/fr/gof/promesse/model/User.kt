@@ -264,7 +264,14 @@ lateinit var db : PromiseDataBase
         setSorted.addAll(setToSort)
         return setSorted
     }
+    fun isUsernameExist(username: String) = db.usernameExist(username)
 
+    fun updateUser(user: User){
+        name = user.name
+        username = user.username
+        password = user.password
+        db.updateUser()
+    }
     /**
      * Generate promises
      *
