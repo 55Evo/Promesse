@@ -1,5 +1,7 @@
 package fr.gof.promesse.adapter
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,14 +20,16 @@ import fr.gof.promesse.model.Promise
  *
  * @param inflater
  */
-class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSuggestionAdapter.OnItemClickListener) : SuggestionsAdapter<Promise, CustomSuggestionAdapter.SuggestionHolder>(inflater) {
+class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSuggestionAdapter.OnItemClickListener, val context : Context) : SuggestionsAdapter<Promise, CustomSuggestionAdapter.SuggestionHolder>(inflater) {
+
 
     override fun onBindSuggestionHolder(promise: Promise, holder: SuggestionHolder, position: Int) {
         holder.title.text = promise.title
+        holder.title.setTextColor(context.getColor(R.color.black))
+
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder {
         val view: View = layoutInflater.inflate(R.layout.suggest_item, parent, false)
-
         return SuggestionHolder(view)
     }
 

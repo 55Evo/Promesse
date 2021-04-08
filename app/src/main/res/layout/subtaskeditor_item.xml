@@ -28,7 +28,9 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/subtaskName"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColor="@color/black"
+            android:textColorHint="@android:color/tertiary_text_light" />
 
         <ImageButton
             android:id="@+id/buttonDelete"
