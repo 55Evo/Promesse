@@ -81,10 +81,12 @@
     <string name="realisedAPromise">" a réalisé une promesse pour vous"</string>
     <string name="notificationListTitle">Liste des promesses réalisées pour vous</string>
     <string name="by">"Par "</string>
-    <string name="errUsername">\"merci de rentrer un username\"</string>
-    <string name="errName">\"merci de rentrer un nom\"</string>
-    <string name="usernameAlreadyExist">\"ce nom d\'utilisateur existe déjà\"</string>
-    <string name="updateMessage">\"Utilisateur mis à jour\"</string>
+    <string name="usernameAlreadyExist">Ce nom d\'utilisateur existe déjà</string>
+    <string name="updateMessage">Utilisateur mis à jour</string>
     <string name="different_password">\"Les mdp doivent être identiques</string>
     <string name="bad_password">mauvais mot de passe</string>
+    <string name="welcomeMascotMessageMassPromises">Bon courage, tu as %1$s promesses à réaliser !</string>
+    <string name="welcomeMascotMessageNoPromise">Super ! Tu n\'as aucune promesse à réaliser !</string>
+    <string name="welcomeMascotMessageLowPromises">Super ! Tu n\'as que %1$s promesses à réaliser !</string>
+    <string name="save">Enregistrer</string>
 </resources>
