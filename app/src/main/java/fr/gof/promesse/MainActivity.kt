@@ -369,7 +369,7 @@ class MainActivity : AppCompatActivity() {
      */
     fun onClickMascot(v: View) {
         user.mascot.displayMascotMessage(
-            "Coucou c'est moi ${user.mascot.nom} !",
+            String.format(getString(R.string.clicMessageMascot), user.mascot.nom),
             findViewById(R.id.mascotBubbleTextView),
             this
         )

@@ -88,4 +88,5 @@
 <string name="welcomeMascotMessageNoPromise">Great! You have no promises to keep!</string>
 <string name="welcomeMascotMessageLowPromises">Great! You only have only %1$s promises to keep!</string>
 <string name="save">Save</string>
+    <string name="clicMessageMascot">Hello it\'s me %1$s !</string>
 </resources>
