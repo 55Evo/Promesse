@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
@@ -90,7 +91,7 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
     inner class MyViewHolder(itemView: View) :  View.OnClickListener, RecyclerView.ViewHolder(itemView) {
         var mascotView: ImageView = itemView.findViewById(R.id.mascotView)
          var name: TextView = itemView.findViewById(R.id.mascotName)
-        var linearLayout: LinearLayout? = null
+        var linearLayout: ConstraintLayout? = null
 
          init {
              if (isUpdate) linearLayout = itemView.findViewById(R.id.ll_item_mascot_update)

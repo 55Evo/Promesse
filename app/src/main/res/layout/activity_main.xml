@@ -16,10 +16,12 @@
         android:layout_marginBottom="20dp"
         android:clickable="true"
         android:onClick="onAddButtonClicked"
-        app:backgroundTint="@color/bubble_border"
+        android:scrollbarThumbVertical="@color/textColorPrimary"
+        app:tint="@color/textColorPrimary"
+        app:backgroundTint="@color/div"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/recyclerViewPromesse"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/deleteButton"
@@ -29,6 +31,8 @@
         android:layout_marginBottom="20dp"
         android:clickable="true"
         android:visibility="gone"
+        app:tint="@color/textColorPrimary"
+        app:backgroundTint="@color/div"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_delete" />
@@ -70,7 +74,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/layout_bubble"
         android:gravity="center"
-        android:visibility="gone"
+        android:text="Message de la mascotte"
+        android:textColor="@color/textColorPrimary"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewPromesse"
         app:layout_constraintEnd_toStartOf="@+id/imageViewMascot"
         app:layout_constraintTop_toTopOf="parent" />
@@ -79,11 +85,12 @@
         android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:backgroundTint="@android:color/transparent"
         android:onClick="onClickSearchButton"
         android:tint="@color/bubble_border"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarButton"
+        app:layout_constraintStart_toEndOf="@+id/calendarButton"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_magnify_black_48dp" />
 
     <ImageButton

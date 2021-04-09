@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.get
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -70,8 +71,8 @@ class EditInfoActivity : AppCompatActivity() {
         pickerLayoutManager.scaleDownDistance = 0.6f
         recyclerView.layoutManager = pickerLayoutManager
         pickerLayoutManager.setOnScrollStopListener { v ->
-            val linearLayout = v as LinearLayout
-            mascotPosition = linearLayout.tag as Int
+            val constraintLayout = v as ConstraintLayout
+            mascotPosition = constraintLayout.tag as Int
         }
         //for snap in center (magnetisme)
         var helper: SnapHelper = LinearSnapHelper()

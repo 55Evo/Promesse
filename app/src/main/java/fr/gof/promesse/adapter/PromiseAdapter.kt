@@ -92,8 +92,13 @@ class PromiseAdapter(
             utils.currentWidthEnd else holder.logo.layoutParams.height = utils.currentWidthStart
         holder.date.text = holder.promise.getDateToString()
         holder.titre.text = holder.promise.title
-        if (holder.promise.recipient.isNotEmpty())
-        holder.recipient.text = context.getString(R.string.recipient) + ": "+holder.promise.recipient
+        if (holder.promise.recipient.isNotEmpty()) {
+            holder.recipient.visibility = View.VISIBLE
+            holder.recipient.text = context.getString(R.string.recipient) + ": "+holder.promise.recipient
+        } else {
+            holder.recipient.visibility = View.GONE
+        }
+
         if (holder.promise.isDescDeployed) holder.titre.textSize = utils.endSize else holder.titre.textSize =
             utils.startSize
         holder.description.text = holder.promise.description
@@ -529,7 +534,7 @@ class PromiseAdapter(
         var logo: ImageView = view.findViewById(R.id.logo)
         var imageViewCategoryGlobal: ImageView = view.findViewById(R.id.imageViewCategoryGlobal)
         var date: TextView = view.findViewById(R.id.date)
-        var description: TextView = view.findViewById(R.id.description)
+        var description: TextView = view.findViewById(R.id.desc)
         var checkBox: CheckBox = view.findViewById(R.id.delCheckBox)
         var layout: LinearLayout = view.findViewById(R.id.linearlayoutitem)
         var layoutButtonEdit: ConstraintLayout = view.findViewById(R.id.layoutButtonEdit)
