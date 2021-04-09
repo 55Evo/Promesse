@@ -8,6 +8,7 @@ import android.util.Log
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.model.*
 import java.lang.IllegalArgumentException
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,7 +37,7 @@ class PromiseDataBase (context : Context){
         values.put("Username", user.username)
         values.put("Mascot", user.mascot.name)
         values.put("Name", user.name)
-        values.put("Password",user.password )
+        values.put("Password",sha1(user.password) )
         dbwritable.insert("Account", null, values)
         dbwritable.close()
     }
@@ -385,6 +386,12 @@ class PromiseDataBase (context : Context){
         return curs.count == 0
     }
 
+    fun sha1(input: String) = hashString(input,"SHA-1")
+    private fun hashString(input: String, algorithm: String): String    {
+        return MessageDigest.getInstance(algorithm)
+            .digest(input.toByteArray())
+            .fold("", { str, it -> str + "%02x".format(it) })
+    }
     /**
      * Check username
      *
@@ -392,13 +399,15 @@ class PromiseDataBase (context : Context){
      * @param username
      * @return
      */
-    fun check(usernameOfEmail: String, password: String) =
-        if(usernameOfEmail.contains("@")){
-            checkEmail(usernameOfEmail, password)
+    fun check(usernameOfEmail: String, password: String) : Boolean{
+        var password = sha1(password)
+        if (usernameOfEmail.contains("@")) {
+            return checkEmail(usernameOfEmail, password)
         } else {
-            checkUsername(usernameOfEmail, password)
+            return checkUsername(usernameOfEmail, password)
         }
-
+        return false
+    }
     /**
      * Check email
      *
@@ -551,7 +560,7 @@ class PromiseDataBase (context : Context){
         val values = ContentValues()
         values.put("Name", user.name)
         values.put("Username", user.username)
-        values.put("Password", user.password)
+        values.put("Password", sha1(user.password))
 
         dbwritable.update("Account", values,"Email = '${user.email}'", null)
         dbwritable.close()
