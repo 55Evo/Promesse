@@ -11,7 +11,6 @@ import java.util.*
  * @property date
  * @property title
  * @property read
- * @constructor Create empty Notification
  */
 data class Notification(
     val recipient: String,

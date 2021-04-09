@@ -5,9 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
@@ -24,7 +22,7 @@ import fr.gof.promesse.model.Mascot
  * @property isUpdate si il est a false alors on est dans le cas de la sélection de la mascotte
  *                     pour la première fois sinon si il est à true c'est que l'on veut modifier
  *                     notre mascotte dans le profil
- * Nous avons créé un adapter pour la catégorie des promesses utilisé par notre recyclerView
+ * Nous avons créé un adapter (pour la catégorie des promesses) utilisé par notre recyclerView
  */
 class MascotAdapter(
     var context: Context,
@@ -41,12 +39,12 @@ class MascotAdapter(
      * @param viewType
      * @return viewHolder
      *
-     * Tout dépend dans quel cas on se situe si on est dans le cas ou l'on modifie notre mascotte
-     * on aura un fond différent du cas ou l'on choisit notre mascotte pour la première fois
+     * Tout dépend dans quel cas on se situe si on est dans le cas où l'on modifie notre mascotte
+     * on aura un fond différent du cas où l'on choisit notre mascotte pour la première fois
      *
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        var itemView =
+        val itemView =
             if (isUpdate) LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_mascot_update, parent, false)
             else LayoutInflater.from(parent.context).inflate(R.layout.item_mascot, parent, false)
@@ -60,10 +58,10 @@ class MascotAdapter(
      * @param holder
      * @param position
      *
-     * fonction qui est appelé lorsque l'on recharge la vue de l'adapter
+     * fonction qui est appelée lorsque l'on recharge la vue de l'adapter
      * on change l'image de fond, le nom de la mascotte
      *
-     * Dans le cas ou isUpdate est vrai on est dans la modification du profil
+     * Dans le cas où isUpdate est à true on est dans la modification du profil
      * et donc on se sert d'un tag afin de pouvoir récupérer l'index
      * de la vue lors du scroll de la mascotte (dans l'activité de modification du profil)
      */
@@ -89,9 +87,10 @@ class MascotAdapter(
      *
      * @param itemView
      *
-     * classe interne qui permet de récupérer les élements présent dans le XML on récupère la vue
+     * classe interne qui permet de récupérer les élements présents dans le XML. On récupère la vue
      * de notre mascotte, son nom, (et le layout dans le cas ou on se trouve dans le profil et que l'on souhaite
-     *
+     * adapter la vue de la mascotte différemment de l'activité de sélection de la mascotte principale dans laquelle
+     * on arrive lorsque l'on lance l'application pour la première fois)
      */
     inner class MyViewHolder(itemView: View) : View.OnClickListener,
         RecyclerView.ViewHolder(itemView) {
@@ -104,6 +103,11 @@ class MascotAdapter(
             itemView.setOnClickListener(this)
         }
 
+        /**
+         * On click
+         *
+         * @param v
+         */
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
@@ -116,7 +120,6 @@ class MascotAdapter(
     /**
      * On item click listener
      *
-     * @constructor Create empty On item click listener
      */
     interface OnItemClickListener {
         /**

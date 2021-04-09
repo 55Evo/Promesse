@@ -12,13 +12,13 @@ import fr.gof.promesse.model.Category
  * @property listCategory
  * @property context
  *
- * Listener des carégorie permettant d'override le onClick lorsque l'on clic sur une catégorie
+ * Listener des carégories permettant d'override le onClick lorsque l'on clic sur une catégorie
  * dans la classe PromiseManagerActivity et mettre à jour l'adapter
  */
 class CategoryListener(var listCategory: List<Category>, var context: Activity) :
     CategoryAdapter.OnItemClickListener {
     override fun onItemClick(position: Int, adapter: CategoryAdapter, database: PromiseDataBase) {
-        var category: Category = listCategory[position]
+        val category: Category = listCategory[position]
         adapter.chosenCategory = category
     }
 

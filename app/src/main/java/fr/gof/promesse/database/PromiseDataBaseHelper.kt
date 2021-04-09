@@ -8,14 +8,12 @@ import fr.gof.promesse.R
 /**
  * Promise data base helper
  *
- * @constructor
- *
  * @param context
  */
 class PromiseDataBaseHelper(context: Context?) :
     SQLiteOpenHelper(context, R.string.app_name.toString(), null, R.integer.database_version) {
     // création de la table Account (Utilisateur)
-    val createAccount = "CREATE TABLE Account(\n" +
+    private val createAccount = "CREATE TABLE Account(\n" +
             "   Email VARCHAR(320),\n" +
             "   Username VARCHAR(20) UNIQUE,\n" +
             "   Mascot VARCHAR(50) NOT NULL,\n" +
@@ -26,7 +24,7 @@ class PromiseDataBaseHelper(context: Context?) :
 
     // création de la table Notification rassemblant toutes les notifications recues par les utilisateurs
     // c'est à dire : chaque utilisateur peut avoir des promesses réalisées pour lui et consulter leur titre
-    val createNotification = "CREATE TABLE Notification(\n" +
+    private val createNotification = "CREATE TABLE Notification(\n" +
             "   Id_Notification INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Username VARCHAR(20),\n" +
             "   Titre VARCHAR(50) NOT NULL,\n" +
@@ -36,7 +34,7 @@ class PromiseDataBaseHelper(context: Context?) :
             ");"
 
     // création de la table promise de la bdd
-    val createPromise = "CREATE TABLE Promise(\n" +
+    private val createPromise = "CREATE TABLE Promise(\n" +
             "   Id_Promise INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Title VARCHAR(50) NOT NULL,\n" +
             "   Recipient VARCHAR(50),\n" +
@@ -53,7 +51,7 @@ class PromiseDataBaseHelper(context: Context?) :
             ");"
 
     // création de la table Subtask de la bdd
-    val createSubtask = "CREATE TABLE Subtask(\n" +
+    private val createSubtask = "CREATE TABLE Subtask(\n" +
             "   Id_Subtask INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Title VARCHAR(50) NOT NULL,\n" +
             "   Done LOGICAL NOT NULL,\n" +
@@ -61,10 +59,10 @@ class PromiseDataBaseHelper(context: Context?) :
             "   FOREIGN KEY(Id_Promise) REFERENCES Promise(Id_Promise)\n" +
             ");"
 
-    val dropAccount = "DROP TABLE IF EXISTS Account;"
-    val dropPromise = "DROP TABLE IF EXISTS Promise;"
-    val dropSubtask = "DROP TABLE IF EXISTS Subtask;"
-    val dropNotification = "DROP TABLE IF EXISTS Notification;"
+    private val dropAccount = "DROP TABLE IF EXISTS Account;"
+    private val dropPromise = "DROP TABLE IF EXISTS Promise;"
+    private val dropSubtask = "DROP TABLE IF EXISTS Subtask;"
+    private val dropNotification = "DROP TABLE IF EXISTS Notification;"
 
     //Creation base de données
     override fun onCreate(db: SQLiteDatabase?) {

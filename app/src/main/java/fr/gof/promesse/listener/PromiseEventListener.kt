@@ -1,11 +1,8 @@
 package fr.gof.promesse.listener
 
 import android.app.Activity
-import android.app.NotificationManager
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,7 +14,6 @@ import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.adapter.SubtaskAdapter
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.State
-
 import java.util.*
 
 /**
@@ -28,7 +24,7 @@ import java.util.*
  *
  * Lister d'une promesse
  */
-class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Activity) :
+class PromiseEventListener(private var listPromesses: TreeSet<Promise>, var context: Activity) :
     PromiseAdapter.OnItemClickListener {
     /**
      * On item click
@@ -41,9 +37,9 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
     override fun onItemClick(position: Int, adapter: PromiseAdapter) {
         val clickedItem = listPromesses.elementAt(position)
         clickedItem.isDescDeployed = !clickedItem.isDescDeployed
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putBoolean("click", true)
-        adapter.notifyItemChanged(position, bundle);
+        adapter.notifyItemChanged(position, bundle)
     }
 
     /**
@@ -53,11 +49,11 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * Fonction permettant de remettre chaque item de l'adapter à jour en leur retirant leur checkbox
      * et les décochant
      */
-    fun uncheckitems(adapter: PromiseAdapter) {
-        var bundle = Bundle()
+    private fun uncheckitems(adapter: PromiseAdapter) {
+        val bundle = Bundle()
         bundle.putBoolean("longclick", true)
         for (i in 0..(listPromesses.size)) {
-            adapter.notifyItemChanged(i, bundle);
+            adapter.notifyItemChanged(i, bundle)
         }
     }
 
@@ -70,7 +66,7 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * Lister d'un appui long sur une promesse qui met à jour les vues et l'adapter
      */
     override fun onItemLongClick(position: Int, adapter: PromiseAdapter) {
-        var clickedItem = listPromesses.elementAt(position)
+        val clickedItem = listPromesses.elementAt(position)
         if (!adapter.inSelection) {
             clickedItem.isChecked = true
             adapter.nbPromisesChecked++
@@ -81,10 +77,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
                 val addButton: FloatingActionButton = context.findViewById(R.id.buttonAdd)
                 addButton.visibility = View.GONE
             }
-            var bundle = Bundle()
+            val bundle = Bundle()
             bundle.putBoolean("longclick", true)
             for (i in 0..(listPromesses.size)) {
-                adapter.notifyItemChanged(i, bundle);
+                adapter.notifyItemChanged(i, bundle)
             }
 
         } else {
@@ -100,8 +96,8 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * Listner permettant d'ouvrir l'activité PromiseManagerActivity permettant de modifier une promesse
      */
     override fun onItemButtonEditClick(position: Int, promiseAdapter: PromiseAdapter) {
-        var clickedItem = promiseAdapter.promiseList.elementAt(position)
-        var p = clickedItem.copy()
+        val clickedItem = promiseAdapter.promiseList.elementAt(position)
+        val p = clickedItem.copy()
 
         val intent = Intent(context, PromiseManagerActivity::class.java)
         intent.putExtra("Promise", p)
@@ -112,12 +108,12 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * On item checked changed
      *
      * @param position
-     * @param adapter
+     * @param promiseAdapter
      * Fonction appelée lorsque la checkbox d'un item change (sélectionnée ou désélectionnée)
      */
-    override fun onItemCheckedChanged(position: Int, adapter: PromiseAdapter) {
+    override fun onItemCheckedChanged(position: Int, promiseAdapter: PromiseAdapter) {
         val clickedItem = listPromesses.elementAt(position)
-        uncheckItem(clickedItem, adapter)
+        uncheckItem(clickedItem, promiseAdapter)
     }
 
     /**
@@ -127,7 +123,7 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * @param adapter
      *
      * Fonction qui permet de décocher une promesse et donc de ne pas la supprimer si l'on valide
-     * Si j'ai décoché toute les promesse nous arretons le mode suppression en enlevant le bouton
+     * Si toutes les promesses sont décochées le mode de suppression s'arrête en enlevant le bouton
      * supprimer (bouton poubelle en bas de l'écran) et en remettant le bouton d'ajout
      */
     private fun uncheckItem(clickedItem: Promise, adapter: PromiseAdapter) {
@@ -170,11 +166,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
         subtaskAdapter: SubtaskAdapter,
         promiseAdapter: PromiseAdapter
     ) {
-        var clickedItem = subtaskAdapter.subtaskList[position]
+        val clickedItem = subtaskAdapter.subtaskList[position]
         clickedItem.done = !clickedItem.done
-        user.updateDoneSubtask(clickedItem, clickedItem.done)
-        //promiseAdapter.notifyItemChanged(position)
-        var bundle = Bundle()
+        user.updateDoneSubtask(clickedItem)
+        val bundle = Bundle()
         bundle.putBoolean("clicksubtask", true)
         promiseAdapter.notifyItemChanged(promiseAdapter.promiseList.lastIndexOf(promise), bundle)
     }
@@ -189,10 +184,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * la réalisation d'une promesse/tache. Elle passera l'état de la promesse en IN_PROGRESS
      */
     override fun onItemButtonStartClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
-        var clickedItem = listPromesses.elementAt(posAdapter)
+        val clickedItem = listPromesses.elementAt(posAdapter)
         clickedItem.state = State.IN_PROGRESS
         user.updatePromise(clickedItem)
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putBoolean("changestate", true)
         promiseAdapter.notifyItemChanged(posAdapter, bundle)
         if (clickedItem.priority) {
@@ -209,10 +204,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * elle changera l'état de la promesse en spécifiant à l'adapter de ne notificier uniquement cette vue
      */
     override fun onItemButtonStopClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
-        var clickedItem = listPromesses.elementAt(posAdapter)
+        val clickedItem = listPromesses.elementAt(posAdapter)
         clickedItem.state = State.TODO
         user.updatePromise(clickedItem)
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putBoolean("changestate", true)
         promiseAdapter.notifyItemChanged(posAdapter, bundle)
         user.stopDnd(context)
@@ -228,10 +223,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * la base de données
      */
     override fun onItemButtonRedoClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
-        var clickedItem = listPromesses.elementAt(posAdapter)
+        val clickedItem = listPromesses.elementAt(posAdapter)
         clickedItem.state = State.TODO
         user.updatePromise(clickedItem)
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putBoolean("changestate", true)
         promiseAdapter.notifyItemChanged(posAdapter, bundle)
     }
@@ -247,10 +242,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      *
      */
     override fun onItemButtonDoneClick(posAdapter: Int, promiseAdapter: PromiseAdapter) {
-        var clickedItem = listPromesses.elementAt(posAdapter)
+        val clickedItem = listPromesses.elementAt(posAdapter)
         clickedItem.state = State.DONE
         user.updatePromise(clickedItem)
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putBoolean("changestate", true)
         promiseAdapter.notifyItemChanged(posAdapter, bundle)
         user.stopDnd(context)

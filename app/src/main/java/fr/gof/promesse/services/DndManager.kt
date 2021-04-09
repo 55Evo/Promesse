@@ -12,7 +12,6 @@ import fr.gof.promesse.R
  * Dnd manager
  *
  * @property context
- * @constructor Create empty Dnd manager
  */
 class DndManager(var context: Activity) {
     private lateinit var mNotificationManager: NotificationManager

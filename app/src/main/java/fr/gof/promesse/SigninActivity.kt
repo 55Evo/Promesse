@@ -13,11 +13,10 @@ import fr.gof.promesse.database.PromiseDataBase
 /**
  * Signin activity
  *
- * @constructor Create empty Signin activity
  */
 class SigninActivity : AppCompatActivity() {
 
-    val promiseDataBase = PromiseDataBase(this@SigninActivity)
+    private val promiseDataBase = PromiseDataBase(this@SigninActivity)
     private lateinit var preferences: SharedPreferences
 
     /**

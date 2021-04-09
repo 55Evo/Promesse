@@ -1,6 +1,5 @@
 package fr.gof.promesse
 
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -10,9 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.r0adkll.slidr.Slidr
-import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrInterface
-import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.PromiseAdapter
 import fr.gof.promesse.listener.DeleteButtonListener
@@ -29,7 +26,6 @@ import kotlin.collections.HashMap
 /**
  * Calendar activity
  *
- * @constructor Create empty Calendar activity
  */
 class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     OnDateSelectedListener {
@@ -47,17 +43,6 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     var descHashMap: MutableMap<Any, Property> = HashMap()
     lateinit var monthDisplay: TextView
     private lateinit var slidr: SlidrInterface
-    var config: SlidrConfig = SlidrConfig.Builder()
-        .position(SlidrPosition.LEFT)
-        .sensitivity(1f)
-        .scrimColor(Color.BLACK)
-        .scrimStartAlpha(0.8f)
-        .scrimEndAlpha(0f)
-        .velocityThreshold(2400F)
-        .distanceThreshold(0.25f)
-        .edge(true)
-        .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
-        .build()
 
 
     /**
@@ -70,8 +55,8 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
         deleteButton = findViewById(R.id.deleteButton)
-        setDaysInFrench()
-        slidr = Slidr.attach(this, utils.config);
+        setDays()
+        slidr = Slidr.attach(this, utils.config)
         monthDisplay = findViewById(R.id.monthTextView)
         promisesOfTheSelectedDay = user.getPromisesOfTheDay(Date(System.currentTimeMillis()))
         customCalendar = findViewById(R.id.custom_calendar)
@@ -161,21 +146,22 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      * Set days in french
      *
      */
-    private fun setDaysInFrench() {
+    private fun setDays() {
         var day: TextView = findViewById(R.id.tv_day_of_week_0)
-        day.text = "Lun"
+        val shortDay = resources.getStringArray(R.array.shortDay)
+        day.text = shortDay[0]
         day = findViewById(R.id.tv_day_of_week_1)
-        day.text = "Mar"
+        day.text = shortDay[1]
         day = findViewById(R.id.tv_day_of_week_2)
-        day.text = "Mer"
+        day.text = shortDay[2]
         day = findViewById(R.id.tv_day_of_week_3)
-        day.text = "Jeu"
+        day.text = shortDay[3]
         day = findViewById(R.id.tv_day_of_week_4)
-        day.text = "Ven"
+        day.text = shortDay[4]
         day = findViewById(R.id.tv_day_of_week_5)
-        day.text = "Sam"
+        day.text = shortDay[5]
         day = findViewById(R.id.tv_day_of_week_6)
-        day.text = "Dim"
+        day.text = shortDay[6]
     }
 
 
@@ -184,8 +170,8 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      *
      */
     private fun setMonthInFrench() {
-        var monthYear: TextView = customCalendar.monthYearTextView
-        var monthYearString: List<String> = monthYear.text.split(" ")
+        val monthYear: TextView = customCalendar.monthYearTextView
+        val monthYearString: List<String> = monthYear.text.split(" ")
 
         var res = ""
         when (monthYearString[0]) {
@@ -213,7 +199,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
      * @param month
      * @param selectedDay
      *
-     * Met à jour les cases des jours du calendrier afind d'attribuer des couleurs
+     * Met à jour les cases des jours du calendrier afin d'attribuer des couleurs
      * en fonction du nombre de promesses du jour.
      */
     private fun updateCalendarWithPromises(
@@ -222,7 +208,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
         selectedDay: Int = 0
     ) {
         promises = user.getAllPromisesOfTheMonth(user.email, month.time)
-        var occurencePromises = IntArray(32) { 0 }
+        val occurencePromises = IntArray(32) { 0 }
         for (promise: Promise in promises) {
             occurencePromises[promise.dateTodo.date]++
         }
@@ -289,7 +275,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
             month.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
             selectedDay == 0 && month.get(Calendar.YEAR) != today.get(Calendar.YEAR)
         ) {
-            var cld = Calendar.getInstance()
+            val cld = Calendar.getInstance()
             cld.set(Calendar.YEAR, month.get(Calendar.YEAR))
             cld.set(Calendar.MONTH, month.get(Calendar.MONTH))
             cld.set(Calendar.DAY_OF_MONTH, 1)
@@ -320,7 +306,7 @@ class CalendarActivity : AppCompatActivity(), OnNavigationButtonClickedListener,
     override fun onNavigationButtonClicked(
         whichButton: Int,
         newMonth: Calendar?
-    ): Array<MutableMap<Int, Any>>? {
+    ): Array<MutableMap<Int, Any>> {
         if (newMonth != null) {
             Handler().postDelayed({
                 calendar = newMonth

@@ -3,11 +3,9 @@ package fr.gof.promesse
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -20,9 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.r0adkll.slidr.Slidr
-import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrInterface
-import com.r0adkll.slidr.model.SlidrPosition
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.CustomSuggestionAdapter
 import fr.gof.promesse.adapter.PromiseAdapter
@@ -35,19 +31,17 @@ import java.util.*
 /**
  * Search activity
  *
- * @constructor Create empty Search activity
  */
 class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener,
     CustomSuggestionAdapter.OnItemClickListener {
 
-    lateinit var customSuggestionAdapter: CustomSuggestionAdapter
-    lateinit var listPromesses: TreeSet<Promise>
-    var promiseDataBase = PromiseDataBase(this@SearchActivity)
+    private lateinit var customSuggestionAdapter: CustomSuggestionAdapter
+    private lateinit var listPromesses: TreeSet<Promise>
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: PromiseAdapter
     lateinit var materialSearchBar: MaterialSearchBar
     var choiceOfSort: Sort = Sort.NAME
-    var valeurActuelle: String = ""
+    private var valeurActuelle: String = ""
     private lateinit var deleteButton: FloatingActionButton
     private lateinit var deleteListener: DeleteButtonListener
     private lateinit var slidr: SlidrInterface
@@ -90,9 +84,9 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener,
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (start > 0) {
-                    var suggest =
+                    val suggest =
                         user.getSearchResultsSorted(
-                            (materialSearchBar.text.toLowerCase()),
+                            (materialSearchBar.text.toLowerCase(Locale.ROOT)),
                             choiceOfSort
                         ).toMutableList()
 
@@ -293,7 +287,7 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener,
      * Elle la déploie et affiche plus d'informations à son propos.
      */
     override fun onItemClick(v: View?) {
-        var text = (v as TextView).text.toString()
+        val text = (v as TextView).text.toString()
         startResearch(text)
     }
 

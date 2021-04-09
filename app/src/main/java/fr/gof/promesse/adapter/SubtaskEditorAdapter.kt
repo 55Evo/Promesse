@@ -14,11 +14,10 @@ import java.util.*
 /**
  * Promise adapter
  *
- *
  * @property subtaskList
  * @property listener
  *
- * Adapter appelé dans la classe PromiseManagerActivity permettant de gérer les sous-taches
+ * "Adapter" appelé dans la classe PromiseManagerActivity permettant de gérer les sous-tâches
  */
 class SubtaskEditorAdapter(
     var subtaskList: MutableList<Subtask>,
@@ -26,15 +25,31 @@ class SubtaskEditorAdapter(
     val context: Context
 ) : RecyclerView.Adapter<SubtaskEditorAdapter.SubtaskViewHolder>() {
 
+    /**
+     * Get item count
+     *
+     */
     override fun getItemCount() = subtaskList.size
 
-
+    /**
+     * On bind view holder
+     *
+     * @param holder
+     * @param position
+     */
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
         holder.subtask = subtaskList[position]
         holder.checkBox.isChecked = holder.subtask.done
         holder.substask.setText(holder.subtask.title)
     }
 
+    /**
+     * On create view holder
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtaskViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.item_subtaskeditor,
@@ -55,7 +70,7 @@ class SubtaskEditorAdapter(
         lateinit var subtask: Subtask
         var substask: EditText = view.findViewById(R.id.editTextSubtask)
         var checkBox: CheckBox = view.findViewById(R.id.checkBoxDone)
-        var buttonDelete: ImageButton = view.findViewById(R.id.buttonDelete)
+        private var buttonDelete: ImageButton = view.findViewById(R.id.buttonDelete)
 
         init {
             buttonDelete.setOnClickListener(this)
@@ -68,7 +83,7 @@ class SubtaskEditorAdapter(
          *
          * @param v
          *
-         * Fonction appelé lors du clic sur une sous tache. Si on clique sur la checkbox on lui
+         * Fonction appelée lors du clic sur une sous-tâche. Si on clique sur la checkbox on lui
          * met le bon listener et idem si l'on veut la supprimer
          */
         override fun onClick(v: View?) {
@@ -101,8 +116,7 @@ class SubtaskEditorAdapter(
     /**
      * On item click listener
      *
-     * @constructor Create empty On item click listener
-     *///Interface des events de la liste
+     */
     interface OnItemClickListener {
         /**
          * On item click

@@ -54,7 +54,7 @@ class NotificationReceiver : BroadcastReceiver() {
      */
     override fun onReceive(context: Context?, intent: Intent?) {
         updateListPromises()
-        var notificationManager: NotificationManager =
+        val notificationManager: NotificationManager =
             context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val repeatingIntent = Intent(context, MainActivity::class.java)
         repeatingIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP

@@ -15,13 +15,12 @@ import fr.gof.promesse.model.Mascot
 /**
  * Choose mascot activity
  *
- * @constructor Create empty Choose mascot activity
  */
 class ChooseMascotActivity : AppCompatActivity() {
-    val promiseDataBase = PromiseDataBase(this)
+    private val promiseDataBase = PromiseDataBase(this)
 
     lateinit var adapter: MascotAdapter
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private val listMascot: List<Mascot> = listOf(
         Mascot.JACOU,
         Mascot.RAYMOND,
@@ -45,7 +44,7 @@ class ChooseMascotActivity : AppCompatActivity() {
         recyclerView.layoutManager =
             LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
         //for snap in center (magnetisme)
-        var helper: SnapHelper = LinearSnapHelper()
+        val helper: SnapHelper = LinearSnapHelper()
         helper.attachToRecyclerView(recyclerView)
     }
 

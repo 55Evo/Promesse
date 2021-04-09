@@ -1,20 +1,14 @@
 package fr.gof.promesse
 
 import android.app.Activity
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.get
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -30,21 +24,20 @@ import travel.ithaka.android.horizontalpickerlib.PickerLayoutManager
 /**
  * Edit info activity
  *
- * @constructor Create empty Edit info activity
  */
 class EditInfoActivity : AppCompatActivity() {
-    val promiseDataBase = PromiseDataBase(this)
-    lateinit var editTextName: TextInputEditText
-    lateinit var editUsername: TextInputEditText
-    lateinit var editTextNewPassword: TextInputEditText
-    lateinit var editTextOldPassword: TextInputEditText
-    lateinit var editTextConfirmPassword: TextInputEditText
-    var mascotPosition: Int = 0
+    private val promiseDataBase = PromiseDataBase(this)
+    private lateinit var editTextName: TextInputEditText
+    private lateinit var editUsername: TextInputEditText
+    private lateinit var editTextNewPassword: TextInputEditText
+    private lateinit var editTextOldPassword: TextInputEditText
+    private lateinit var editTextConfirmPassword: TextInputEditText
+    private var mascotPosition: Int = 0
 
     private lateinit var preferences: SharedPreferences
 
     lateinit var adapter: MascotAdapter
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private val listMascot: List<Mascot> = listOf(
         Mascot.JACOU,
         Mascot.RAYMOND,
@@ -85,7 +78,7 @@ class EditInfoActivity : AppCompatActivity() {
             mascotPosition = constraintLayout.tag as Int
         }
         //for snap in center (magnetisme)
-        var helper: SnapHelper = LinearSnapHelper()
+        val helper: SnapHelper = LinearSnapHelper()
         helper.attachToRecyclerView(recyclerView)
 
         editTextName.setText(user.name)
@@ -175,7 +168,7 @@ class EditInfoActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, "partie mise a jour de lutilisateur", Toast.LENGTH_LONG)
             .show()
         //comparer les variable et basta
-        if (user.checkConnection(user.email, editTextOldPassword.text.toString())) {
+        if (user.checkConnection(editTextOldPassword.text.toString())) {
             if (editTextNewPassword.text.toString().length < 8) {
                 editTextNewPassword.error = getString(R.string.passwordTooShort)
             } else {

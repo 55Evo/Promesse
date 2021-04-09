@@ -1,6 +1,5 @@
 package fr.gof.promesse.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,7 @@ import fr.gof.promesse.model.Promise
  */
 class CustomSuggestionAdapter(
     inflater: LayoutInflater,
-    val listener: CustomSuggestionAdapter.OnItemClickListener,
+    val listener: OnItemClickListener,
     val context: Context
 ) : SuggestionsAdapter<Promise, CustomSuggestionAdapter.SuggestionHolder>(inflater) {
 
@@ -39,7 +38,6 @@ class CustomSuggestionAdapter(
      */
     override fun onBindSuggestionHolder(promise: Promise, holder: SuggestionHolder, position: Int) {
         holder.title.text = promise.title
-
     }
 
     /**
@@ -65,14 +63,13 @@ class CustomSuggestionAdapter(
      * @constructor
      *
      * @param itemView
-     * Classe interne permettant d'interragir avec les éléments de la vue
+     * Classe interne permettant d'interagir avec les éléments de la vue
      */
     inner class SuggestionHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var title: TextView
+        var title: TextView = itemView.findViewById(R.id.textSuggest)
 
         init {
-            title = itemView.findViewById(R.id.textSuggest)
             title.setOnClickListener(this)
         }
 
@@ -90,7 +87,6 @@ class CustomSuggestionAdapter(
     /**
      * On item click listener
      *
-     * @constructor Create empty On item click listener
      */
     interface OnItemClickListener {
         /**

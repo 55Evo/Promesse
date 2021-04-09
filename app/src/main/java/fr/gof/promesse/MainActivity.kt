@@ -1,12 +1,11 @@
 package fr.gof.promesse
 
-import SwipeToReportOrDone
+import fr.gof.promesse.listener.SwipeToReportOrDone
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -35,25 +34,23 @@ import java.util.*
 /**
  * Main activity
  *
- * @constructor Create empty Main activity
  */
 class MainActivity : AppCompatActivity() {
+
     companion object {
-        var user = User("a", "Alexislebg", "a", "", Mascot.JACOU)
+        var user = User("", "", "", "", Mascot.JACOU)
     }
 
-    lateinit var deleteListener: DeleteButtonListener
+    private lateinit var deleteListener: DeleteButtonListener
     lateinit var recyclerView: RecyclerView
-    lateinit var mascotView: ImageView
+    private lateinit var mascotView: ImageView
     val promiseDataBase = PromiseDataBase(this@MainActivity)
-    var notifications = Notifications()
-    lateinit var slidr: SlidrInterface
-
+    private var notifications = Notifications()
+    private lateinit var slidr: SlidrInterface
     lateinit var adapter: PromiseAdapter
     lateinit var listPromesse: TreeSet<Promise>
     lateinit var layout: ConstraintLayout
-    var dateOfTheDay: Date? = null
-
+    private var dateOfTheDay: Date? = null
     private lateinit var mHandler: Handler
     private lateinit var mRunnable: Runnable
     private lateinit var del: FloatingActionButton
@@ -66,7 +63,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        slidr = Slidr.attach(this, config);
+        slidr = Slidr.attach(this, config)
         setContentView(R.layout.activity_main)
         dateOfTheDay = Date(System.currentTimeMillis())
         recyclerView = findViewById(R.id.recyclerViewPromesse)
@@ -146,7 +143,7 @@ class MainActivity : AppCompatActivity() {
      *
      */
     private fun updateDate() {
-        var date = findViewById<TextView>(R.id.dateDayView)
+        val date = findViewById<TextView>(R.id.dateDayView)
         val dt = Date()
         val dfs = DateFormatSymbols(Locale.FRANCE)
         val dateFormat = SimpleDateFormat("EEEE dd MMMM", dfs)
@@ -155,7 +152,8 @@ class MainActivity : AppCompatActivity() {
         val formatter = SimpleDateFormat("YYYY")
         val date2 = formatter.format(Date())
         res += date2
-        res += "\n" + date1.substring(0, 1).toUpperCase() + date1.substring(1).toLowerCase();
+        res += "\n" + date1.substring(0, 1).toUpperCase(Locale.ROOT) + date1.substring(1).toLowerCase(
+            Locale.ROOT)
         date.text = res
     }
 
@@ -207,8 +205,8 @@ class MainActivity : AppCompatActivity() {
              */
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
-                var promise = listPromesse.elementAt(position)
-                var date = promise.dateTodo
+                val promise = listPromesse.elementAt(position)
+                val date = promise.dateTodo
                 var message = ""
 
                 when (i) { // promise done
@@ -233,10 +231,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     adapter.nbPromisesChecked = 0
                     adapter.inSelection = false
-                    var bundle = Bundle()
+                    val bundle = Bundle()
                     bundle.putBoolean("longclick", true)
-                    for (i in 0..(adapter.promiseList.size)) {
-                        adapter.notifyItemChanged(i, bundle);
+                    for (j in 0..(adapter.promiseList.size)) {
+                        adapter.notifyItemChanged(j, bundle)
                     }
                     adapter.showOffDdelete()
                 }
@@ -252,7 +250,7 @@ class MainActivity : AppCompatActivity() {
              * organize the promises and update the view.
              *
              * @param recyclerView
-             * @param source
+             * @param viewHolder
              * @param target
              * @return true
              *
@@ -263,21 +261,21 @@ class MainActivity : AppCompatActivity() {
              */
             override fun onMove(
                 recyclerView: RecyclerView,
-                source: RecyclerView.ViewHolder,
+                viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                if (source.itemViewType != target.itemViewType) {
+                if (viewHolder.itemViewType != target.itemViewType) {
                     return false
                 }
                 adapter.nbPromisesChecked = 0
                 adapter.inSelection = false
-                adapter.promiseList.elementAt(source.adapterPosition).isChecked = false
-                var bundle = Bundle()
+                adapter.promiseList.elementAt(viewHolder.adapterPosition).isChecked = false
+                val bundle = Bundle()
                 bundle.putBoolean("longclick", true)
                 for (i in 0..adapter.promiseList.size)
                     adapter.notifyItemChanged(i, bundle)
                 adapter.showOffDdelete()
-                adapter.onItemMove(source.adapterPosition, target.adapterPosition)
+                adapter.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
                 return true
             }
 
@@ -307,10 +305,10 @@ class MainActivity : AppCompatActivity() {
                 snackbar.setAction(getString(R.string.cancel)) {
                     if (i == utils.RIGHT) {
                         promise.dateTodo = date
-                        adapter.restoreItem(promise, position, promiseDataBase)
+                        adapter.restoreItem(promise, promiseDataBase)
                     } else if (i == utils.LEFT) {
                         // j'enlève le done
-                        adapter.restoreItem(promise, position, promiseDataBase)
+                        adapter.restoreItem(promise, promiseDataBase)
                         promise.state = State.TODO
                         user.updatePromise(promise)
                         user.removeNotification(idNotification)
@@ -318,7 +316,7 @@ class MainActivity : AppCompatActivity() {
                     recyclerView.scrollToPosition(position)
                     adapter.notifyItemRangeChanged(position, listPromesse.size)
                 }
-                snackbar.setActionTextColor(Color.GREEN);
+                snackbar.setActionTextColor(Color.GREEN)
                 snackbar.show()
             }
         }

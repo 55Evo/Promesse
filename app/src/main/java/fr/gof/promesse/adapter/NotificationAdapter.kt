@@ -21,7 +21,7 @@ import java.util.HashSet
  *
  * On créé un adapter pour la liste des notifications que peut recevoir un utilisateur
  * En effet un utilisateur peut réaliser une promesse pour un autre utilisateur et celui ci pourra
- * voir la liste des promesse réalisées à son encontre dans son profil
+ * voir la liste des promesses réalisées à son encontre dans son profil
  */
 class NotificationAdapter(
     var context: Context,
@@ -40,7 +40,7 @@ class NotificationAdapter(
      * @param holder
      * @param position
      *
-     * Lors du rechargement de la vue on récupère la notification et on set les différents éléments
+     * Lors du rechargement de la vue on récupère la notification et on "set" les différents éléments
      * à afficher
      */
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

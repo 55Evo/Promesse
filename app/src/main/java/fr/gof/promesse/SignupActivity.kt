@@ -14,7 +14,6 @@ import fr.gof.promesse.model.User
 /**
  * Signup activity
  *
- * @constructor Create empty Signup activity
  */
 class SignupActivity : AppCompatActivity() {
 
@@ -124,7 +123,7 @@ class SignupActivity : AppCompatActivity() {
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email.text.toString()).matches()) {
-            email?.error = getString(R.string.invalidFormat)
+            email.error = getString(R.string.invalidFormat)
             error = true
         }
 
