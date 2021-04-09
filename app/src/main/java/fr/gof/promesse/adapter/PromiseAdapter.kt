@@ -34,7 +34,7 @@ import fr.gof.promesse.MainActivity.Companion.user
  * @property promiseList
  * @property listener
  *
- * On créé un adapter pour les promesses celui ci permet d'afficher toutes les vues de notre
+ * On créé un adapter pour les promesses celui ci permet d'afficher toutes les vues du
  * recycler view contenant les promesses
  *
  *
@@ -60,7 +60,7 @@ class PromiseAdapter(
      */
     override fun getItemCount() = promiseList.size
 
-    //Affichage d'un item (appelé quand la liste defile ou quand on notifie un changement)
+
     /**
      * On bind view holder
      *
@@ -96,7 +96,7 @@ class PromiseAdapter(
         if (holder.promise.recipient.isNotEmpty()) {
             holder.recipient.visibility = View.VISIBLE
             holder.recipient.text =
-                context.getString(R.string.recipient) + ": " + holder.promise.recipient
+                context.getString(R.string.recipient) + ": ${holder.promise.recipient}"
         } else {
             holder.recipient.visibility = View.GONE
         }
@@ -125,7 +125,7 @@ class PromiseAdapter(
      * @param holder
      *
      * Fonction qui permet d'animer le défilement des promesses lorsque celles ci ne sont pas déja chargées
-     * Cependant seulement les 3 premières déja chargées afin de réduire un peu les animations
+     * Cependant seulement les 3 premières sont déjà chargées afin de réduire un peu les animations
      */
     private fun setAnimations(holder: PromiseViewHolder) {
         if (lastPosition < 3)
@@ -142,7 +142,7 @@ class PromiseAdapter(
      *
      * @param holder
      * @param position
-     * On affiche la date et mise à jouors des vues
+     * On affiche la date et mise à jour des vues
      */
     private fun setViews(
         holder: PromiseViewHolder,
@@ -154,14 +154,14 @@ class PromiseAdapter(
         if (!displayDate)
             holder.date.visibility = View.GONE
 
-        if (sortedCategory) {
+        if (sortedCategory) { // ce code n'est jamais atteint car le booléen est a false
             holder.logo.visibility = View.GONE
 
             if ((position != 0) and (position != -1)) {
                 if (holder.promise.category.nom == promiseList.elementAt(position - 1).category.nom)
                     holder.imageViewCategoryGlobal.visibility = View.GONE
                 else {
-                    setMargins(holder.layout, 0, 0, 0, 0)
+                    setMargins(holder.layout)
                 }
             }
         } else {
@@ -279,28 +279,24 @@ class PromiseAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (payloads != null && payloads.isNotEmpty()) {
-            var bundle = payloads[0] as Bundle
-            var click: Boolean? = bundle.getBoolean("click")
-            var long: Boolean? = bundle.getBoolean("longclick")
-            var subtask: Boolean? = bundle.getBoolean("clicksubtask")
-            var changeState: Boolean? = bundle.getBoolean("changestate")
-            var lastPayload =
-                payloads[payloads.size - 1]
-            if (click as Boolean) {
-                if (click) {
+        if (payloads.isNotEmpty()) {
+            val bundle = payloads[0] as Bundle
+            val click: Boolean = bundle.getBoolean("click")
+            val long: Boolean = bundle.getBoolean("longclick")
+            val subtask: Boolean = bundle.getBoolean("clicksubtask")
+            val changeState: Boolean = bundle.getBoolean("changestate")
+
+            when {
+                click -> {
                     refreshPromise(holder)
                 }
-            } else if (long as Boolean) {
-                if (long) {
+                long -> {
                     refreshDelete(holder)
                 }
-            } else if (subtask as Boolean) {
-                if (subtask) {
+                subtask -> {
                     refreshSubtask(holder)
                 }
-            } else if (changeState as Boolean) {
-                if (changeState) {
+                changeState -> {
                     refreshState(holder)
                 }
             }
@@ -312,11 +308,10 @@ class PromiseAdapter(
      * Refresh subtask
      *
      * @param holder
-     * @param fold
-     * Dans le cas du refresh de la sous tache on met uniquement la vue concernant la progress bar
-     * à jour afin de n'impacter le visuel de l'interface uniquement sur la vue de la progress bar
+     * Dans le cas du refresh de la sous tâche on met uniquement la vue concernant la progress bar
+     * à jour afin de n'impacter que le visuel de l'interface uniquement sur la vue de la progress bar
      */
-    fun refreshSubtask(holder: PromiseViewHolder) {
+    private fun refreshSubtask(holder: PromiseViewHolder) {
         holder.progressBar.max = holder.promise.subtasks.size
         holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
         holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
@@ -328,7 +323,7 @@ class PromiseAdapter(
     /**
      * Show off ddelete
      *
-     * On met à jour le bouton délete et on le remplace par le bouton d'ajout d'une promesse
+     * On met à jour le bouton delete et on le remplace par le bouton d'ajout d'une promesse
      */
     fun showOffDdelete() {
         val deleteButton: FloatingActionButton =
@@ -344,16 +339,13 @@ class PromiseAdapter(
      * Refresh delete
      *
      * @param holder
-     * @param fold
      *
      * On décoche toutes les checkbox
      */
-    fun refreshDelete(holder: PromiseViewHolder) {
+    private fun refreshDelete(holder: PromiseViewHolder) {
         holder.promise = promiseList.elementAt(holder.adapterPosition)
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
-        //refreshState(holder)--------------------------------------------------------------------------
-
     }
 
     /**
@@ -362,7 +354,7 @@ class PromiseAdapter(
      * @param holder
      * Je refresh la promesse en fonction de son état pour le background de la promesse
      */
-    fun refreshState(holder: PromiseViewHolder) {
+    private fun refreshState(holder: PromiseViewHolder) {
         holder.promise = promiseList.elementAt(holder.adapterPosition)
         statePromiseUpdate(holder)
     }
@@ -371,16 +363,14 @@ class PromiseAdapter(
      * Refresh promise
      *
      * @param holder
-     * @param fold
      *
-     * Mise à jour de la promesse en fonction du déploiement ou non de notre promesse
+     * Mise à jour de la promesse en fonction du déploiement ou non de la promesse
      * Dans le cas ou l'on déploie la promesse on anime le logo, le titre de la promesse et on
      * étire la promesse alors que dans l'autre cas on on lui fait retrouver sa forme originelle
      */
     private fun refreshPromise(holder: PromiseViewHolder) {
-
         holder.promise = promiseList.elementAt(holder.adapterPosition)
-        var isdepl = holder.promise.isDescDeployed
+        val isdepl = holder.promise.isDescDeployed
         if (holder.promise.isDescDeployed) holder.titre.textSize =
             utils.endSize else holder.titre.textSize = utils.startSize
         improoveWidthLogo(holder)
@@ -389,7 +379,6 @@ class PromiseAdapter(
         } else {
             deployAnimation(holder)
         }
-
     }
 
     /**
@@ -400,7 +389,7 @@ class PromiseAdapter(
      * Animation de déploiement
      */
     private fun deployAnimation(holder: PromiseViewHolder) {
-        var animation = SlideAnimation(holder.deployed)
+        val animation = SlideAnimation(holder.deployed)
         animation.expand(holder.promise.isDescDeployed)
         holder.titre.animate()
         holder.deployed.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
@@ -435,7 +424,7 @@ class PromiseAdapter(
      * Animation lorsque l'on rétrécie la promesse
      */
     private fun undeployAnimation(holder: PromiseViewHolder) {
-        var animation = SlideAnimation(holder.deployed)
+        val animation = SlideAnimation(holder.deployed)
         animation.expand(holder.promise.isDescDeployed)
         val tv = holder.titre
         val animationDuration = 300 // Animation duration in ms
@@ -502,18 +491,14 @@ class PromiseAdapter(
      * Set margins
      *
      * @param view
-     * @param left
-     * @param top
-     * @param right
-     * @param bottom
      *
      * Fonction pas au point présente dans le cas ou l'on souhaite affiher les promesses triées
      * por catégorie
      */
-    private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
+    private fun setMargins(view: View) {
         if (view.layoutParams is MarginLayoutParams) {
             val p = view.layoutParams as MarginLayoutParams
-            p.setMargins(left, top, right, bottom)
+            p.setMargins(0, 0, 0, 0)
             view.requestLayout()
         }
     }
@@ -522,13 +507,12 @@ class PromiseAdapter(
      * Restore item
      *
      * @param promise
-     * @param position
      * @param dataBase
      *
      * Fonction qui permet la restoration d'un item
-     * on le rajoute à la liste des promesse ainsi qu'à la base de donnée
+     * on le rajoute à la liste des promesses ainsi qu'à la base de donnée
      */
-    fun restoreItem(promise: Promise, position: Int, dataBase: PromiseDataBase) {
+    fun restoreItem(promise: Promise, dataBase: PromiseDataBase) {
         promiseList.add(promise)
         dataBase.updateDate(promise)
     }
@@ -543,11 +527,11 @@ class PromiseAdapter(
      * de l'utilisateur ainsi qu'à la base de données
      */
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        var save = promiseList.elementAt(fromPosition).dateTodo
+        val save = promiseList.elementAt(fromPosition).dateTodo
         promiseList.elementAt(fromPosition).dateTodo = promiseList.elementAt(toPosition).dateTodo
         promiseList.elementAt(toPosition).dateTodo = save
-        var fromPos = promiseList.elementAt(fromPosition)
-        var toPos = promiseList.elementAt(toPosition)
+        val fromPos = promiseList.elementAt(fromPosition)
+        val toPos = promiseList.elementAt(toPosition)
         promiseList.remove(fromPos)
         promiseList.remove(toPos)
         promiseList.add(fromPos)
@@ -555,8 +539,6 @@ class PromiseAdapter(
         user.updatePromise(fromPos)
         user.updatePromise(toPos)
         notifyItemMoved(fromPosition, toPosition)
-
-
     }
 
     /**
@@ -564,7 +546,7 @@ class PromiseAdapter(
      *
      * @param position
      *
-     * Onitemdismiss supprime la promesse de la liste des promesses
+     * onItemDismiss supprime la promesse de la liste des promesses
      */
     override fun onItemDismiss(position: Int) {
         promiseList.remove(promiseList.elementAt(position))
@@ -574,17 +556,14 @@ class PromiseAdapter(
     /**
      * Promise view holder
      *
-     * @constructor
-     *
      * @param view
      * classe interne qui permet de relier toute la vue
      * On trouve tout les éléments présent XML dans l'affichage d'une promesse
-     */// HOLDER
+     */
     inner class PromiseViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener,
         View.OnLongClickListener {
         lateinit var promise: Promise
-        lateinit var savePromise: Promise
         var titre: TextView = view.findViewById(R.id.title)
         var recipient: TextView = view.findViewById(R.id.textViewUsernameRecipient)
         var logo: ImageView = view.findViewById(R.id.logo)
@@ -594,7 +573,7 @@ class PromiseAdapter(
         var checkBox: CheckBox = view.findViewById(R.id.delCheckBox)
         var layout: LinearLayout = view.findViewById(R.id.linearlayoutitem)
         var layoutButtonEdit: ConstraintLayout = view.findViewById(R.id.layoutButtonEdit)
-        var buttonEdit: Button = view.findViewById(R.id.buttonEdit)
+        private var buttonEdit: Button = view.findViewById(R.id.buttonEdit)
         var buttonStart: Button = view.findViewById(R.id.buttonStart)
         var buttonRedo: Button = view.findViewById(R.id.buttonRedo)
         var buttonStop: Button = view.findViewById(R.id.buttonStop)
@@ -604,7 +583,7 @@ class PromiseAdapter(
         var rvSubtasks: RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
         var deployed: LinearLayout = view.findViewById(R.id.deployedLayout)
         var notifDisabled: ImageView = view.findViewById(R.id.notifDisabled)
-        var posAdapter: Int = 0
+        private var posAdapter: Int = 0
 
         init {
             view.setOnClickListener(this)
@@ -632,7 +611,6 @@ class PromiseAdapter(
                     if (posAdapter != RecyclerView.NO_POSITION) {
                         listener.onItemCheckedChanged(posAdapter, this@PromiseAdapter)
                     }
-
                 } else {
                     if (posAdapter != RecyclerView.NO_POSITION) {
                         if (v is Button) {
@@ -672,7 +650,7 @@ class PromiseAdapter(
          * @param v
          * @return
          *
-         * Fonction appelée lors d'un clic long sur une promesse
+         * Fonction appelée lors d'un appui long sur une promesse
          */
         override fun onLongClick(v: View?): Boolean {
             posAdapter = adapterPosition
@@ -695,7 +673,6 @@ class PromiseAdapter(
     /**
      * On item click listener
      *
-     * @constructor
      * Interface des events de la liste
      */
     interface OnItemClickListener {
@@ -746,6 +723,12 @@ class PromiseAdapter(
             return view.width
         }
 
+        /**
+         * Set
+         *
+         * @param view
+         * @param value
+         */
         override fun set(view: View, value: Int?) {
             view.layoutParams.width = value!!
             view.layoutParams.height = value

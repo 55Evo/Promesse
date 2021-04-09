@@ -1,17 +1,12 @@
 package fr.gof.promesse.listener
 
-import fr.gof.promesse.PromiseManagerActivity
 import fr.gof.promesse.adapter.SubtaskEditorAdapter
 
 /**
  * Subtask listener
  *
- * @constructor
- *
- * @param subtaskList
- * @param promiseManagerActivity
  */
-class SubtaskListener(subtaskList: Any, promiseManagerActivity: PromiseManagerActivity) :
+class SubtaskListener :
     SubtaskEditorAdapter.OnItemClickListener {
 
     /**

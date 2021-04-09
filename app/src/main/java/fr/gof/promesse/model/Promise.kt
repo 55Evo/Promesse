@@ -19,7 +19,6 @@ import java.util.*
  * @property subtasks
  * @property isChecked
  * @property isDescDeployed
- * @constructor Create empty Promise
  */
 data class Promise(
     var id: Int,
@@ -37,10 +36,6 @@ data class Promise(
     var isChecked: Boolean = false,
     var isDescDeployed: Boolean = false
 ) : Serializable, Comparable<Promise> {
-
-    private var focus = false
-    val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
-
 
     /**
      * Equals to remove / add promise of a TreeSet.
@@ -60,7 +55,7 @@ data class Promise(
     /**
      * To string.
      *
-     * @return
+     * @return string
      */
     override fun toString(): String {
         return title

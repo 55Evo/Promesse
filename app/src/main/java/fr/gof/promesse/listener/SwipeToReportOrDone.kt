@@ -1,17 +1,14 @@
+package fr.gof.promesse.listener
+
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
-import fr.gof.promesse.adapter.PromiseAdapter
-import java.lang.Math.abs
-import kotlin.math.roundToInt
 
 /**
  * Swipe to report or done
@@ -19,7 +16,7 @@ import kotlin.math.roundToInt
  * @property mContext
  * Classe permettant de gérer les interraction de swipe ainsi que de drag and drop avec une promesse
  */
-abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
+abstract class SwipeToReportOrDone internal constructor(private var mContext: Context) :
     ItemTouchHelper.Callback() {
     private val mClearPaint: Paint = Paint()
     private val mBackground: ColorDrawable = ColorDrawable()
@@ -156,7 +153,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         isCurrentlyActive: Boolean
     ) {
         val itemView = viewHolder.itemView
-        val itemHeight = itemView.height
+        itemView.height
         val isCancelled = dY == 0f && !isCurrentlyActive
         if (isCancelled) {
             clearCanvas(

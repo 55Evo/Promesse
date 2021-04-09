@@ -7,6 +7,15 @@
         <item>Priorité</item>
         <item>Nom</item>
     </string-array>
+    <string-array name="shortDay">
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mer</item>
+        <item>Jeu</item>
+        <item>Ven</item>
+        <item>Sam</item>
+        <item>Dim</item>
+    </string-array>
     <string name="textViewTitle">Titre</string>
     <string name="editTextTitleHint">Titre de la promesse</string>
     <string name="textViewDuration">Durée</string>

@@ -5,8 +5,6 @@ import android.os.Handler
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getColor
-import fr.gof.promesse.MainActivity
 import fr.gof.promesse.R
 import java.util.*
 
@@ -17,7 +15,7 @@ import java.util.*
  * @property image
  * @property image_drawable
  */
-enum class Mascot(val nom: String, val image: Int, val image_drawable: Int, val shout: String) {
+enum class Mascot(val nom: String, val image: Int, val image_drawable: Int, private val shout: String) {
     JACOU("Jacou le Hibou", R.drawable.mascot1, R.drawable.mascot_afficher_1, "Houhou !"),
     RAYMOND("Raymond Le Crayon", R.drawable.mascot2, R.drawable.mascot_afficher_2, "Cricrr !"),
     EUSTACHE("Eustache la Vache", R.drawable.mascot3, R.drawable.mascot_afficher_3, "Meeuuh !");

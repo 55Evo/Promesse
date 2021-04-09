@@ -38,7 +38,7 @@ import java.util.*
  */
 class PromiseManagerActivity : AppCompatActivity() {
 
-    private val dateSetListener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+    private val dateSetListener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         setDate(
             year,
             monthOfYear,
@@ -54,19 +54,19 @@ class PromiseManagerActivity : AppCompatActivity() {
 
     )
     private lateinit var slidr: SlidrInterface
-    lateinit var adapterCategory: CategoryAdapter
-    lateinit var adapterSubtask: SubtaskEditorAdapter
-    lateinit var rvCategory: RecyclerView
-    lateinit var rvSubtask: RecyclerView
-    lateinit var backgroundImage: ImageView
-    var choosenCategory: Category = Category.DEFAUT
-    lateinit var subtasks: MutableList<Subtask>
-    val promiseDataBase = PromiseDataBase(this@PromiseManagerActivity)
-    lateinit var textViewDate: TextView
-    val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
+    private lateinit var adapterCategory: CategoryAdapter
+    private lateinit var adapterSubtask: SubtaskEditorAdapter
+    private lateinit var rvCategory: RecyclerView
+    private lateinit var rvSubtask: RecyclerView
+    private lateinit var backgroundImage: ImageView
+    private var choosenCategory: Category = Category.DEFAUT
+    private lateinit var subtasks: MutableList<Subtask>
+    private val promiseDataBase = PromiseDataBase(this@PromiseManagerActivity)
+    private lateinit var textViewDate: TextView
+    private val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
     var promise: Promise? = null
     lateinit var date: Date
-    val dfl = DateFormat.getDateInstance(DateFormat.FULL)
+    private val dfl: DateFormat = DateFormat.getDateInstance(DateFormat.FULL)
     lateinit var priority: Switch
 
 
@@ -79,7 +79,7 @@ class PromiseManagerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_promise_manager)
-        slidr = Slidr.attach(this, utils.config);
+        slidr = Slidr.attach(this, utils.config)
         backgroundImage = findViewById(R.id.backgroundImage)
         rvCategory = findViewById(R.id.recycler_Category)
         rvCategory.setHasFixedSize(true)
@@ -88,7 +88,7 @@ class PromiseManagerActivity : AppCompatActivity() {
         priority = findViewById(R.id.switchPriority)
         priority.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                var dndMngr = DndManager(this)
+                val dndMngr = DndManager(this)
                 dndMngr.askPermission()
             }
         }
@@ -142,7 +142,7 @@ class PromiseManagerActivity : AppCompatActivity() {
 
         }
 
-        adapterSubtask = SubtaskEditorAdapter(subtasks, SubtaskListener(subtasks, this), this)
+        adapterSubtask = SubtaskEditorAdapter(subtasks, SubtaskListener(), this)
         rvSubtask.adapter = adapterSubtask
         rvSubtask.layoutManager =
             LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
@@ -211,7 +211,7 @@ class PromiseManagerActivity : AppCompatActivity() {
      * @param month
      * @param day
      */
-    fun setDate(year: Int, month: Int, day: Int) {
+    private fun setDate(year: Int, month: Int, day: Int) {
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, day)
@@ -225,7 +225,7 @@ class PromiseManagerActivity : AppCompatActivity() {
      * @param date
      * @return date with good format
      */
-    fun getDateToString(date: Date) = dfl.format(date)
+    private fun getDateToString(date: Date): String = dfl.format(date)
 
     /**
      * On click date called when user click on the field.
@@ -359,7 +359,6 @@ class PromiseManagerActivity : AppCompatActivity() {
         }
         promiseNm.subtasks = subtasks
         user.updatePromise(promiseNm)
-
     }
 
     /**
@@ -386,12 +385,9 @@ class PromiseManagerActivity : AppCompatActivity() {
      * à la promesse.
      */
     fun onClickButtonAddSubtask(v: View) {
-        var position = subtasks.size
+        subtasks.size
         subtasks.add(Subtask(-1, "", false))
         adapterSubtask.subtaskList = subtasks
         adapterSubtask.notifyDataSetChanged()
-
     }
-
-
 }

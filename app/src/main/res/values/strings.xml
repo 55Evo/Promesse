@@ -1,6 +1,15 @@
 <resources>
 <string name="app_name">Promesse</string>
 <string name="searchBarInt">Name of promise...</string>
+    <string-array name="shortDay">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
 <string-array name="sortPromise">
     <item>Date</item>
     <item>Property</item>

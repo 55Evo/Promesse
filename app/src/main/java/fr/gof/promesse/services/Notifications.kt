@@ -22,14 +22,13 @@ import java.util.*
 /**
  * Notifications
  *
- * @constructor Create empty Notifications
  */
 class Notifications : JobService() {
 
     private val promiseDataBase = PromiseDataBase(this)
     private val notificationId = utils.NOTIFICATION_CHANNEL_ID.toInt()
     var context: Context = this
-    lateinit var listPromises: MutableList<Promise>
+    private lateinit var listPromises: MutableList<Promise>
     lateinit var email: String
     private val oneDayInMilis: Long = 86400000L
 
@@ -105,7 +104,7 @@ class Notifications : JobService() {
         val notifContent =
             context.getString(R.string.notificationContent) + " $titles" + "aujourd'hui !"
 
-        var builder = NotificationCompat.Builder(context, utils.NOTIFICATION_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(context, utils.NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.notification_icon)
             .setContentTitle(context.getString(R.string.notificationTitle))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

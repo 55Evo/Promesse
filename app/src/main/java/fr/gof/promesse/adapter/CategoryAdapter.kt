@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
 import fr.gof.promesse.database.PromiseDataBase
@@ -40,12 +39,12 @@ class CategoryAdapter(
 
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        // si la catégorie n'est pas sélectionné
+        // si la catégorie n'est pas sélectionnée
         if (!listCategory[position].check) {
             holder.categoryView.setImageResource(listCategory[position].image_drawable)
             holder.name = (listCategory[position].nom)
         }
-        // quand on sélectionne la catégorie on affiche un logo "check" a la place de l'image de catégorie
+        // quand on sélectionne la catégorie on affiche un logo "check" à la place de l'image de catégorie
         else {
             holder.categoryView.setImageResource(R.drawable.selected)
             holder.name = (listCategory[position].nom)
@@ -83,8 +82,8 @@ class CategoryAdapter(
          *
          * @param v vue
          *
-         * quand on clique sur une catégorie on change l'image de fond on le coche et on décoche
-         * l'ancien élément coché
+         * Quand on clique sur une catégorie on change l'image de fond on le coche et on décoche
+         * l'ancien élément coché.
          */
         override fun onClick(v: View?) {
             val position = adapterPosition
@@ -113,7 +112,6 @@ class CategoryAdapter(
     /**
      * On item click listener
      *
-     * @constructor Create empty On item click listener
      */
     interface OnItemClickListener {
         /**

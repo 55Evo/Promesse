@@ -6,7 +6,6 @@ import fr.gof.promesse.R
  * Mascot Enum
  *
  * @property nom
- * @property image
  * @property image_drawable
  */
 enum class Category(

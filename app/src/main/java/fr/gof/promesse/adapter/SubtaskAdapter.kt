@@ -18,7 +18,7 @@ import fr.gof.promesse.model.Subtask
  * @property listener
  * @property promiseAdapter
  *
- * adapter des sous taches d'une promesse
+ * "adapter" des sous tâches d'une promesse
  */
 class SubtaskAdapter(
     var promise: Promise,
@@ -56,8 +56,8 @@ class SubtaskAdapter(
      * @param holder
      * @param position
      *
-     * Fonction permettant la mise à jour de la vue des sous taches le titre et je la coche si
-     * la promesse a été réalisé
+     * Fonction permettant la mise à jour de la vue des sous tâches le titre et je la coche si
+     * la promesse a été réalisée
      */
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
         holder.subtask = subtaskList[position]
@@ -69,7 +69,7 @@ class SubtaskAdapter(
      * Promise view holder
      * @param view
      *
-     * Permet de récupérer la vue de la checkbox correspondant à la sous tache
+     * Permet de récupérer la vue de la checkbox correspondante à la sous-tâche
      */
     inner class SubtaskViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
@@ -84,7 +84,7 @@ class SubtaskAdapter(
          * On click
          *
          * @param v
-         * Fonction appelée lors du clic sur une sous tache
+         * Fonction appelée lors du clic sur une sous-tâche
          */
         override fun onClick(v: View?) {
             val position = adapterPosition

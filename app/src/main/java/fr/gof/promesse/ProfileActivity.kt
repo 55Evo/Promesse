@@ -19,12 +19,11 @@ import fr.gof.promesse.database.PromiseDataBase
 /**
  * Profile activity
  *
- * @constructor Create empty Profile activity
  */
 class ProfileActivity : AppCompatActivity() {
     lateinit var adapter: NotificationAdapter
-    lateinit var recyclerView: RecyclerView
-    val promiseDataBase = PromiseDataBase(this)
+    private lateinit var recyclerView: RecyclerView
+    private val promiseDataBase = PromiseDataBase(this)
     private lateinit var slidr: SlidrInterface
     private lateinit var preferences: SharedPreferences
 
@@ -36,7 +35,7 @@ class ProfileActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        slidr = Slidr.attach(this, utils.config);
+        slidr = Slidr.attach(this, utils.config)
         setContentView(R.layout.activity_profile)
         recyclerView = findViewById(R.id.rvNotification)
         recyclerView.setHasFixedSize(false)

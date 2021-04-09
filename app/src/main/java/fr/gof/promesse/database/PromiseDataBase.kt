@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.model.*
 import java.lang.IllegalArgumentException
@@ -55,7 +54,7 @@ class PromiseDataBase(context: Context) {
      * @param promise
      * @return l'id de la Notification
      *
-     * Rajoute à la base de donnée l'utilisateur pour qui l'on réalise une promesse si il est présent
+     * Rajoute à la base de donnée l'utilisateur pour qui on réalise une promesse si il est présent
      * dans celle-ci
      */
     fun createNotification(promise: Promise): Long {
@@ -80,31 +79,12 @@ class PromiseDataBase(context: Context) {
      * Met à jour la mascotte d'un utilisateur dans la BDD
      */
     fun updateMascot(mascot: Mascot) {
-
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
         val values = ContentValues()
         values.put("Mascot", mascot.name)
         dbwritable.update("Account", values, "Account.Email = '${user.email}'", null)
         dbwritable.close()
         user.mascot = mascot
-    }
-
-    /**
-     * Update category
-     *
-     * @param categorie
-     * @param promesse
-     *
-     * Met à jour la catégorie d'une promesse dans la bdd
-     */
-    fun updateCategory(categorie: Category, promesse: Promise) {
-
-        val dbwritable: SQLiteDatabase = this.database.writableDatabase
-        val values = ContentValues()
-        values.put("Category", categorie.name)
-        dbwritable.update("Promise", values, "Promise.Id_promise = '${promesse.id}'", null)
-        dbwritable.close()
-
     }
 
     /**
@@ -124,28 +104,23 @@ class PromiseDataBase(context: Context) {
             null
         )
         dbwritable.close()
-
     }
 
     /**
      * Delete promise
      *
      * @param promesse
-     * Supprimer une promesse de la base de données ainsi que ses sous-taches si elle en comporte
+     * Supprimer une promesse de la base de données ainsi que ses sous-tâches si elle en comporte
      */
     fun deletePromise(promesse: Promise) {
         //Ouverture
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
-
         //Suppression des sous-tâches s'il y en a
-        if (promesse.subtasks != null) {
-            for (sub in promesse.subtasks!!) {
-                dbwritable.delete("Subtask", "Subtask.Id_Subtask = ${sub.id}", null)
-            }
+        for (sub in promesse.subtasks) {
+            dbwritable.delete("Subtask", "Subtask.Id_Subtask = ${sub.id}", null)
         }
         //Suppression de la promesse
         dbwritable.delete("Promise", "Promise.Id_Promise = ${promesse.id}", null)
-
         //Fermeture
         dbwritable.close()
     }
@@ -165,7 +140,6 @@ class PromiseDataBase(context: Context) {
         promiseToValues(values, email, promise)
         val id = dbwritable.insert("Promise", null, values)
         //Ajout des sous-tâches
-
         for (sub in promise.subtasks) {
             val subvalues = ContentValues()
             subvalues.put("Id_Promise", id)
@@ -173,7 +147,6 @@ class PromiseDataBase(context: Context) {
             subvalues.put("Done", sub.done)
             dbwritable.insert("Subtask", null, subvalues)
         }
-
         //Fermeture
         dbwritable.close()
         return id
@@ -216,8 +189,8 @@ class PromiseDataBase(context: Context) {
      * Fonction permettant de récupérer de la base de donnée une promesse avec tout ce qui la compose
      * (Titre, date, sous-taches...)
      */
-    fun getPromise(curs: Cursor, dbreadable: SQLiteDatabase): TreeSet<Promise> {
-        var promiseList = TreeSet<Promise>()
+    private fun getPromise(curs: Cursor, dbreadable: SQLiteDatabase): TreeSet<Promise> {
+        val promiseList = TreeSet<Promise>()
         try {
             while (curs.moveToNext()) {
                 val id = curs.getInt(curs.getColumnIndexOrThrow("Id_Promise"))
@@ -225,7 +198,6 @@ class PromiseDataBase(context: Context) {
                 val recipient = curs.getString(curs.getColumnIndexOrThrow("Recipient"))
                 val category = curs.getString(curs.getColumnIndexOrThrow("Category"))
                 val duration = curs.getInt(curs.getColumnIndexOrThrow("Duration"))
-
                 val state = when (curs.getString(curs.getColumnIndexOrThrow("State"))) {
                     "TODO" -> State.TODO
                     "IN_PROGRESS" -> State.IN_PROGRESS
@@ -239,7 +211,6 @@ class PromiseDataBase(context: Context) {
                     dateFormat.parse(curs.getString(curs.getColumnIndexOrThrow("Date_Creation")))
                 val dateTodo =
                     dateFormat.parse(curs.getString(curs.getColumnIndexOrThrow("Date_Todo")))
-
                 val subtasks = mutableListOf<Subtask>()
                 val curs2 = dbreadable.query(
                     "Subtask",
@@ -250,49 +221,43 @@ class PromiseDataBase(context: Context) {
                     null,
                     null
                 )
-                try {
-                    while (curs2.moveToNext()) {
+                curs2.use { cursor ->
+                    while (cursor.moveToNext()) {
                         subtasks.add(
                             Subtask(
-                                curs2.getInt(curs2.getColumnIndexOrThrow("Id_Subtask")),
-                                curs2.getString(curs2.getColumnIndexOrThrow("Title")),
-                                curs2.getInt(curs2.getColumnIndexOrThrow("Done")) > 0
+                                cursor.getInt(cursor.getColumnIndexOrThrow("Id_Subtask")),
+                                cursor.getString(cursor.getColumnIndexOrThrow("Title")),
+                                cursor.getInt(cursor.getColumnIndexOrThrow("Done")) > 0
                             )
                         )
                     }
-                } finally {
-                    curs2.close()
                 }
                 promiseList.add(
                     Promise(
                         id,
                         title,
                         recipient,
-                        Category.valueOf(category.toUpperCase()),
+                        Category.valueOf(category.toUpperCase(Locale.ROOT)),
                         duration,
                         state,
                         priority,
                         description,
                         professional,
-                        dateCreation,
-                        dateTodo,
+                        dateCreation!!,
+                        dateTodo!!,
                         subtasks
                     )
                 )
-
             }
         } finally {
             curs.close()
         }
-
         return promiseList
     }
-
 
     /**
      * Get all promises
      *
-     * @param email
      * @return
      *
      * Fonction permettant d'extraire de la BDD l'ensemble des promesses appartenant à un utilisateur
@@ -326,7 +291,6 @@ class PromiseDataBase(context: Context) {
      * @param user
      * @return
      */
-    @JvmOverloads
     fun getAllPromisesNameLike(name: String, choiceOfSort: Sort, user: User): Set<Promise> {
         val dbreadable: SQLiteDatabase = this.database.readableDatabase
         //Execution requête
@@ -358,7 +322,7 @@ class PromiseDataBase(context: Context) {
      *
      * @param email
      * @return
-     *
+-     *
      * Récupère toute les promesses des trois derniers jours non réalisées par l'utilisateur
      *
      */
@@ -408,7 +372,6 @@ class PromiseDataBase(context: Context) {
      *
      */
     fun updatePromise(email: String, promise: Promise) {
-
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
         val values = ContentValues()
         promiseToValues(values, email, promise)
@@ -449,7 +412,7 @@ class PromiseDataBase(context: Context) {
      * Email exist
      *
      * @param email
-     * @return
+     * @return Boolean
      *
      * Renvoie true si l'email est présent dans la bdd
      */
@@ -465,7 +428,9 @@ class PromiseDataBase(context: Context) {
             select, null, null, null
         )
         //Si il y en a, retourne true
-        return curs.count != 0
+        val res = curs.count
+        curs.close()
+        return res != 0
     }
 
     /**
@@ -487,8 +452,9 @@ class PromiseDataBase(context: Context) {
             "Username = ?",
             select, null, null, null
         )
-        //Si il y en a, retourne true
-        return curs.count != 0
+        val res = curs.count
+        curs.close()
+        return res != 0
     }
 
     /**
@@ -509,7 +475,9 @@ class PromiseDataBase(context: Context) {
             null, null, null, null
         )
         //Si il y en a, retourne false
-        return curs.count == 0
+        val res = curs.count
+        curs.close()
+        return res == 0
     }
 
     /**
@@ -519,7 +487,7 @@ class PromiseDataBase(context: Context) {
      *
      * Fonction à appeler pour hasher le mdp d'un utilisateur
      */
-    fun sha1(input: String) = hashString(input, "SHA-1")
+    private fun sha1(input: String) = hashString(input)
 
     /**
      * Hash string
@@ -531,7 +499,7 @@ class PromiseDataBase(context: Context) {
      * Fonction prenant en paramètre un string et retournant le hash de ce string en "sha-1" dans
      * notre cas mais marcherait en "md5" par exemple
      */
-    private fun hashString(input: String, algorithm: String): String {
+    private fun hashString(input: String, algorithm: String = "SHA-1"): String {
         return MessageDigest.getInstance(algorithm)
             .digest(input.toByteArray())
             .fold("", { str, it -> str + "%02x".format(it) })
@@ -540,20 +508,19 @@ class PromiseDataBase(context: Context) {
     /**
      * Check username
      *
-     * @param email
-     * @param username
+     * @param usernameOfEmail
+     * @param password
      * @return boolean -> renvoie true si la base de donnée contient bien un utilisateur
      * avec le mot de passe présent en paramètre (il regardera soit l'username si on se connecte
      * avec l'username (pseudo) soit le mail si l'on se connecte par mail
      */
     fun check(usernameOfEmail: String, password: String): Boolean {
-        var password = sha1(password)
+        val passwordHashed = sha1(password)
         return if (usernameOfEmail.contains("@")) {
-            checkEmail(usernameOfEmail, password)
+            checkEmail(usernameOfEmail, passwordHashed)
         } else {
-            checkUsername(usernameOfEmail, password)
+            checkUsername(usernameOfEmail, passwordHashed)
         }
-        return false
     }
 
     /**
@@ -575,7 +542,9 @@ class PromiseDataBase(context: Context) {
             select, null, null, null
         )
         //Si il y en a, retourne true
-        return curs.count != 0
+        val res = curs.count
+        curs.close()
+        return res != 0
     }
 
     /**
@@ -597,7 +566,9 @@ class PromiseDataBase(context: Context) {
             select, null, null, null
         )
         //Si il y en a, retourne true
-        return curs.count != 0
+        val res = curs.count
+        curs.close()
+        return res != 0
     }
 
     /**
@@ -608,9 +579,8 @@ class PromiseDataBase(context: Context) {
      */
     fun deleteNotification(id: Long) {
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
-        dbwritable.delete("Notification", "Notification.Id_Notification = ${id}", null)
+        dbwritable.delete("Notification", "Notification.Id_Notification = $id", null)
         dbwritable.close()
-
     }
 
     /**
@@ -648,19 +618,21 @@ class PromiseDataBase(context: Context) {
         )
         curs.moveToFirst()
         //Si il y en a, retourne true
-        return User(
+        val usr = User(
             curs.getString(curs.getColumnIndexOrThrow("Email")),
             curs.getString(curs.getColumnIndexOrThrow("Username")),
             curs.getString(curs.getColumnIndexOrThrow("Name")),
             "",
             Mascot.valueOf(curs.getString(curs.getColumnIndexOrThrow("Mascot")))
         )
+        curs.close()
+        return usr
     }
 
     /**
      * Get user by username
      *
-     * @param email
+     * @param username
      * @return User
      *
      * Renvoie un utilisateur à partir d'un username (pseudo)
@@ -677,13 +649,15 @@ class PromiseDataBase(context: Context) {
         )
         curs.moveToFirst()
         //Si il y en a, retourne true
-        return User(
+        val usr = User(
             curs.getString(curs.getColumnIndexOrThrow("Email")),
             curs.getString(curs.getColumnIndexOrThrow("Username")),
             curs.getString(curs.getColumnIndexOrThrow("Name")),
             "",
             Mascot.valueOf(curs.getString(curs.getColumnIndexOrThrow("Mascot")))
         )
+        curs.close()
+        return usr
     }
 
     /**
@@ -773,7 +747,7 @@ class PromiseDataBase(context: Context) {
      *
      * @param id
      * @param done
-     * Met à jour une sous tache dans la bdd en la terminant ou non (done -> true ou false)
+     * Met à jour une sous-tache dans la bdd en la terminant ou non (done -> true ou false)
      */
     fun updateSubtask(id: Int, done: Boolean) {
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
@@ -824,7 +798,7 @@ class PromiseDataBase(context: Context) {
             "Username = ?",
             select, null, null, null
         )
-        var notifList = HashSet<Notification>()
+        val notifList = HashSet<Notification>()
         try {
             while (curs.moveToNext()) {
                 val username = curs.getString(curs.getColumnIndexOrThrow("Username"))
@@ -833,7 +807,7 @@ class PromiseDataBase(context: Context) {
                     dateFormat.parse(curs.getString(curs.getColumnIndexOrThrow("Date_Notification")))
                 val read = curs.getInt(curs.getColumnIndexOrThrow("Username")) == 1
                 val author = curs.getString(curs.getColumnIndexOrThrow("Author"))
-                notifList.add(Notification(username, author, date, titre, read))
+                notifList.add(Notification(username, author, date!!, titre, read))
             }
         } finally {
             curs.close()

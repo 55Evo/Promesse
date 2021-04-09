@@ -2,10 +2,8 @@ package fr.gof.promesse.model
 
 import android.app.Activity
 import android.app.NotificationManager
-import android.util.Log
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.services.DndManager
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -17,7 +15,6 @@ import kotlin.collections.HashSet
  * @property name
  * @property password
  * @property mascot
- * @constructor Create empty User
  */
 data class User(
     var email: String,
@@ -35,7 +32,6 @@ data class User(
      * Add promise to the listPromise and to the database.
      *
      * @param promise
-     * @param db
      *
      * Permet d'ajouter une promesse à la liste et à la base de données.
      */
@@ -96,7 +92,6 @@ data class User(
     /**
      * Get all promise.
      *
-     * @param db
      * @return all the promises
      */
     fun getAllPromise(): TreeSet<Promise> {
@@ -112,11 +107,10 @@ data class User(
     /**
      * Get all promises of the day.
      *
-     * @param db
      * @return the promises of the day
      */
     fun getAllPromisesOfTheDay(): TreeSet<Promise> {
-        var dateTodayEvening = Date()
+        val dateTodayEvening = Date()
         dateTodayEvening.hours = 23
         dateTodayEvening.seconds = 59
         dateTodayEvening.minutes = 59
@@ -140,9 +134,9 @@ data class User(
      * Retourne toutes les promesses du jour en fonction de la catégorie.
      */
     fun getAllPromisesOfTheDayCategory(): MutableList<Promise> {
-        var lP = this.getAllPromisesOfTheDay()
-        var res = mutableListOf<Promise>()
-        var hashMap = HashMap<Category, MutableList<Promise>>()
+        val lP = this.getAllPromisesOfTheDay()
+        val res = mutableListOf<Promise>()
+        val hashMap = HashMap<Category, MutableList<Promise>>()
         for (promise in lP) {
             var liste = mutableListOf<Promise>()
             if (hashMap[promise.category] != null) {
@@ -184,12 +178,11 @@ data class User(
     /**
      * Get promises sorted by priority.
      *
-     * @param db
      * @param setToSort
      * @return
      */
     fun getPromisesSortedByPriority(setToSort: Set<Promise>): Set<Promise> {
-        var setSorted: TreeSet<Promise> = TreeSet { p1, p2 ->
+        val setSorted: TreeSet<Promise> = TreeSet { p1, p2 ->
             if (p1.state == State.DONE && p2.state != State.DONE)
                 1
             else if (p2.state == State.DONE && p1.state != State.DONE)
@@ -206,18 +199,6 @@ data class User(
         }
         setSorted.addAll(setToSort)
         return setSorted
-    }
-
-    /**
-     * Get list promises that returns the promises of the day sorted by priority.
-     *
-     * @param db
-     * @return
-     *
-     * Retourne la liste des promesses du jour triées par priorité.
-     */
-    fun getListPromises(): Set<Promise> {
-        return getPromisesSortedByPriority(getAllPromisesOfTheDay())
     }
 
     /**
@@ -248,23 +229,20 @@ data class User(
     /**
      * Get promises sorted by name.
      *
-     * @param db
      * @param setToSort
      * @return
      */
     fun getPromisesSortedByName(setToSort: Set<Promise>): Set<Promise> {
-        var setSorted: TreeSet<Promise> = TreeSet { p1, p2 ->
+        val setSorted: TreeSet<Promise> = TreeSet { p1, p2 ->
             if (p1.state == State.DONE && p2.state != State.DONE)
                 1
             else if (p2.state == State.DONE && p1.state != State.DONE)
                 -1
             else {
-                if (p1.title == p2.title) {
-                    p1.compareTo(p2)
-                } else if (p1.title < p2.title) {
-                    -1
-                } else {
-                    1
+                when {
+                    p1.title == p2.title -> p1.compareTo(p2)
+                    p1.title < p2.title -> -1
+                    else -> 1
                 }
             }
         }
@@ -275,12 +253,11 @@ data class User(
     /**
      * Get promises sorted by date.
      *
-     * @param db
      * @param setToSort
      * @return
      */
     fun getPromisesSortedByDate(setToSort: Set<Promise>): Set<Promise> {
-        var setSorted: TreeSet<Promise> = TreeSet { p1, p2 ->
+        val setSorted: TreeSet<Promise> = TreeSet { p1, p2 ->
             if (p1.state == State.DONE && p2.state != State.DONE)
                 1
             else if (p2.state == State.DONE && p1.state != State.DONE)
@@ -303,12 +280,11 @@ data class User(
     /**
      * Check connection that checks if the connexion informations are correct.
      *
-     * @param mail
      * @param password
      *
      * Vérifie si les informations de connexion sont correctes.
      */
-    fun checkConnection(mail: String, password: String) = db.check(email, password)
+    fun checkConnection(password: String) = db.check(email, password)
 
     /**
      * Update user.
@@ -316,7 +292,7 @@ data class User(
      * @param usr
      */
     fun updateUser(usr: User) {
-        var oldUsername = username
+        val oldUsername = username
         mascot = usr.mascot
         name = usr.name
         username = usr.username
@@ -325,39 +301,10 @@ data class User(
     }
 
     /**
-     * Generate promises
-     *
-     */
-    fun generatePromises() {
-        for (nm in 1..10) {
-            var listSubTask = mutableListOf<Subtask>()
-            listSubTask.add(Subtask(1000 + nm, "sous tache numéro 1", false))
-            listSubTask.add(Subtask(700 + nm, "sous tache numéro 2", false))
-            listSubTask.add(Subtask(400 + nm, "sous tache numéro 3", false))
-            var promesse = Promise(
-                -1,
-                "Promesse numero $nm",
-                "",
-                Category.values()[nm % 5],
-                1,
-                State.TODO,
-                false,
-                "Ceci est la derscription de la premiere promesse, bon courage a vous pour la réaliser ! :)",
-                false,
-                Date(),
-                Date(),
-                listSubTask
-            )
-            this.addPromise(promesse)
-        }
-    }
-
-    /**
      * Get search results sorted.
      *
      * @param name
      * @param choiceOfSort
-     * @param db
      * @return
      */
     fun getSearchResultsSorted(name: String, choiceOfSort: Sort) =
@@ -367,7 +314,6 @@ data class User(
      * Update promise in the database.
      *
      * @param promise
-     * @param db
      */
     fun updatePromise(promise: Promise) {
         db.updatePromise(email, promise)
@@ -378,7 +324,6 @@ data class User(
      * Delete promise of the database.
      *
      * @param promise
-     * @param db
      */
     fun deletePromise(promise: Promise) {
         db.deletePromise(promise)
@@ -395,25 +340,14 @@ data class User(
     fun setToDone(promise: Promise) {
         promise.state = State.DONE
         db.updatePromise(email, promise)
-        var it = listPromise.iterator()
+        val it = listPromise.iterator()
         while (it.hasNext()) {
-            var p = it.next()
+            val p = it.next()
             if (p.id == promise.id) {
                 it.remove()
             }
 
         }
-
-    }
-
-    /**
-     * Update promise date.
-     *
-     * @param promise
-     */
-    fun updatePromiseDate(promise: Promise) {
-        db.updateDate(promise)
-        listAddPromise(promise)
 
     }
 
@@ -425,7 +359,7 @@ data class User(
      *
      * Met une sous-tâche à l'état de finie.
      */
-    fun updateDoneSubtask(clickedItem: Subtask, done: Boolean) {
+    fun updateDoneSubtask(clickedItem: Subtask) {
         db.updateSubtask(clickedItem.id, clickedItem.done)
     }
 
