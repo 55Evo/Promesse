@@ -21,9 +21,24 @@ import fr.gof.promesse.model.Mascot
  * @property listMascot
  * @property listener
  * @property database
- * @constructor Create empty Mascot adapter
+ * @property isUpdate si il est a false alors on est dans le cas de la sélection de la mascotte
+ *                     pour la première fois sinon si il est à true c'est que l'on veut modifier
+ *                     notre mascotte dans le profil
+ * Nous avons créé un adapter pour la catégorie des promesses utilisé par notre recyclerView
  */
 class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val listener : OnItemClickListener, val database : PromiseDataBase, var isUpdate : Boolean = false) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
+
+    /**
+     * On create view holder
+     *
+     * @param parent
+     * @param viewType
+     * @return viewHolder
+     *
+     * Tout dépend dans quel cas on se situe si on est dans le cas ou l'on modifie notre mascotte
+     * on aura un fond différent du cas ou l'on choisit notre mascotte pour la première fois
+     *
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         var itemView =
                 if (isUpdate) LayoutInflater.from(parent.context).inflate(R.layout.item_mascot_update, parent, false)
@@ -37,9 +52,17 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
      *
      * @param holder
      * @param position
+     *
+     * fonction qui est appelé lorsque l'on recharge la vue de l'adapter
+     * on change l'image de fond, le nom de la mascotte
+     *
+     * Dans le cas ou isUpdate est vrai on est dans la modification du profil
+     * et donc on se sert d'un tag afin de pouvoir récupérer l'index
+     * de la vue lors du scroll de la mascotte (dans l'activité de modification du profil)
      */
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.linearLayout.tag = position
+        if (isUpdate) holder.linearLayout?.tag = position
+
         holder.mascotView.setImageResource(listMascot[position].image_drawable)
         holder.name.text = (listMascot[position].nom)
     }
@@ -47,7 +70,7 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
     /**
      * Get item count
      *
-     * @return
+     * @return la taille de la liste des mascottes
      */
     override fun getItemCount(): Int {
         return listMascot.size
@@ -59,13 +82,18 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
      * @constructor
      *
      * @param itemView
+     *
+     * classe interne qui permet de récupérer les élements présent dans le XML on récupère la vue
+     * de notre mascotte, son nom, (et le layout dans le cas ou on se trouve dans le profil et que l'on souhaite
+     *
      */
     inner class MyViewHolder(itemView: View) :  View.OnClickListener, RecyclerView.ViewHolder(itemView) {
         var mascotView: ImageView = itemView.findViewById(R.id.mascotView)
          var name: TextView = itemView.findViewById(R.id.mascotName)
-        var linearLayout: LinearLayout = itemView.findViewById(R.id.ll_item_mascot_update)
+        var linearLayout: LinearLayout? = null
 
          init {
+             if (isUpdate) linearLayout = itemView.findViewById(R.id.ll_item_mascot_update)
              itemView.setOnClickListener(this)
          }
 

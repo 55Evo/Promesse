@@ -13,13 +13,16 @@ import fr.gof.promesse.model.Notification
 import java.util.HashSet
 
 /**
- * Mascot adapter
+ * Notification adapter
  *
  * @property context
  * @property listNotifications
  * @property listener
  * @property database
- * @constructor Create empty Mascot adapter
+ *
+ * On créé un adapter pour la liste des notifications que peut recevoir un utilisateur
+ * En effet un utilisateur peut réaliser une promesse pour un autre utilisateur et celui ci pourra
+ * voir la liste des promesse réalisées à son encontre dans son profil
  */
 class NotificationAdapter(var context: Context, var listNotifications: HashSet<Notification>, val database : PromiseDataBase) :RecyclerView.Adapter<NotificationAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -32,6 +35,9 @@ class NotificationAdapter(var context: Context, var listNotifications: HashSet<N
      *
      * @param holder
      * @param position
+     *
+     * Lors du rechargement de la vue on récupère la notification et on set les différents éléments
+     * à afficher
      */
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.notification = listNotifications.elementAt(position)
@@ -55,6 +61,9 @@ class NotificationAdapter(var context: Context, var listNotifications: HashSet<N
      * @constructor
      *
      * @param itemView
+     *
+     * Classe interne qui permet de récupérer les différentes vues affichées dans le profil de
+     * l'utilisateur (notifications réalisées à son encontre)
      */
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         lateinit var notification: Notification

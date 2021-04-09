@@ -20,7 +20,10 @@ import fr.gof.promesse.model.Category
  * @property listCategory
  * @property listener
  * @property database
- * @constructor Create empty Mascot adapter
+ * @property backgroundImage
+ * @property chosenCategory
+ *
+ * Nous avons créé un adapter pour la catégorie des promesses utilisé par notre recyclerView
  */
 class CategoryAdapter(var context: Context, var listCategory: List<Category>, val listener : OnItemClickListener, val database : PromiseDataBase,var backgroundImage : ImageView, var chosenCategory: Category = Category.DEFAUT) :RecyclerView.Adapter<CategoryAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -29,10 +32,12 @@ class CategoryAdapter(var context: Context, var listCategory: List<Category>, va
     }
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        // si la catégorie n'est pas sélectionné
         if (!listCategory[position].check){
             holder.categoryView.setImageResource(listCategory[position].image_drawable)
             holder.name = (listCategory[position].nom)
         }
+        // quand on sélectionne la catégorie on affiche un logo "check" a la place de l'image de catégorie
         else{
             holder.categoryView.setImageResource(R.drawable.selected)
             holder.name = (listCategory[position].nom)
@@ -40,6 +45,11 @@ class CategoryAdapter(var context: Context, var listCategory: List<Category>, va
         }
     }
 
+    /**
+     * Get item count
+     *
+     * @return la taille de la liste des catégories disponibles
+     */
     override fun getItemCount(): Int {
         return listCategory.size
     }
@@ -56,6 +66,15 @@ class CategoryAdapter(var context: Context, var listCategory: List<Category>, va
          init {
              itemView.setOnClickListener(this)
          }
+
+        /**
+         * On click
+         *
+         * @param v vue
+         *
+         * quand on clique sur une catégorie on change l'image de fond on le coche et on décoche
+         * l'ancien élément coché
+         */
          override fun onClick(v: View?) {
              val position = adapterPosition
              if (position != RecyclerView.NO_POSITION) {
