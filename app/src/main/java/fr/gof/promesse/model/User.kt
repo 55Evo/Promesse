@@ -70,7 +70,7 @@ lateinit var db : PromiseDataBase
      */
     fun loadPromises(db: PromiseDataBase){
         this.db = db
-        listPromise = db.getAllPromises(email)
+        listPromise = db.getAllPromises()
     }
     /**
      * Get all promise

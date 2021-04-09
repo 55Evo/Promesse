@@ -6,26 +6,29 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.Transformation
 
-
+/**
+ * Slide animation
+ *
+ * @property mview
+ * Classe permettant le slide d'une promesse de haut en bas lors du clic (déploiement)
+ */
 class SlideAnimation(var mview: View)  : Animation() {
     /**
      * Expand
      *
      * @param choice
+     * Fonction permettant d'agrandir ou de rétrécir la taille de la bulle contant la promesse
+     * en faisant une animation en appelant la bonne fonction
      */
     fun expand(choice : Boolean) {
-        if (choice){
-            val animation = expandAction(mview)
-            animation.duration = 300
-            animation.interpolator = AccelerateInterpolator()
-            mview.startAnimation(animation)
+        val animation : Animation = if (choice){
+            expandAction(mview)
+        } else{
+            collapseView(mview)
         }
-        else{
-            val animation = collapseView(mview)
-            animation.duration = 300
-            animation.interpolator = AccelerateInterpolator()
-            mview.startAnimation(animation)
-        }
+        animation.duration = 300
+        animation.interpolator = AccelerateInterpolator()
+        mview.startAnimation(animation)
 
     }
 
@@ -34,6 +37,7 @@ class SlideAnimation(var mview: View)  : Animation() {
      *
      * @param view
      * @return
+     * Fonction permettant le déploiement d'une promesse
      */
     private fun expandAction(view: View): Animation {
         view.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -48,7 +52,6 @@ class SlideAnimation(var mview: View)  : Animation() {
             }
         }
         animation.duration = (actualHeight / view.context.resources.displayMetrics.density).toLong()
-        //view.startAnimation(animation)
         return animation
     }
 
@@ -57,6 +60,7 @@ class SlideAnimation(var mview: View)  : Animation() {
      *
      * @param view
      * @return
+     * Fonction permettant le rétrécissement d'une promesse
      */
     fun collapseView(view: View):Animation {
         val actualHeight = view.measuredHeight
@@ -72,7 +76,6 @@ class SlideAnimation(var mview: View)  : Animation() {
             }
         }
         animation.duration = (actualHeight / view.context.resources.displayMetrics.density).toLong()
-
         return animation
     }
 

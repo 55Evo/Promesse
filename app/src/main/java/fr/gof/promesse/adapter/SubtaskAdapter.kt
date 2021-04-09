@@ -10,6 +10,16 @@ import fr.gof.promesse.R
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.Subtask
 
+/**
+ * Subtask adapter
+ *
+ * @property promise
+ * @property context
+ * @property listener
+ * @property promiseAdapter
+ *
+ * adapter des sous taches d'une promesse
+ */
 class SubtaskAdapter(
     var promise : Promise,
     val context: Context,
@@ -23,19 +33,6 @@ class SubtaskAdapter(
      *
      */
     override fun getItemCount() = subtaskList.size
-
-    /**
-     * On bind view holder
-     *
-     * @param holder
-     * @param position
-     */
-    override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
-        holder.subtask = subtaskList[position]
-        holder.checkBox.isChecked = holder.subtask.done
-        holder.checkBox.text = holder.subtask.title
-    }
-
     /**
      * On create view holder
      *
@@ -50,21 +47,31 @@ class SubtaskAdapter(
             false)
         return SubtaskViewHolder(itemView)
     }
-
+    /**
+     * On bind view holder
+     *
+     * @param holder
+     * @param position
+     *
+     * Fonction permettant la mise à jour de la vue des sous taches le titre et je la coche si
+     * la promesse a été réalisé
+     */
+    override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
+        holder.subtask = subtaskList[position]
+        holder.checkBox.isChecked = holder.subtask.done
+        holder.checkBox.text = holder.subtask.title
+    }
     /**
      * Promise view holder
-     *
-     * @constructor
-     *
      * @param view
-     */// HOLDER
+     *
+     * Permet de récupérer la vue de la checkbox correspondant à la sous tache
+     */
     inner class SubtaskViewHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
-
         lateinit var subtask: Subtask
         var checkBox : CheckBox = view.findViewById(R.id.checkBox)
 
         init {
-
             checkBox.setOnClickListener(this)
         }
 
@@ -72,6 +79,7 @@ class SubtaskAdapter(
          * On click
          *
          * @param v
+         * Fonction appelée lors du clic sur une sous tache
          */
         override fun onClick(v: View?) {
             val position = adapterPosition

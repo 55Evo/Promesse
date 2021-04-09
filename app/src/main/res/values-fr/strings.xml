@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Promesse</string>
+    <string name="searchBarInt">Nom promesse...</string>
+    <string-array name="sortPromise">
+        <item>Date</item>
+        <item>Priorité</item>
+        <item>Nom</item>
+    </string-array>
+    <string name="textViewTitle">Titre</string>
+    <string name="editTextTitleHint">Titre de la promesse</string>
+    <string name="textViewDuration">Durée</string>
+    <string name="editTextDurationHint" >En jours</string>
+    <string name="textViewDate">Date</string>
+    <string name="editTextDateHint">Sélectionnez la date</string>
+    <string name="textViewPriority">Prioritaire</string>
+    <string name="textViewProfessionnal">Professionnelle</string>
+    <string name="textViewDescription">Description</string>
+    <string name="editTextDescriptionHint">Entrez une description ...</string>
+    <string name="cancel">Annuler</string>
+    <string name="buttonValidate">Valider</string>
+    <string name="emptyField">Veuillez remplir ce champ</string>
+    <string name="titleEditPromise">Modifier la promesse</string>
+    <string name="titleCreatePromise">Créer une promesse</string>
+    <string name="searchbarPlaceholder">Bonjour %1$s !</string>
+    <string name="titleMascotSelection">Selectionnez votre mascotte</string>
+    <string name="channel_name">notification channel</string>
+    <string name="channel_description">notification channel description</string>
+    <string name="notificationTitle">Promesses à faire !</string>
+    <string name="notificationContent">Attention vous devez faire les promesses</string>
+    <string name="titleSignup">S\'inscrire</string>
+    <string name="confirmPassword">Confirmation mot de passe</string>
+    <string name="password">Mot de passe</string>
+    <string name="email">Email</string>
+    <string name="email_or_username">Email / Pseudonyme</string>
+    <string name="username">Pseudonyme</string>
+    <string name="pawordDoesntMatch">Les mots de passe de correspondent pas</string>
+    <string name="name">Nom</string>
+    <string name="alreadyExist">Cet email existe déjà !</string>
+    <string name="tooMuchCharacters">Il y a trop de caractères !</string>
+    <string name="usernameDoesntContainsAt">Il ne doit pas y avoir d\'arobase !</string>
+    <string name="alreadyAnAcount">Vous avez déjà un compte ?</string>
+    <string name="titleSignin">Se connecter</string>
+    <string name="iHaveNoAccount">Je n\'ai pas de compte</string>
+    <string name="unknownEmail">Cet email ou ce pseudonyme n\'existe pas</string>
+    <string name="wrongPassword">Mot de passe incorrect</string>
+    <string name="invalidFormat">Format invalide</string>
+    <string name="passwordTooShort">Le mot de passe est trop court</string>
+    <string name="promiseDone">Promesse terminée !</string>
+    <string name="promisePostponed">Promesse reportée à demain !</string>
+    <string name="calendar_legend_third">plus de 4 \npromesses</string>
+    <string name="calendar_legend_second">3 à 4 \npromesses</string>
+    <string name="calendar_legend_first">1 à 2 \npromesses</string>
+    <string name="calendar_legend_img_1">Image color of a blue day</string>
+    <string name="calendar_legend_img_2">Image color of a green day</string>
+    <string name="calendar_legend_img_3">Image color of an orange day</string>
+    <string name="subtaskName">Nom de la sous-tâche</string>
+    <string name="subtaskTitle">Sous-tâches</string>
+    <string name="start">Démarrer</string>
+    <string name="edit">Modifier</string>
+    <string name="stop">Abandonner</string>
+    <string name="recipient">Destinataire\u0020 </string>
+    <string name="parameters">Paramètres</string>
+    <string name="redo">Refaire</string>
+    <string name="done">Finir</string>
+    <string name="inprogress">En cours</string>
+    <string name="permissionRequired">Demande de permission</string>
+    <string name="permissionRequiredMessage">
+        Désirez-vous permettre à l\'application Promesse de bloquer les notifications pendant la réalisation des promesses prioritaires ?
+        Si c\'est le cas, activez Promesse dans la liste qui s\'ouvrira après avoir cliqué sur Autoriser
+    </string>
+    <string name="allow">Autoriser</string>
+    <string name="deny">Refuser</string>
+    <string name="dayMascotMessage">Bonjour, j\'espère que tu vas bien !</string>
+    <string name="nightMascotMessage">Bonsoir, tu viens tard ! Ou tôt, tout dépend du point de vue.</string>
+    <string name="oldPassword">Ancien mot de passe</string>
+    <string name="newPassword">Nouveau mot de passe</string>
+    <string name="EditInfo">Modifier Informations</string>
+    <string name="notifification">Notification</string>
+    <string name="profil">Mon profil</string>
+    <string name="changeMascot">Changer de mascotte</string>
+    <string name="realisedAPromise">" a réalisé une promesse pour vous"</string>
+    <string name="notificationListTitle">Liste des promesses réalisées pour vous</string>
+    <string name="by">"Par "</string>
+    <string name="usernameAlreadyExist">Ce nom d\'utilisateur existe déjà</string>
+    <string name="updateMessage">Utilisateur mis à jour</string>
+    <string name="different_password">Les mdp doivent être identiques</string>
+    <string name="bad_password">mauvais mot de passe</string>
+    <string name="welcomeMascotMessageMassPromises">Bon courage, tu as %1$s promesses à réaliser !</string>
+    <string name="welcomeMascotMessageNoPromise">Super ! Tu n\'as aucune promesse à réaliser !</string>
+    <string name="welcomeMascotMessageLowPromises">Super ! Tu n\'as que %1$s promesses à réaliser !</string>
+    <string name="save">Enregistrer</string>
+</resources>

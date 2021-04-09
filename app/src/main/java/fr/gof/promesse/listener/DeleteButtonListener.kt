@@ -22,9 +22,16 @@ import java.util.*
  * @property adapter
  * @property context
  * @property promiseDataBase
- * @constructor Create empty Delete button listener
+ * Listener permettant la suppression de promesse ainsi que la gestion du logo poubelle de suppression
  */
 class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity): View.OnClickListener {
+    /**
+     * On click
+     *
+     * @param v
+     * permet de faire une rotation sur le logo de poubelle permettant de supprimer une promesse
+     * lorsque l'on clique dessus
+     */
     override fun onClick(v: View?) {
         v?.clearAnimation()
         v?.animate()?.apply {
@@ -56,6 +63,8 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
      * Update view
      *
      * @param v
+     * Fonction permettant de mettre à jour la visibilité du logo de la poubelle en faisant attention sur
+     * quelle activité on se situe
      */
     private fun updateView(v: View?) {
         adapter.inSelection = false
@@ -73,6 +82,8 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
      * Display popup
      *
      * @param listPromesses
+     * Fonction permettant d'afficher une pop-up lorsque l'on désire supprimer une promesse comportant
+     * une ou plusieurs sous-taches
      */
     private fun displayPopup(listPromesses: TreeSet<Promise>) {
         val dialogBuilder = AlertDialog.Builder(context)
@@ -103,6 +114,8 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
      *
      * @param listPromesses
      * @param promiseDataBase
+     * Fonction permettant de supprimer une promesse et de remettre l'adapter à jour avec les nouvelles
+     * données ainsi que la base de donnée
      */
     private fun deletePromises(listPromesses : TreeSet<Promise>) {
         val it = listPromesses.iterator()

@@ -17,7 +17,8 @@ import java.util.*
  *
  * @property subtaskList
  * @property listener
- * @constructor Create empty Promise adapter
+ *
+ * Adapter appelé dans la classe PromiseManagerActivity permettant de gérer les sous-taches
  */
 class SubtaskEditorAdapter(
         var subtaskList: MutableList<Subtask>,
@@ -27,7 +28,7 @@ class SubtaskEditorAdapter(
 
     override fun getItemCount() = subtaskList.size
 
-    //Affichage d'un item (appelé quand la liste defile ou quand on notifie un changement)
+
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
         holder.subtask = subtaskList[position]
         holder.checkBox.isChecked = holder.subtask.done
@@ -42,12 +43,11 @@ class SubtaskEditorAdapter(
     }
 
     /**
-     * Promise view holder
-     *
-     * @constructor
-     *
+     * Subtask view holder
      * @param view
-     */// HOLDER
+     *
+     * On récupère les éléments XML afin de pouvoir interragir avec eux
+     */
     inner class SubtaskViewHolder(view: View): RecyclerView.ViewHolder(view),
             View.OnClickListener, TextWatcher {
         lateinit var subtask:Subtask
@@ -60,6 +60,14 @@ class SubtaskEditorAdapter(
             substask.addTextChangedListener(this)
         }
 
+        /**
+         * On click
+         *
+         * @param v
+         *
+         * Fonction appelé lors du clic sur une sous tache. Si on clique sur la checkbox on lui
+         * met le bon listener et idem si l'on veut la supprimer
+         */
         override fun onClick(v: View?) {
             if (v!=null) {
                 val position = adapterPosition

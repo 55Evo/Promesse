@@ -13,7 +13,7 @@ import fr.gof.promesse.model.Mascot
  *
  * @property listMascot
  * @property context
- * @constructor Create empty Mascot listener
+ * Listerner de la mascotte permettant de changer d'activité lorsque l'on clique sur la mascotte
  */
 class MascotListener(var listMascot: List<Mascot>, var context: Activity): MascotAdapter.OnItemClickListener {
     override fun onItemClick(position: Int, adapter: MascotAdapter, database: PromiseDataBase) {

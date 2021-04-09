@@ -13,7 +13,7 @@ import fr.gof.promesse.R
  * @param context
  */
 class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.string.app_name.toString(), null, R.integer.database_version) {
-
+    // création de la table Account (Utilisateur)
     val createAccount = "CREATE TABLE Account(\n" +
             "   Email VARCHAR(320),\n" +
             "   Username VARCHAR(20) UNIQUE,\n" +
@@ -22,6 +22,8 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
             "   Password VARCHAR(100) NOT NULL,\n" +
             "   PRIMARY KEY(Email)\n" +
             ");"
+    // création de la table Notification rassemblant toutes les notifications recues par les utilisateurs
+    // c'est à dire : chaque utilisateur peut avoir des promesses réalisées pour lui et consulter leur titre
     val createNotification = "CREATE TABLE Notification(\n" +
             "   Id_Notification INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Username VARCHAR(20),\n" +
@@ -30,7 +32,7 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
             "   Date_Notification DATE,\n" +
             "   Author VARCHAR(20)\n" +
             ");"
-
+    // création de la table promise de la bdd
     val createPromise = "CREATE TABLE Promise(\n" +
             "   Id_Promise INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Title VARCHAR(50) NOT NULL,\n" +
@@ -46,6 +48,7 @@ class PromiseDataBaseHelper(context: Context?) : SQLiteOpenHelper(context, R.str
             "   Email VARCHAR(320) NOT NULL,\n" +
             "   FOREIGN KEY(Email) REFERENCES Account(Email)\n" +
             ");"
+    // création de la table Subtask de la bdd
     val createSubtask = "CREATE TABLE Subtask(\n" +
             "   Id_Subtask INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "   Title VARCHAR(50) NOT NULL,\n" +
