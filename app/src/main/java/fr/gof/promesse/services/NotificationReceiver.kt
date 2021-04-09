@@ -80,7 +80,6 @@ class NotificationReceiver : BroadcastReceiver() {
         if (intent?.action.equals("MY_NOTIFICATION_MESSAGE")) {
             notificationManager.notify(100, builder.build())
         }
-//        notificationManager.notify(100, builder.build())
     }
 
     private fun updateListPromises(){

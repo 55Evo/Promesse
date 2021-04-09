@@ -10,6 +10,4 @@ import java.io.Serializable
  * @property done
  * @constructor Create empty Subtask
  */
-data class Subtask (val id : Int, var title : String, var done : Boolean) : Serializable {
-
-}
+data class Subtask (val id : Int, var title : String, var done : Boolean) : Serializable

@@ -29,7 +29,8 @@ class ChooseMascotActivity : AppCompatActivity() {
     )
 
     /**
-     * On create
+     * On create method that is called at the start of activity to
+     * instantiate it.
      *
      * @param savedInstanceState
      */

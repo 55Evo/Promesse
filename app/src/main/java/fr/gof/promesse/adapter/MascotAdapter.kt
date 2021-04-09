@@ -61,8 +61,7 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
      * de la vue lors du scroll de la mascotte (dans l'activité de modification du profil)
      */
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        if (isUpdate) holder.linearLayout?.tag = position
-
+        if(isUpdate) holder.linearLayout?.tag = position
         holder.mascotView.setImageResource(listMascot[position].image_drawable)
         holder.name.text = (listMascot[position].nom)
     }
@@ -93,7 +92,7 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
         var linearLayout: LinearLayout? = null
 
          init {
-             if (isUpdate) linearLayout = itemView.findViewById(R.id.ll_item_mascot_update)
+             if(isUpdate) linearLayout = itemView.findViewById(R.id.ll_item_mascot_update)
              itemView.setOnClickListener(this)
          }
 

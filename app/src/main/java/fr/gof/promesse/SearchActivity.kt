@@ -1,4 +1,5 @@
 package fr.gof.promesse
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -31,55 +32,50 @@ import fr.gof.promesse.listener.DeleteButtonListener
 import fr.gof.promesse.model.*
 import java.util.*
 
-
-class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, CustomSuggestionAdapter.OnItemClickListener {
+/**
+ * Search activity
+ *
+ * @constructor Create empty Search activity
+ */
+class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener,
+    CustomSuggestionAdapter.OnItemClickListener {
 
     lateinit var customSuggestionAdapter: CustomSuggestionAdapter
     lateinit var listPromesses: TreeSet<Promise>
     var promiseDataBase = PromiseDataBase(this@SearchActivity)
-    lateinit var recyclerView : RecyclerView
-    lateinit var adapter : PromiseAdapter
-    lateinit var materialSearchBar : MaterialSearchBar
-    var choiceOfSort : Sort = Sort.NAME
-    var valeurActuelle : String = ""
-    private lateinit var deleteButton : FloatingActionButton
-    private lateinit var deleteListener : DeleteButtonListener
+    lateinit var recyclerView: RecyclerView
+    lateinit var adapter: PromiseAdapter
+    lateinit var materialSearchBar: MaterialSearchBar
+    var choiceOfSort: Sort = Sort.NAME
+    var valeurActuelle: String = ""
+    private lateinit var deleteButton: FloatingActionButton
+    private lateinit var deleteListener: DeleteButtonListener
     private lateinit var slidr: SlidrInterface
-    var  config : SlidrConfig =  SlidrConfig.Builder()
-        .position(SlidrPosition.LEFT)
-        .sensitivity(1f)
-        .scrimColor(Color.BLACK)
-        .scrimStartAlpha(0.8f)
-        .scrimEndAlpha(0f)
-        .velocityThreshold(2400F)
-        .distanceThreshold(0.25f)
-        .edge(true)
-        .edgeSize(0.18f) // The % of the screen that counts as the edge, default 18%
-        .build()
 
     /**
-     * On create
+     * On create method that is called at the start of activity to
+     * instantiate it.
      *
      * @param savedInstanceState
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        slidr = Slidr.attach(this, utils.config);
+        slidr = Slidr.attach(this, utils.config)
         setContentView(R.layout.activity_search)
-        recyclerView  = findViewById(R.id.recycler_search)
+        recyclerView = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         materialSearchBar = findViewById(R.id.searchBar)
         deleteButton = findViewById(R.id.deleteButton)
         materialSearchBar.inflateMenu(R.menu.app_menu)
         materialSearchBar.menu.setOnMenuItemClickListener(this as PopupMenu.OnMenuItemClickListener)
-        materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
-//        materialSearchBar.setTextColor(R.color.dark_blue)
-//        materialSearchBar.setTextHintColor(R.color.dark_blue)
-//        materialSearchBar.setDividerColor(R.color.dark_blue)
-//        materialSearchBar.setBackgroundColor(getColor(R.color.dark_blue))
-       //user.loadPromises(db = promiseDataBase)
+        materialSearchBar.setPlaceHolder(
+            String.format(
+                getString(R.string.searchbarPlaceholder),
+                user.name
+            )
+        )
         listPromesses = user.getAllPromise()
         val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         customSuggestionAdapter = CustomSuggestionAdapter(layoutInflater, this, this)
@@ -87,20 +83,20 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         materialSearchBar.setCustomSuggestionAdapter(customSuggestionAdapter)
         materialSearchBar.addTextChangeListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                //materialSearchBar.clearSuggestions()
-                //materialSearchBar.hideSuggestionsList()
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (start > 0) {
                     var suggest =
-                        user.getSearchResultsSorted((materialSearchBar.text.toLowerCase()),
-                            choiceOfSort).toMutableList()
+                        user.getSearchResultsSorted(
+                            (materialSearchBar.text.toLowerCase()),
+                            choiceOfSort
+                        ).toMutableList()
 
                     if (suggest.size < 1) {
-                        //materialSearchBar.clearSuggestions()
                         materialSearchBar.hideSuggestionsList()
                     } else {
                         materialSearchBar.updateLastSuggestions(suggest)
@@ -109,23 +105,34 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
             }
         })
 
-        materialSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener {
+        materialSearchBar.setOnSearchActionListener(object :
+            MaterialSearchBar.OnSearchActionListener {
             /**
-             * On search state changed
+             * On search state changed called when user type something in the
+             * searchBar.
+             * It updates the recyclerView adapter.
              *
              * @param enabled
+             *
+             * Méthode appelée quand un utilisateur tape quelque chose dans
+             * la barre de recherche.
+             * Permet de mettre à jour l'adapter du recyclerView.
              */
             override fun onSearchStateChanged(enabled: Boolean) {
                 if (!enabled) {
                     recyclerView.adapter = adapter
                 }
-                //materialSearchBar.clearSuggestions()
             }
 
             /**
-             * On search confirmed
+             * On search confirmed called when the searchButton is pressed.
+             * It make a search of what was entered in the searchBar.
              *
              * @param text
+             *
+             * Méthode appelée lorsqu'on valide la recherche.
+             * Permet de lancer la recherche en fonction de ce qui est
+             * entré dans la barre de recherche.
              */
             override fun onSearchConfirmed(text: CharSequence?) {
                 startResearch(text.toString())
@@ -142,30 +149,65 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     }
 
     /**
-     * Lock slider
+     * On resume called when activity is called again.
+     * It refresh the view.
+     *
+     * Méthode appelée quand une activité est ouverte de nouveau.
+     * Elle permet de mettre à jour la vue.
      *
      */
-    private fun lockSlider(){
+    override fun onResume() {
+        super.onResume()
+        listPromesses = user.getAllPromise()
+        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this), this)
+        deleteListener = DeleteButtonListener(adapter, this)
+        deleteButton.setOnClickListener(deleteListener)
+        recyclerView.adapter = adapter
+        adapter.notifyDataSetChanged()
+        materialSearchBar.setPlaceHolder(
+            String.format(
+                getString(R.string.searchbarPlaceholder),
+                user.name
+            )
+        )
+    }
+
+    /**
+     * Lock slider method that lock the back slide
+     *
+     * Méthode qui permet de bloquer le retour arrière
+     * via le slide
+     *
+     */
+    private fun lockSlider() {
         slidr.lock()
     }
 
     /**
-     * Un lock slider
+     * Un lock slider method that unlock the back slide
+     *
+     * Méthode qui permet de débloquer le retour arrière
+     * via le slide
      *
      */
-    private fun unLockSlider(){
+    private fun unLockSlider() {
         slidr.unlock()
     }
 
     /**
-     * Start research
+     * Start research called when user confirm research.
+     * It makes a search by the text in the searchBar and
+     * update the view.
      *
      * @param text
      * @param relaunch
+     *
+     * Méthode appelée lorsque l'utilisateur confirme sa recherche.
+     * Elle permet de démarrer une recherche en fonction du texte écrit
+     * dans la barre de recherche. Elle met à jour la vue.
      */
-    private fun startResearch(text: String, relaunch : Boolean = true) {
-        if (relaunch)
-        {
+    private fun startResearch(text: String, relaunch: Boolean = true) {
+        if (relaunch) {
             materialSearchBar.closeSearch()
             materialSearchBar.setPlaceHolder(text)
         }
@@ -180,18 +222,21 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
         materialSearchBar.clearSuggestions()
         materialSearchBar.hideSuggestionsList()
         hideKeyboard(this)
-        listPromesses  = user.getAllPromise()
+        listPromesses = user.getAllPromise()
         customSuggestionAdapter.suggestions = listPromesses.toMutableList()
         materialSearchBar.closeSearch()
     }
 
     /**
-     * Hide keyboard
+     * Hide keyboard when it's called.
      *
      * @param activity
+     *
+     * Cache le clavier quand on l'appelle.
      */
     private fun hideKeyboard(activity: Activity) {
-        val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm: InputMethodManager =
+            activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         //Find the currently focused view, so we can grab the correct window token from it.
         var view = activity.currentFocus
         //If no view currently has focus, create a new one, just so we can grab a window token from it
@@ -202,13 +247,19 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     }
 
     /**
-     * On menu item click
+     * On menu item click called when user click on sortDateButton,
+     * sortPriorityButton or sortNameButton.
+     * It updates the choiceOfSort to sort promises by date, name or priority.
      *
      * @param item
-     * @return
+     * @return true
+     *
+     * Méthode appelée quand on appuie sur un des boutons de tri.
+     * Elle permet de mettre à jour choiceOfSort pour pouvoir
+     * trier les promesses par date, priorité ou nom.
      */
     override fun onMenuItemClick(item: MenuItem?): Boolean {
-        when (item?.itemId){
+        when (item?.itemId) {
             R.id.menudate -> choiceOfSort = Sort.DATE
             R.id.menupriority -> choiceOfSort = Sort.PRIORITY
             R.id.menuname -> choiceOfSort = Sort.NAME
@@ -218,34 +269,28 @@ class SearchActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener, C
     }
 
     /**
-     * On resume
-     *
-     */
-    override fun onResume() {
-        super.onResume()
-        listPromesses = user.getAllPromise()
-        adapter = PromiseAdapter(listPromesses, PromiseEventListener(listPromesses, this),this)
-        deleteListener = DeleteButtonListener(adapter, this)
-        deleteButton.setOnClickListener(deleteListener)
-        recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
-        materialSearchBar.setPlaceHolder(String.format(getString(R.string.searchbarPlaceholder),user.name))
-    }
-
-    /**
-     * On add button clicked
+     * On add button clicked called when addButton is pressed.
+     * It open promiseManagerActivity.
      *
      * @param v
+     *
+     * Méthode appelée quand on appuie sur le bouton d'ajout de
+     * promesse.
+     * Elle ouvre l'activité de création de promesse.
      */
-    fun onAddButtonClicked (v : View) {
+    fun onAddButtonClicked(v: View) {
         val intent = Intent(this, PromiseManagerActivity::class.java)
         startActivity(intent)
     }
 
     /**
-     * On item click
+     * On item click called when user click on a promise.
+     * It deploy and display more informations about a promise.
      *
      * @param v
+     *
+     * Méthode appelée quand on clique sur une promesse.
+     * Elle la déploie et affiche plus d'informations à son propos.
      */
     override fun onItemClick(v: View?) {
         var text = (v as TextView).text.toString()
