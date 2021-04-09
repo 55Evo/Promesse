@@ -268,11 +268,12 @@ lateinit var db : PromiseDataBase
 
     fun checkConnection(mail: String , password: String) = db.check(email, password)
 
-    fun updateUser(user: User){
-        name = user.name
-        username = user.username
-        password = user.password
-        db.updateUser()
+    fun updateUser(usr: User){
+        var oldUsername = username
+        name = usr.name
+        username = usr.username
+        password = usr.password
+        db.updateUser(oldUsername)
     }
     /**
      * Generate promises
