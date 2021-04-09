@@ -35,7 +35,6 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
      */
     override fun onBindSuggestionHolder(promise: Promise, holder: SuggestionHolder, position: Int) {
         holder.title.text = promise.title
-        holder.title.setTextColor(context.getColor(R.color.black))
 
     }
 

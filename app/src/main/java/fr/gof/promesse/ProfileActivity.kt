@@ -39,8 +39,7 @@ class ProfileActivity : AppCompatActivity() {
         slidr = Slidr.attach(this, utils.config);
         setContentView(R.layout.activity_profile)
         recyclerView = findViewById(R.id.rvNotification)
-        recyclerView.setHasFixedSize(true)
-
+        recyclerView.setHasFixedSize(false)
         adapter = NotificationAdapter(this, user.getNotification(), promiseDataBase)
         recyclerView.adapter = adapter
         recyclerView.layoutManager =

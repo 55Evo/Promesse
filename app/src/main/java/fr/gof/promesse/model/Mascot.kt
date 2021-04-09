@@ -75,7 +75,6 @@ enum class Mascot(val nom: String, val image: Int, val image_drawable: Int, val 
         Handler().postDelayed({
             val bubble: TextView = view as TextView
             bubble.text = message
-            bubble.setTextColor(getColor(context, R.color.black))
             bubble.visibility = View.VISIBLE
             bubble.animation = AnimationUtils.loadAnimation(
                 context,

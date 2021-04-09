@@ -4,28 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_background">
+    android:background="@color/background">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="@color/dark_bar"
+        android:layout_height="wrap_content"
+        android:background="@color/menubar"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </RelativeLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
+        android:layout_marginStart="16dp"
         android:text="@string/EditInfo"
-        android:textColor="@color/bubble"
+        android:textColor="@color/textColorMenuBar"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,12 +44,38 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:background="@drawable/div_background"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/rightArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/recycler_mascot"
+                    app:layout_constraintEnd_toEndOf="@+id/recycler_mascot"
+                    app:srcCompat="@drawable/next_icon"
+                    app:tint="@color/textColorPrimary" />
+
+                <ImageView
+                    android:id="@+id/leftArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/recycler_mascot"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/previous_icon"
+                    app:tint="@color/textColorPrimary" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_mascot"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
@@ -62,49 +89,16 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
-                <ImageView
-                    android:id="@+id/leftArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:tint="@color/bubble"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/recycler_mascot"
-                    app:srcCompat="@drawable/previous_icon" />
-
-                <ImageView
-                    android:id="@+id/rightArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:tint="@color/bubble"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/recycler_mascot"
-                    app:srcCompat="@drawable/next_icon" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/layout_form"
-                android:padding="10dp">
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/name"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/light_grey"
+                    android:textColorHint="@color/textColorPrimary"
                     app:boxStrokeColor="@color/color_text_input_stroke"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_mascot">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextName"
@@ -112,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/name"
                         android:inputType="text"
-                        android:textColor="@color/bubble"
+                        android:textColor="@color/textColorPrimary"
                         android:textColorHint="@color/colorAccent" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,7 +116,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColorHint="@color/light_grey"
+                    android:textColorHint="@color/textColorPrimary"
                     app:boxStrokeColor="@color/color_text_input_stroke"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -134,7 +128,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/username"
                         android:inputType="textEmailAddress"
-                        android:textColor="@color/bubble"
+                        android:textColor="@color/textColorPrimary"
                         android:textColorHint="@color/colorAccent" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -151,20 +145,11 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <View
-                android:id="@+id/divider7"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                android:background="?android:attr/listDivider" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/layout_form"
+                android:layout_margin="16dp"
+                android:background="@drawable/div_background"
                 android:padding="10dp">
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -172,7 +157,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/light_grey"
+                    android:textColorHint="@color/textColorPrimary"
                     app:boxStrokeColor="@color/color_text_input_stroke"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +169,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/oldPassword"
                         android:inputType="textPassword"
-                        android:textColor="@color/bubble"
+                        android:textColor="@color/textColorPrimary"
                         android:textColorHint="@color/colorAccent" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -193,7 +178,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/light_grey"
+                    android:textColorHint="@color/textColorPrimary"
                     app:boxStrokeColor="@color/color_text_input_stroke"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -205,7 +190,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/newPassword"
                         android:inputType="textPassword"
-                        android:textColor="@color/bubble"
+                        android:textColor="@color/textColorPrimary"
                         android:textColorHint="@color/colorAccent" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -214,7 +199,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/light_grey"
+                    android:textColorHint="@color/textColorPrimary"
                     app:boxStrokeColor="@color/color_text_input_stroke"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -226,7 +211,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/confirmPassword"
                         android:inputType="textPassword"
-                        android:textColor="@color/bubble"
+                        android:textColor="@color/textColorPrimary"
                         android:textColorHint="@color/colorAccent" />
                 </com.google.android.material.textfield.TextInputLayout>
 
