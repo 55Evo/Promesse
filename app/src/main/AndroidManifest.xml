@@ -13,39 +13,39 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Promesse">
 
-        <activity android:name=".PromiseManagerActivity" android:theme="@style/Theme.SliderActivity" >
+        <activity android:name=".PromiseManagerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditInfoActivity" android:theme="@style/Theme.SliderActivity" >
+        <activity android:name=".EditInfoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchActivity"  android:theme="@style/Theme.SliderActivity">
+        <activity android:name=".SearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileActivity" >
+        <activity android:name=".ProfileActivity">
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChooseMascotActivity" >
+        <activity android:name=".ChooseMascotActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" android:theme="@style/Theme.SliderActivity">
+        <activity android:name=".MainActivity" >
             <intent-filter>
 
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignupActivity" android:windowSoftInputMode="adjustResize" >
+        <activity android:name=".SignupActivity">
             <intent-filter>
 
                 <action android:name="android.intent.action.DEFAULT" />
@@ -61,7 +61,7 @@
         <service android:name=".services.Notifications"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:process=":jobServiceThread"/>
-        <activity android:name=".CalendarActivity" android:windowSoftInputMode="adjustResize"  android:theme="@style/Theme.SliderActivity">
+        <activity android:name=".CalendarActivity" android:windowSoftInputMode="adjustResize">
             <intent-filter>
 <!--                <action android:name="android.intent.action.MAIN" />-->
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
