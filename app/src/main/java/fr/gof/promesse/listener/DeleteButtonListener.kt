@@ -24,7 +24,8 @@ import java.util.*
  * @property promiseDataBase
  * Listener permettant la suppression de promesse ainsi que la gestion du logo poubelle de suppression
  */
-class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity): View.OnClickListener {
+class DeleteButtonListener(var adapter: PromiseAdapter, var context: Activity) :
+    View.OnClickListener {
     /**
      * On click
      *
@@ -37,23 +38,22 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
         v?.animate()?.apply {
             duration = 1000
             rotationXBy(360f)
-            .start()
+                .start()
         }
 
         var listPromesses = adapter.promiseList
         var hasSubtasks = false
         val it2 = listPromesses.iterator()
-        while(it2.hasNext()) {
+        while (it2.hasNext()) {
             var p = it2.next()
-            if(p.isChecked) {
-                if(p.subtasks.size > 0)
+            if (p.isChecked) {
+                if (p.subtasks.size > 0)
                     hasSubtasks = true
             }
         }
-        if(hasSubtasks) {
+        if (hasSubtasks) {
             displayPopup(listPromesses)
-        }
-        else {
+        } else {
             deletePromises(listPromesses)
         }
         updateView(v)
@@ -68,7 +68,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
      */
     private fun updateView(v: View?) {
         adapter.inSelection = false
-        Handler().postDelayed({adapter.notifyDataSetChanged()}, 450)
+        Handler().postDelayed({ adapter.notifyDataSetChanged() }, 450)
         Handler().postDelayed({
             v?.visibility = View.GONE
             if (context is MainActivity) {
@@ -97,7 +97,7 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
             })
             .setNegativeButton("Non", DialogInterface.OnClickListener { dialog, _ ->
                 dialog.cancel()
-                for(l in listPromesses){
+                for (l in listPromesses) {
                     l.isChecked = false
                     adapter.nbPromisesChecked = 0
                 }
@@ -117,9 +117,9 @@ class DeleteButtonListener (var adapter : PromiseAdapter, var context : Activity
      * Fonction permettant de supprimer une promesse et de remettre l'adapter à jour avec les nouvelles
      * données ainsi que la base de donnée
      */
-    private fun deletePromises(listPromesses : TreeSet<Promise>) {
+    private fun deletePromises(listPromesses: TreeSet<Promise>) {
         val it = listPromesses.iterator()
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             var p = it.next()
             if (p.isChecked) {
                 val pos = listPromesses.indexOf(p)

@@ -1,4 +1,3 @@
-
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
@@ -20,23 +19,27 @@ import kotlin.math.roundToInt
  * @property mContext
  * Classe permettant de gérer les interraction de swipe ainsi que de drag and drop avec une promesse
  */
-abstract class SwipeToReportOrDone internal constructor(var mContext: Context) : ItemTouchHelper.Callback() {
+abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
+    ItemTouchHelper.Callback() {
     private val mClearPaint: Paint = Paint()
     private val mBackground: ColorDrawable = ColorDrawable()
     private val backgroundColorReport: String = "DE8282"
     private val backgroundColorDone: String = "A1C26C"
     private val backgroundColorMoove: String = "#F22B00"
     private var reportDrawable: Drawable
-    private var doneDrawable : Drawable
+    private var doneDrawable: Drawable
     private val iconWidthDone: Int
     private val iconHeightDone: Int
     private val space = 50
-    private val iconWidthReport : Int
-    private val iconHeightReport : Int
+    private val iconWidthReport: Int
+    private val iconHeightReport: Int
+
     init {
         mClearPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        reportDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_report_24) as Drawable
-        doneDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_done_24) as Drawable
+        reportDrawable =
+            ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_report_24) as Drawable
+        doneDrawable =
+            ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_done_24) as Drawable
         iconWidthReport = reportDrawable.intrinsicWidth
         iconHeightReport = reportDrawable.intrinsicHeight
         iconWidthDone = doneDrawable.intrinsicWidth
@@ -45,6 +48,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         reportDrawable.alpha = 0
 
     }
+
     /**
      * Get movement flags
      *
@@ -54,7 +58,10 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * Permet de dire que l'on autorise le swipe vers la gauche + le swipe vers la droite
      * et que l'on autorise le drag and drop vers le haut et vers le bas
      */
-    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+    override fun getMovementFlags(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
         val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         return makeMovementFlags(dragFlags, swipeFlags)
@@ -93,17 +100,33 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * Si l'on déplace la promesse vers la gauche on lui applique un certain traitement et idem pour
      * la droite. Pour le drag and drop on applique un autre traitement
      */
-    override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+    override fun onChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         when {
-            dX<0 -> { // left case
+            dX < 0 -> { // left case
                 leftTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
-            dX>0 -> { //right treatment
+            dX > 0 -> { //right treatment
                 rightTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
-            dY!=(0F)-> {
-                onMooveTreatment(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            dY != (0F) -> {
+                onMooveTreatment(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
             }
         }
 
@@ -123,16 +146,30 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * Quand on drag and drop une promesse cette fonction permet d'afficher un rectangle rouge à sa
      * gauche permettant visuellement de voir quelle est sélectionnée sinon de l'enlever
      */
-    private fun onMooveTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean){
+    private fun onMooveTreatment(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
         val itemView = viewHolder.itemView
         val itemHeight = itemView.height
         val isCancelled = dY == 0f && !isCurrentlyActive
         if (isCancelled) {
-            clearCanvas(c, itemView.left.toFloat(), itemView.top.toFloat(), itemView.left.toFloat(), itemView.bottom.toFloat())
+            clearCanvas(
+                c,
+                itemView.left.toFloat(),
+                itemView.top.toFloat(),
+                itemView.left.toFloat(),
+                itemView.bottom.toFloat()
+            )
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
-        setBackgroundMoove(itemView, c,dY) // affiche ce rectangle rouge
+        setBackgroundMoove(itemView, c, dY) // affiche ce rectangle rouge
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
@@ -144,10 +181,15 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param dY
      * Affiche le rectangle rouge permettant de voir la promesse sélectionnée dans le drag and drop
      */
-    private fun setBackgroundMoove(itemView: View, c: Canvas, dY: Float){
+    private fun setBackgroundMoove(itemView: View, c: Canvas, dY: Float) {
         mBackground.color = Color.parseColor(backgroundColorMoove)
 
-        mBackground.setBounds(itemView.left -space, itemView.top+30 + dY.toInt(), itemView.left-3, itemView.bottom-30 + dY.toInt())
+        mBackground.setBounds(
+            itemView.left - space,
+            itemView.top + 30 + dY.toInt(),
+            itemView.left - 3,
+            itemView.bottom - 30 + dY.toInt()
+        )
         mBackground.alpha = 200
         mBackground.draw(c)
     }
@@ -164,13 +206,27 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param isCurrentlyActive
      * Affiche et supprime le logo done (logo qui s'affiche quand on swipe la promesse vers la gauche)
      */
-    private fun leftTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+    private fun leftTreatment(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         val itemView = viewHolder.itemView
         val itemHeight = itemView.height
         val isCancelled = dX == 0f && !isCurrentlyActive
         if (isCancelled) {
-            clearCanvas(c, itemView.left + dX, itemView.top.toFloat(), itemView.left.toFloat(), itemView.bottom.toFloat())
+            clearCanvas(
+                c,
+                itemView.left + dX,
+                itemView.top.toFloat(),
+                itemView.left.toFloat(),
+                itemView.bottom.toFloat()
+            )
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
@@ -190,12 +246,26 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param isCurrentlyActive
      * Affiche et supprime le logo repport (logo qui s'affiche quand on swipe la promesse vers la gauche)
      */
-    private fun rightTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+    private fun rightTreatment(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
         val itemView = viewHolder.itemView
         val itemHeight = itemView.height
         val isCancelled = dX == 0f && !isCurrentlyActive
         if (isCancelled) {
-            clearCanvas(c, itemView.right + dX, itemView.top.toFloat(), itemView.right.toFloat(), itemView.bottom.toFloat())
+            clearCanvas(
+                c,
+                itemView.right + dX,
+                itemView.top.toFloat(),
+                itemView.right.toFloat(),
+                itemView.bottom.toFloat()
+            )
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
@@ -214,9 +284,14 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * petit à petit l'icone ainsi que la couleur de fond
      */
     private fun setBackgroundDone(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
-        giveColor (backgroundColorDone, false, dX.toInt())
+        giveColor(backgroundColorDone, false, dX.toInt())
 
-        mBackground.setBounds(itemView.right - 50 + dX.toInt(), itemView.top + 4, itemView.right+15, itemView.bottom - 4)
+        mBackground.setBounds(
+            itemView.right - 50 + dX.toInt(),
+            itemView.top + 4,
+            itemView.right + 15,
+            itemView.bottom - 4
+        )
         mBackground.draw(c)
         val doneIconTop = itemView.top + (itemHeight - iconHeightDone) / 2
         val doneIconMargin = (itemHeight - iconHeightDone) / 4
@@ -235,28 +310,27 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param dX
      * Fonction qui attribue une couleur en fonction du swipe effectué plus ou moins transparente
      */
-    private fun giveColor (colorString : String, isRight : Boolean, dX : Int){
-        var minus : Int = -1000
+    private fun giveColor(colorString: String, isRight: Boolean, dX: Int) {
+        var minus: Int = -1000
         if (isRight) minus = 1000
-        var calcul = Integer.toHexString(dX *255/ (minus))
-        if (calcul.length < 2){
+        var calcul = Integer.toHexString(dX * 255 / (minus))
+        if (calcul.length < 2) {
             calcul = "0$calcul"
         }
 
-            if (dX<=-1000 || (dX >=1000)){
-                calcul = "FF"
-            }
-        if( (dX < 1000) || (dX >=1000)){
+        if (dX <= -1000 || (dX >= 1000)) {
+            calcul = "FF"
+        }
+        if ((dX < 1000) || (dX >= 1000)) {
             doneDrawable.alpha = kotlin.math.abs(dX / 4)
             reportDrawable.alpha = kotlin.math.abs(dX / 4)
-        }
-        else if(calcul == "FF"){
-            doneDrawable.alpha =  255
+        } else if (calcul == "FF") {
+            doneDrawable.alpha = 255
             reportDrawable.alpha = 255
         }
         mBackground.color = Color.parseColor("#$calcul$colorString")
 
-        }
+    }
 
     /**
      * Set background report
@@ -269,9 +343,14 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * petit à petit l'icone ainsi que la couleur de fond
      */
     private fun setBackgroundReport(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
-        giveColor (backgroundColorReport, true, dX.toInt())
+        giveColor(backgroundColorReport, true, dX.toInt())
 
-        mBackground.setBounds(itemView.left + dX.toInt() + 50, itemView.top + 4, itemView.left-15, itemView.bottom - 4)
+        mBackground.setBounds(
+            itemView.left + dX.toInt() + 50,
+            itemView.top + 4,
+            itemView.left - 15,
+            itemView.bottom - 4
+        )
         mBackground.draw(c)
         val reportIconTop = itemView.top + (itemHeight - iconHeightReport) / 2
         val reportIconMargin = (itemHeight - iconHeightReport) / 4
@@ -305,9 +384,6 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
         return 0.7f
     }
-    
-
-
 
 
 }

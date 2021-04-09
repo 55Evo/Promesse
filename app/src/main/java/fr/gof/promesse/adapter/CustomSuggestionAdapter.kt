@@ -22,7 +22,11 @@ import fr.gof.promesse.model.Promise
  *
  * Adapter des suggestion de promesses dans la classe Research
  */
-class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSuggestionAdapter.OnItemClickListener, val context : Context) : SuggestionsAdapter<Promise, CustomSuggestionAdapter.SuggestionHolder>(inflater) {
+class CustomSuggestionAdapter(
+    inflater: LayoutInflater,
+    val listener: CustomSuggestionAdapter.OnItemClickListener,
+    val context: Context
+) : SuggestionsAdapter<Promise, CustomSuggestionAdapter.SuggestionHolder>(inflater) {
 
     /**
      * On bind suggestion holder
@@ -63,8 +67,10 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
      * @param itemView
      * Classe interne permettant d'interragir avec les éléments de la vue
      */
-    inner class SuggestionHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class SuggestionHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
         var title: TextView
+
         init {
             title = itemView.findViewById(R.id.textSuggest)
             title.setOnClickListener(this)
@@ -92,7 +98,7 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
          *
          * @param v
          */
-        fun onItemClick(v : View?)
+        fun onItemClick(v: View?)
     }
 
 

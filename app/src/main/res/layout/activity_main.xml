@@ -85,11 +85,10 @@
         android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:backgroundTint="@android:color/transparent"
         android:onClick="onClickSearchButton"
         android:tint="@color/bubble_border"
-        app:layout_constraintStart_toEndOf="@+id/calendarButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_magnify_black_48dp" />
 
@@ -124,9 +123,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
         android:onClick="onClickProfileButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_account_circle_24"
         app:tint="@color/bubble" />

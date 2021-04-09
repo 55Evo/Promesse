@@ -1,4 +1,3 @@
-
 package fr.gof.promesse.adapter
 
 import android.content.Context
@@ -27,7 +26,13 @@ import fr.gof.promesse.model.Mascot
  *                     notre mascotte dans le profil
  * Nous avons créé un adapter pour la catégorie des promesses utilisé par notre recyclerView
  */
-class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val listener : OnItemClickListener, val database : PromiseDataBase, var isUpdate : Boolean = false) :RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
+class MascotAdapter(
+    var context: Context,
+    var listMascot: List<Mascot>,
+    val listener: OnItemClickListener,
+    val database: PromiseDataBase,
+    var isUpdate: Boolean = false
+) : RecyclerView.Adapter<MascotAdapter.MyViewHolder>() {
 
     /**
      * On create view holder
@@ -42,8 +47,9 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         var itemView =
-                if (isUpdate) LayoutInflater.from(parent.context).inflate(R.layout.item_mascot_update, parent, false)
-                else LayoutInflater.from(parent.context).inflate(R.layout.item_mascot, parent, false)
+            if (isUpdate) LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_mascot_update, parent, false)
+            else LayoutInflater.from(parent.context).inflate(R.layout.item_mascot, parent, false)
 
         return MyViewHolder(itemView)
     }
@@ -62,7 +68,7 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
      * de la vue lors du scroll de la mascotte (dans l'activité de modification du profil)
      */
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        if(isUpdate) holder.linearLayout?.tag = position
+        if (isUpdate) holder.linearLayout?.tag = position
         holder.mascotView.setImageResource(listMascot[position].image_drawable)
         holder.name.text = (listMascot[position].nom)
     }
@@ -87,22 +93,23 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
      * de notre mascotte, son nom, (et le layout dans le cas ou on se trouve dans le profil et que l'on souhaite
      *
      */
-    inner class MyViewHolder(itemView: View) :  View.OnClickListener, RecyclerView.ViewHolder(itemView) {
+    inner class MyViewHolder(itemView: View) : View.OnClickListener,
+        RecyclerView.ViewHolder(itemView) {
         var mascotView: ImageView = itemView.findViewById(R.id.mascotView)
-         var name: TextView = itemView.findViewById(R.id.mascotName)
+        var name: TextView = itemView.findViewById(R.id.mascotName)
         var linearLayout: ConstraintLayout? = null
 
-         init {
-             if(isUpdate) linearLayout = itemView.findViewById(R.id.ll_item_mascot_update)
-             itemView.setOnClickListener(this)
-         }
+        init {
+            if (isUpdate) linearLayout = itemView.findViewById(R.id.ll_item_mascot_update)
+            itemView.setOnClickListener(this)
+        }
 
-         override fun onClick(v: View?) {
-             val position = adapterPosition
-             if (position != RecyclerView.NO_POSITION) {
-                 listener.onItemClick(position, this@MascotAdapter, database)
-             }
-         }
+        override fun onClick(v: View?) {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onItemClick(position, this@MascotAdapter, database)
+            }
+        }
     }
 
 
@@ -119,6 +126,6 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
          * @param adapter
          * @param database
          */
-        fun onItemClick(position: Int, adapter : MascotAdapter, database : PromiseDataBase)
+        fun onItemClick(position: Int, adapter: MascotAdapter, database: PromiseDataBase)
     }
 }

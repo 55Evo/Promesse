@@ -1,4 +1,3 @@
-
 package fr.gof.promesse.adapter
 
 import android.content.Context
@@ -24,9 +23,14 @@ import java.util.HashSet
  * En effet un utilisateur peut réaliser une promesse pour un autre utilisateur et celui ci pourra
  * voir la liste des promesse réalisées à son encontre dans son profil
  */
-class NotificationAdapter(var context: Context, var listNotifications: HashSet<Notification>, val database : PromiseDataBase) :RecyclerView.Adapter<NotificationAdapter.MyViewHolder>() {
+class NotificationAdapter(
+    var context: Context,
+    var listNotifications: HashSet<Notification>,
+    val database: PromiseDataBase
+) : RecyclerView.Adapter<NotificationAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_notification, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_notification, parent, false)
         return MyViewHolder(itemView)
     }
 
@@ -69,6 +73,7 @@ class NotificationAdapter(var context: Context, var listNotifications: HashSet<N
         lateinit var notification: Notification
         var textViewAuthor: TextView = itemView.findViewById(R.id.textViewAuthor)
         var textViewPromiseName: TextView = itemView.findViewById(R.id.textViewPromiseName)
-        var textViewNotificationDate: TextView = itemView.findViewById(R.id.textViewNotificationDate)
+        var textViewNotificationDate: TextView =
+            itemView.findViewById(R.id.textViewNotificationDate)
     }
 }

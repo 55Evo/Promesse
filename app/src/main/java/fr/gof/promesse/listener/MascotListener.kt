@@ -16,12 +16,13 @@ import fr.gof.promesse.model.Mascot
  * @property context
  * Listerner de la mascotte permettant de changer d'activité lorsque l'on clique sur la mascotte
  */
-class MascotListener(var listMascot: List<Mascot>, var context: Activity): MascotAdapter.OnItemClickListener {
+class MascotListener(var listMascot: List<Mascot>, var context: Activity) :
+    MascotAdapter.OnItemClickListener {
     override fun onItemClick(position: Int, adapter: MascotAdapter, database: PromiseDataBase) {
-        if(context is ChooseMascotActivity) {
-            var nommascotte : Mascot = listMascot[position]
+        if (context is ChooseMascotActivity) {
+            var nommascotte: Mascot = listMascot[position]
             database.updateMascot(nommascotte)
-            val myIntent = Intent( context, MainActivity::class.java)
+            val myIntent = Intent(context, MainActivity::class.java)
             context.startActivity(myIntent)
             context.finish()
         }

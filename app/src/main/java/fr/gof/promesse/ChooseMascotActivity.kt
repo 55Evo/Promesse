@@ -20,7 +20,7 @@ import fr.gof.promesse.model.Mascot
 class ChooseMascotActivity : AppCompatActivity() {
     val promiseDataBase = PromiseDataBase(this)
 
-    lateinit var adapter : MascotAdapter
+    lateinit var adapter: MascotAdapter
     lateinit var recyclerView: RecyclerView
     private val listMascot: List<Mascot> = listOf(
         Mascot.JACOU,
@@ -37,14 +37,15 @@ class ChooseMascotActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mascot)
-        recyclerView= findViewById(R.id.recycler_mascot)
+        recyclerView = findViewById(R.id.recycler_mascot)
         recyclerView.setHasFixedSize(true)
 
-        adapter = MascotAdapter(this, listMascot,MascotListener(listMascot, this) , promiseDataBase)
+        adapter = MascotAdapter(this, listMascot, MascotListener(listMascot, this), promiseDataBase)
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
         //for snap in center (magnetisme)
-        var helper : SnapHelper = LinearSnapHelper()
+        var helper: SnapHelper = LinearSnapHelper()
         helper.attachToRecyclerView(recyclerView)
     }
 

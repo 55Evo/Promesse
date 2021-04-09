@@ -28,7 +28,8 @@ import java.util.*
  *
  * Lister d'une promesse
  */
-class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Activity) : PromiseAdapter.OnItemClickListener {
+class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Activity) :
+    PromiseAdapter.OnItemClickListener {
     /**
      * On item click
      *
@@ -52,10 +53,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * Fonction permettant de remettre chaque item de l'adapter à jour en leur retirant leur checkbox
      * et les décochant
      */
-    fun uncheckitems(adapter: PromiseAdapter){
+    fun uncheckitems(adapter: PromiseAdapter) {
         var bundle = Bundle()
         bundle.putBoolean("longclick", true)
-        for (i in 0..(listPromesses.size)){
+        for (i in 0..(listPromesses.size)) {
             adapter.notifyItemChanged(i, bundle);
         }
     }
@@ -70,19 +71,19 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      */
     override fun onItemLongClick(position: Int, adapter: PromiseAdapter) {
         var clickedItem = listPromesses.elementAt(position)
-        if(!adapter.inSelection){
+        if (!adapter.inSelection) {
             clickedItem.isChecked = true
             adapter.nbPromisesChecked++
             adapter.inSelection = true
-            val deleteButton : FloatingActionButton = context.findViewById(R.id.deleteButton)
+            val deleteButton: FloatingActionButton = context.findViewById(R.id.deleteButton)
             deleteButton.visibility = View.VISIBLE
             if (context is MainActivity) {
-                val addButton : FloatingActionButton = context.findViewById(R.id.buttonAdd)
+                val addButton: FloatingActionButton = context.findViewById(R.id.buttonAdd)
                 addButton.visibility = View.GONE
             }
             var bundle = Bundle()
             bundle.putBoolean("longclick", true)
-            for (i in 0..(listPromesses.size)){
+            for (i in 0..(listPromesses.size)) {
                 adapter.notifyItemChanged(i, bundle);
             }
 
@@ -143,14 +144,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
                 addButton.visibility = View.VISIBLE
             }
             uncheckitems(adapter)
-        }
-        else{
-
-        var bundle = Bundle()
-        bundle.putBoolean("longclick", true)
-            adapter.notifyItemChanged(adapter.promiseList.lastIndexOf(clickedItem), bundle);
-
-        //adapter.notifyItemChanged(adapter.promiseList.lastIndexOf(clickedItem))
+        } else {
+            val bundle = Bundle()
+            bundle.putBoolean("longclick", true)
+            adapter.notifyItemChanged(adapter.promiseList.lastIndexOf(clickedItem), bundle)
         }
 
     }
@@ -168,10 +165,10 @@ class PromiseEventListener(var listPromesses: TreeSet<Promise>, var context: Act
      * ou diminuer la barre de réalisatiopn
      */
     override fun onCheckSubtaskChanged(
-            position: Int,
-            promise: Promise,
-            subtaskAdapter: SubtaskAdapter,
-            promiseAdapter: PromiseAdapter
+        position: Int,
+        promise: Promise,
+        subtaskAdapter: SubtaskAdapter,
+        promiseAdapter: PromiseAdapter
     ) {
         var clickedItem = subtaskAdapter.subtaskList[position]
         clickedItem.done = !clickedItem.done
