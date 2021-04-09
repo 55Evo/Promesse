@@ -19,15 +19,34 @@ import fr.gof.promesse.model.Promise
  * @constructor
  *
  * @param inflater
+ *
+ * Adapter des suggestion de promesses dans la classe Research
  */
 class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSuggestionAdapter.OnItemClickListener, val context : Context) : SuggestionsAdapter<Promise, CustomSuggestionAdapter.SuggestionHolder>(inflater) {
 
-
+    /**
+     * On bind suggestion holder
+     *
+     * @param promise
+     * @param holder
+     * @param position
+     *
+     * Permet de mettre à jour la vue de la suggestion comprenant le titre de la promesse
+     */
     override fun onBindSuggestionHolder(promise: Promise, holder: SuggestionHolder, position: Int) {
         holder.title.text = promise.title
         holder.title.setTextColor(context.getColor(R.color.black))
 
     }
+
+    /**
+     * On create view holder
+     *
+     * @param parent
+     * @param viewType
+     *
+     * Création de l'adapter
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder {
         val view: View = layoutInflater.inflate(R.layout.item_suggest, parent, false)
         return SuggestionHolder(view)
@@ -43,6 +62,7 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
      * @constructor
      *
      * @param itemView
+     * Classe interne permettant d'interragir avec les éléments de la vue
      */
     inner class SuggestionHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var title: TextView
@@ -50,6 +70,12 @@ class CustomSuggestionAdapter(inflater: LayoutInflater, val listener : CustomSug
             title = itemView.findViewById(R.id.textSuggest)
             title.setOnClickListener(this)
         }
+
+        /**
+         * On click
+         *
+         * @param v
+         */
         override fun onClick(v: View?) {
             listener.onItemClick(v)
         }

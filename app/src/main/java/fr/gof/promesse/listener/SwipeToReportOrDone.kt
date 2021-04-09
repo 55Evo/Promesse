@@ -3,12 +3,14 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import fr.gof.promesse.R
+import fr.gof.promesse.adapter.PromiseAdapter
 import java.lang.Math.abs
 import kotlin.math.roundToInt
 
@@ -16,7 +18,7 @@ import kotlin.math.roundToInt
  * Swipe to report or done
  *
  * @property mContext
- * @constructor Create empty Swipe to report or done
+ * Classe permettant de gérer les interraction de swipe ainsi que de drag and drop avec une promesse
  */
 abstract class SwipeToReportOrDone internal constructor(var mContext: Context) : ItemTouchHelper.Callback() {
     private val mClearPaint: Paint = Paint()
@@ -29,11 +31,8 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     private val iconWidthDone: Int
     private val iconHeightDone: Int
     private val space = 50
-
     private val iconWidthReport : Int
     private val iconHeightReport : Int
-
-
     init {
         mClearPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         reportDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_report_24) as Drawable
@@ -46,13 +45,14 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
         reportDrawable.alpha = 0
 
     }
-
     /**
      * Get movement flags
      *
      * @param recyclerView
      * @param viewHolder
-     * @return
+     *return int numéro de geste
+     * Permet de dire que l'on autorise le swipe vers la gauche + le swipe vers la droite
+     * et que l'on autorise le drag and drop vers le haut et vers le bas
      */
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
@@ -63,23 +63,21 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
     /**
      * Is long press drag enabled
      *
-     * @return
+     * @return boolean
+     * Fonction qui active le drag and drop en faisant un appuie renforcé sur la promesse
      */
     override fun isLongPressDragEnabled(): Boolean {
         return true
     }
 
-    /**
-     * On move
-     *
-     * @param recyclerView
-     * @param viewHolder
-     * @param viewHolder1
-     * @return
-     */
-    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, viewHolder1: RecyclerView.ViewHolder): Boolean {
-            return true;
+    override fun onMove(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
+    ): Boolean {
+        return true
     }
+
 
     /**
      * On child draw
@@ -91,6 +89,9 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param dY
      * @param actionState
      * @param isCurrentlyActive
+     *
+     * Si l'on déplace la promesse vers la gauche on lui applique un certain traitement et idem pour
+     * la droite. Pour le drag and drop on applique un autre traitement
      */
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
@@ -118,6 +119,9 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param dY
      * @param actionState
      * @param isCurrentlyActive
+     *
+     * Quand on drag and drop une promesse cette fonction permet d'afficher un rectangle rouge à sa
+     * gauche permettant visuellement de voir quelle est sélectionnée sinon de l'enlever
      */
     private fun onMooveTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean){
         val itemView = viewHolder.itemView
@@ -128,7 +132,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
-        setBackgroundMoove(itemView, c,dY)
+        setBackgroundMoove(itemView, c,dY) // affiche ce rectangle rouge
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
@@ -138,6 +142,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param itemView
      * @param c
      * @param dY
+     * Affiche le rectangle rouge permettant de voir la promesse sélectionnée dans le drag and drop
      */
     private fun setBackgroundMoove(itemView: View, c: Canvas, dY: Float){
         mBackground.color = Color.parseColor(backgroundColorMoove)
@@ -157,6 +162,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param dY
      * @param actionState
      * @param isCurrentlyActive
+     * Affiche et supprime le logo done (logo qui s'affiche quand on swipe la promesse vers la gauche)
      */
     private fun leftTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
@@ -182,6 +188,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param dY
      * @param actionState
      * @param isCurrentlyActive
+     * Affiche et supprime le logo repport (logo qui s'affiche quand on swipe la promesse vers la gauche)
      */
     private fun rightTreatment(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         val itemView = viewHolder.itemView
@@ -203,6 +210,8 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param dX
      * @param c
      * @param itemHeight
+     * Affiche le logo done sur la background quand on swipe vers la gauche en faisant apparaitre
+     * petit à petit l'icone ainsi que la couleur de fond
      */
     private fun setBackgroundDone(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
         giveColor (backgroundColorDone, false, dX.toInt())
@@ -224,6 +233,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param colorString
      * @param isRight
      * @param dX
+     * Fonction qui attribue une couleur en fonction du swipe effectué plus ou moins transparente
      */
     private fun giveColor (colorString : String, isRight : Boolean, dX : Int){
         var minus : Int = -1000
@@ -255,6 +265,8 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param dX
      * @param c
      * @param itemHeight
+     * Affiche le logo repport sur la background quand on swipe vers la droite en faisant apparaitre
+     * petit à petit l'icone ainsi que la couleur de fond
      */
     private fun setBackgroundReport(itemView: View, dX: Float, c: Canvas, itemHeight: Int) {
         giveColor (backgroundColorReport, true, dX.toInt())
@@ -278,6 +290,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * @param top
      * @param right
      * @param bottom
+     * Efface les éléments affichés (rectangle rouge pour le drag and drop, logos repport/done...)
      */
     private fun clearCanvas(c: Canvas, left: Float, top: Float, right: Float, bottom: Float) {
         c.drawRect(left, top, right, bottom, mClearPaint)
@@ -287,7 +300,7 @@ abstract class SwipeToReportOrDone internal constructor(var mContext: Context) :
      * Get swipe threshold
      *
      * @param viewHolder
-     * @return Returns the fraction that the user should move the View to be considered as swiped.
+     * @return renvoie la fraction que l'utilisateur doit déplacer la vue pour qu'elle soit considérée comme glissée.
      */
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
         return 0.7f

@@ -90,7 +90,7 @@ data class User(
      */
     fun loadPromises(db: PromiseDataBase) {
         this.db = db
-        listPromise = db.getAllPromises(email)
+        listPromise = db.getAllPromises()
     }
 
     /**

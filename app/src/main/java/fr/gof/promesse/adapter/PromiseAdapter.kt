@@ -164,7 +164,10 @@ class PromiseAdapter(
      * State promise update
      *
      * @param holder
-     * Met à jour le statut d'une promesse il peut etre en inprogress quand
+     * Met à jour le statut d'une promesse il peut etre en
+     * IN_PROGRESS quand la promesse est en cours de réalisation
+     * DONE quand la promesse a été réalisé
+     * TO DO quand la promesse n'a pas encore été réalisé
      */
     private fun statePromiseUpdate(holder: PromiseViewHolder) {
         when (holder.promise.state) {
@@ -181,9 +184,11 @@ class PromiseAdapter(
     }
 
     /**
-     * Update todo
+     * UpdateTodo
      *
      * @param holder
+     *
+     * on met  à jour la promesse quand elle est dans l'état TO DO
      */
     private fun updateTodo(holder: PromiseViewHolder) {
         holder.buttonStart.visibility = if (inSelection) View.GONE else View.VISIBLE
@@ -205,6 +210,7 @@ class PromiseAdapter(
      * Update done
      *
      * @param holder
+     * on met  à jour la promesse quand elle est dans l'état DONE
      */
     private fun updateDone(holder: PromiseViewHolder) {
         holder.buttonStart.visibility = View.GONE
@@ -226,6 +232,7 @@ class PromiseAdapter(
      * Update in progress
      *
      * @param holder
+     * on met  à jour la promesse quand elle est dans l'état IN_PROGRESS
      */
     private fun updateInProgress(holder: PromiseViewHolder) {
         holder.buttonStart.visibility = View.GONE
@@ -250,6 +257,13 @@ class PromiseAdapter(
      * @param holder
      * @param position
      * @param payloads
+     *
+     * Override de la fonction permettant de mettre à jour les vues
+     * On lui passe une payload ce qui lui permet de mettre à jour uniquement les éléments de
+     * la vue concernés par cette mise à jour
+     * On récupère des booléens en fonction de la clé passéé, on met à jour différemment
+     * en fonction de si l'on a effectué un clic sur une sous tache par exemple que lorsque l'on
+     * clique sur une promesse pour la déployer
      */
     override fun onBindViewHolder(
         holder: PromiseViewHolder,
@@ -265,21 +279,20 @@ class PromiseAdapter(
             var lastPayload =
                 payloads[payloads.size - 1]
             if (click as Boolean){
-                if (click){ refreshPromise(holder, click)
+                if (click){ refreshPromise(holder)
                 }}
            else if (long as Boolean){
-                if (long){ refreshDelete(holder, long)
+                if (long){ refreshDelete(holder)
                 }
             }
             else if (subtask as Boolean){
-                if (subtask){ refreshSubtask(holder, subtask)
+                if (subtask){ refreshSubtask(holder)
                 }
             }
             else if (changeState as Boolean){
                 if (changeState){ refreshState(holder)
                 }
             }
-
         } else
             onBindViewHolder(holder, position)
     }
@@ -289,8 +302,10 @@ class PromiseAdapter(
      *
      * @param holder
      * @param fold
+     * Dans le cas du refresh de la sous tache on met uniquement la vue concernant la progress bar
+     * à jour afin de n'impacter le visuel de l'interface uniquement sur la vue de la progress bar
      */
-    fun refreshSubtask(holder: PromiseViewHolder, fold: Boolean){
+    fun refreshSubtask(holder: PromiseViewHolder){
         holder.progressBar.max = holder.promise.subtasks.size
         holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
         holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
@@ -302,6 +317,7 @@ class PromiseAdapter(
     /**
      * Show off ddelete
      *
+     * On met à jour le bouton délete et on le remplace par le bouton d'ajout d'une promesse
      */
     fun showOffDdelete(){
         val deleteButton : FloatingActionButton = (context as Activity).findViewById(R.id.deleteButton)
@@ -317,19 +333,22 @@ class PromiseAdapter(
      *
      * @param holder
      * @param fold
+     *
+     * On décoche toutes les checkbox
      */
-    fun refreshDelete(holder: PromiseViewHolder, fold: Boolean) {
+    fun refreshDelete(holder: PromiseViewHolder) {
         holder.promise = promiseList.elementAt(holder.adapterPosition)
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
-        refreshState(holder)
-        //holder.promise = promiseList[position]
+        //refreshState(holder)--------------------------------------------------------------------------
+
     }
 
     /**
      * Refresh state
      *
      * @param holder
+     * Je refresh la promesse en fonction de son état pour le background de la promesse
      */
     fun refreshState(holder: PromiseViewHolder) {
         holder.promise = promiseList.elementAt(holder.adapterPosition)
@@ -341,23 +360,22 @@ class PromiseAdapter(
      *
      * @param holder
      * @param fold
+     *
+     * Mise à jour de la promesse en fonction du déploiement ou non de notre promesse
+     * Dans le cas ou l'on déploie la promesse on anime le logo, le titre de la promesse et on
+     * étire la promesse alors que dans l'autre cas on on lui fait retrouver sa forme originelle
      */
-    private fun refreshPromise(holder: PromiseViewHolder, fold: Boolean) {
+    private fun refreshPromise(holder: PromiseViewHolder) {
 
         holder.promise = promiseList.elementAt(holder.adapterPosition)
         var isdepl = holder.promise.isDescDeployed
-
         if (holder.promise.isDescDeployed) holder.titre.textSize = utils.endSize else holder.titre.textSize = utils.startSize
-
         improoveWidthLogo(holder)
         if (!isdepl){
-
             undeployAnimation(holder)
         }
         else{
-
             deployAnimation(holder)
-
         }
 
     }
@@ -366,6 +384,8 @@ class PromiseAdapter(
      * Deploy animation
      *
      * @param holder
+     *
+     * Animation de déploiement
      */
     private fun deployAnimation(holder: PromiseViewHolder) {
         var animation = SlideAnimation(holder.deployed)
@@ -393,6 +413,7 @@ class PromiseAdapter(
      * Undeploy animation
      *
      * @param holder
+     * Animation lorsque l'on rétrécie la promesse
      */
     private fun undeployAnimation(holder: PromiseViewHolder) {
         var animation = SlideAnimation(holder.deployed)
@@ -413,6 +434,7 @@ class PromiseAdapter(
      * Improove width logo
      *
      * @param holder
+     * Augmentation de la taille du logo afin de le rendre animé
      */
     private fun improoveWidthLogo(
         holder: PromiseViewHolder
@@ -458,6 +480,9 @@ class PromiseAdapter(
      * @param top
      * @param right
      * @param bottom
+     *
+     * Fonction pas au point présente dans le cas ou l'on souhaite affiher les promesses triées
+     * por catégorie
      */
     private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
         if (view.layoutParams is MarginLayoutParams) {
@@ -473,6 +498,9 @@ class PromiseAdapter(
      * @param promise
      * @param position
      * @param dataBase
+     *
+     * Fonction qui permet la restoration d'un item
+     * on le rajoute à la liste des promesse ainsi qu'à la base de donnée
      */
     fun restoreItem(promise: Promise, position: Int, dataBase: PromiseDataBase) {
         promiseList.add(promise)
@@ -484,6 +512,9 @@ class PromiseAdapter(
      *
      * @param fromPosition
      * @param toPosition
+     * Fonction appelée lorsque l'on bouge une promesse à l'aide du drag and drop
+     *On échange les deux éléments de place, on les supprime et les rajoute à la liste des promesses
+     * de l'utilisateur ainsi qu'à la base de données
      */
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         var save = promiseList.elementAt(fromPosition).dateTodo
@@ -506,6 +537,8 @@ class PromiseAdapter(
      * On item dismiss
      *
      * @param position
+     *
+     * Onitemdismiss supprime la promesse de la liste des promesses
      */
     override fun onItemDismiss(position: Int) {
         promiseList.remove(promiseList.elementAt(position))
@@ -518,6 +551,8 @@ class PromiseAdapter(
      * @constructor
      *
      * @param view
+     * classe interne qui permet de relier toute la vue
+     * On trouve tout les éléments présent XML dans l'affichage d'une promesse
      */// HOLDER
     inner class PromiseViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener,
@@ -559,6 +594,9 @@ class PromiseAdapter(
          * On click
          *
          * @param v
+         *
+         * Fonction qui est appelée dans le cas ou l'on clique sur une promesse
+         * Celle ci dispatche l'évènement en fonction de l'élément cliqué
          */
         override fun onClick(v: View?) {
             if (v != null) {
@@ -591,6 +629,8 @@ class PromiseAdapter(
          *
          * @param v
          * @return
+         *
+         * Fonction appelée lors d'un clic long sur une promesse
          */
         override fun onLongClick(v: View?): Boolean {
             posAdapter = adapterPosition
@@ -600,6 +640,11 @@ class PromiseAdapter(
             return true
         }
 
+        /**
+         * Start animation
+         *
+         * @param animation
+         */
         fun startAnimation(animation: Animation) {
             super.itemView.startAnimation(animation)
         }
@@ -608,8 +653,9 @@ class PromiseAdapter(
     /**
      * On item click listener
      *
-     * @constructor Create empty On item click listener
-     *///Interface des events de la liste
+     * @constructor
+     * Interface des events de la liste
+     */
     interface OnItemClickListener {
         /**
          * On item click
@@ -647,6 +693,12 @@ class PromiseAdapter(
         fun onItemButtonRedoClick(posAdapter: Int, promiseAdapter: PromiseAdapter)
         fun onItemButtonDoneClick(posAdapter: Int, promiseAdapter: PromiseAdapter)
     }
+
+    /**
+     * Width property
+     *
+     * Classe interne permettant de modifier la width du logo d'une promesse
+     */
     internal class WidthProperty : Property<View, Int>(Int::class.java, "width") {
         override fun get(view: View): Int {
             return view.width
@@ -654,7 +706,7 @@ class PromiseAdapter(
 
         override fun set(view: View, value: Int?) {
             view.layoutParams.width = value!!
-            view.layoutParams.height= value!!
+            view.layoutParams.height= value
             view.layoutParams = view.layoutParams
         }
     }
