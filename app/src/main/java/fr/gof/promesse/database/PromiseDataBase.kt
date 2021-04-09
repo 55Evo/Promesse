@@ -555,14 +555,17 @@ class PromiseDataBase (context : Context){
         dbwritable.update("Subtask", values,"Id_Subtask = '$id'", null)
         dbwritable.close()
     }
-    fun updateUser() {
+    fun updateUser(oldUsername : String) {
         val dbwritable : SQLiteDatabase = this.database.writableDatabase
         val values = ContentValues()
         values.put("Name", user.name)
         values.put("Username", user.username)
         values.put("Password", sha1(user.password))
 
+        val valuesNotifications = ContentValues()
+        valuesNotifications.put("Username", user.username)
         dbwritable.update("Account", values,"Email = '${user.email}'", null)
+        dbwritable.update("Notification", valuesNotifications,"Username = '${oldUsername}'", null)
         dbwritable.close()
     }
 
