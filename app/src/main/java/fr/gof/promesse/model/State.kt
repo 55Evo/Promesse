@@ -7,23 +7,23 @@ package fr.gof.promesse.model
  */
 enum class State {
     /**
-     * T o d o
+     * TODO
      *
-     * @constructor Create empty T o d o
+     * @constructor Create empty TODO
      */
     TODO,
 
     /**
-     * I n_p r o g r e s s
+     * IN_PROGRESS
      *
-     * @constructor Create empty I n_p r o g r e s s
+     * @constructor Create empty IN_PROGRESS
      */
     IN_PROGRESS,
 
     /**
-     * D o n e
+     * DONE
      *
-     * @constructor Create empty D o n e
+     * @constructor Create empty DONE
      */
     DONE
 }

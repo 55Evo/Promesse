@@ -7,23 +7,23 @@ package fr.gof.promesse.model
  */
 enum class Sort {
     /**
-     * D a t e
+     * DONE
      *
-     * @constructor Create empty D a t e
+     * @constructor Create empty DONE
      */
     DATE,
 
     /**
-     * N a m e
+     * DONE
      *
-     * @constructor Create empty N a m e
+     * @constructor Create empty DONE
      */
     NAME,
 
     /**
-     * P r i o r i t y
+     * DONE
      *
-     * @constructor Create empty P r i o r i t y
+     * @constructor Create empty DONE
      */
     PRIORITY
 }

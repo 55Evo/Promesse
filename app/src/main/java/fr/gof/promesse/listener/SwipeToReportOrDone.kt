@@ -12,6 +12,12 @@ import fr.gof.promesse.R
 import java.lang.Math.abs
 import kotlin.math.roundToInt
 
+/**
+ * Swipe to report or done
+ *
+ * @property mContext
+ * @constructor Create empty Swipe to report or done
+ */
 abstract class SwipeToReportOrDone internal constructor(var mContext: Context) : ItemTouchHelper.Callback() {
     private val mClearPaint: Paint = Paint()
     private val mBackground: ColorDrawable = ColorDrawable()

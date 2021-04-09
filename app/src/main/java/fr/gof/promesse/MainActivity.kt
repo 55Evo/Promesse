@@ -39,7 +39,7 @@ import java.util.*
  */
 class MainActivity : AppCompatActivity() {
     companion object {
-        var user = User("a","Alexislebg", "a", "", Mascot.JACOU)
+        var user = User("a", "Alexislebg", "a", "", Mascot.JACOU)
     }
 
     lateinit var deleteListener: DeleteButtonListener
@@ -59,7 +59,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var del: FloatingActionButton
 
     /**
-     * On create
+     * On create method that is called at the start of activity to
+     * instantiate it.
      *
      * @param savedInstanceState
      */
@@ -76,10 +77,12 @@ class MainActivity : AppCompatActivity() {
         layout = findViewById(R.id.ConstraintLayout)
         user.loadPromises(promiseDataBase)
         listPromesse = user.getAllPromisesOfTheDay()
-        adapter = PromiseAdapter(listPromesse,
-                PromiseEventListener(listPromesse, this),
-                this,
-                false)
+        adapter = PromiseAdapter(
+            listPromesse,
+            PromiseEventListener(listPromesse, this),
+            this,
+            false
+        )
 
         del = findViewById(R.id.deleteButton)
         threadLinkBackground()
@@ -88,11 +91,42 @@ class MainActivity : AppCompatActivity() {
         del.setOnClickListener(deleteListener)
         enableSwipeToDoneOrReport()
         notifications.scheduleJob(this, user)
-        user.mascot.mascotWelcomeMessage(this, listPromesse, findViewById(R.id.mascotBubbleTextView))
+        user.mascot.mascotWelcomeMessage(
+            this,
+            listPromesse,
+            findViewById(R.id.mascotBubbleTextView)
+        )
     }
 
     /**
-     * Thread to link the background and refresh the date every second
+     * On resume called when activity is called again.
+     * It refresh the view.
+     *
+     * Méthode appelée quand une activité est ouverte de nouveau.
+     * Elle permet de mettre à jour la vue.
+     *
+     */
+    override fun onResume() {
+        super.onResume()
+        mascotView = findViewById(R.id.imageViewMascot)
+        mascotView.setImageResource(user.mascot.image)
+        listPromesse = user.getAllPromisesOfTheDay()
+        adapter = PromiseAdapter(
+            listPromesse,
+            PromiseEventListener(listPromesse, this),
+            this,
+            false
+        )
+        deleteListener.adapter = adapter
+        recyclerView.adapter = adapter
+        adapter.notifyDataSetChanged()
+    }
+
+    /**
+     * Thread to link the background and refresh the date every second.
+     *
+     * Méthod qui permet de créer un thread qui actualise l'arrière-plan
+     * en fonction de l'heure et la date toutes les secondes.
      *
      */
     private fun threadLinkBackground() {
@@ -106,7 +140,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Update date on the main activity
+     * Update date on the main activity.
+     *
+     * Met à jour la date de l'activité principale.
      *
      */
     private fun updateDate() {
@@ -124,7 +160,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Lock slider
+     * Lock slider method that lock the back slide
+     *
+     * Méthode qui permet de bloquer le retour arrière
+     * via le slide
      *
      */
     private fun lockSlider() {
@@ -132,7 +171,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Un lock slider
+     * Un lock slider method that unlock the back slide
+     *
+     * Méthode qui permet de débloquer le retour arrière
+     * via le slide
      *
      */
     private fun unLockSlider() {
@@ -140,13 +182,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Enable swipe to done or report
+     * Enable swipe to done or report that enable the swipe of promise.
+     *
+     * Permet d'activer le swipe d'une promesse.
      *
      */
     private fun enableSwipeToDoneOrReport() {
         var idNotification = -1L
 
         val swipeToReportOrDone: SwipeToReportOrDone = object : SwipeToReportOrDone(this) {
+            /**
+             * On swiped called when user swipe a promise
+             * to the left or the right side.
+             * Left : the promise is done.
+             * Right : the promise is reported to tomorrow.
+             *
+             * @param viewHolder
+             * @param i
+             *
+             * Méthode appelée lorsque l'utilisateur glisse une promesse
+             * à droite ou à gauche.
+             * S'il la glisse à gauche, elle est terminée et passe en done.
+             * S'il la glisse à droite, elle est reportée au lendemain.
+             */
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 val position = viewHolder.adapterPosition
                 var promise = listPromesse.elementAt(position)
@@ -189,17 +247,24 @@ class MainActivity : AppCompatActivity() {
             }
 
             /**
-             * On move
+             * On move is called when user drag a promise from top to bottom or from bottom to top.
+             * It disable the deleteMode that is activated by a longClick on promise and
+             * organize the promises and update the view.
              *
              * @param recyclerView
              * @param source
              * @param target
-             * @return
+             * @return true
+             *
+             * Méthode qui est appelée quand un utilisateur drag une promesse de haut en bas
+             * ou de bas en haut.
+             * Elle désactive le mode suppression qui s'active par un clic long sur une promesse
+             * et réorganise les promesses pour ensuite mettre à jour la vue.
              */
             override fun onMove(
-                    recyclerView: RecyclerView,
-                    source: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
+                recyclerView: RecyclerView,
+                source: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
             ): Boolean {
                 if (source.itemViewType != target.itemViewType) {
                     return false
@@ -217,23 +282,28 @@ class MainActivity : AppCompatActivity() {
             }
 
             /**
-             * Snackbar undo
+             * Snackbar undo called when user click on undoButton after a swipe.
+             * It restores the old state of the promise.
              *
              * @param message
              * @param i
              * @param promise
              * @param date
              * @param position
+             *
+             * Méthode appelée quand l'utilisateur appuie sur le bouton annuler
+             * après avoir swipe une promesse.
+             * Elle remet la promesse à son ancien état.
              */
             private fun snackbarUndo(
-                    message: String,
-                    i: Int,
-                    promise: Promise,
-                    date: Date,
-                    position: Int
+                message: String,
+                i: Int,
+                promise: Promise,
+                date: Date,
+                position: Int
             ) {
                 val snackbar = Snackbar
-                        .make(layout, message, Snackbar.LENGTH_LONG)
+                    .make(layout, message, Snackbar.LENGTH_LONG)
                 snackbar.setAction(getString(R.string.cancel)) {
                     if (i == utils.RIGHT) {
                         promise.dateTodo = date
@@ -249,8 +319,7 @@ class MainActivity : AppCompatActivity() {
                     adapter.notifyItemRangeChanged(position, listPromesse.size)
                 }
                 snackbar.setActionTextColor(Color.GREEN);
-                snackbar.show();
-               //
+                snackbar.show()
             }
         }
         val itemReport = ItemTouchHelper(swipeToReportOrDone)
@@ -258,26 +327,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * On resume
+     * Link the background to the time of day.
      *
-     */
-    override fun onResume() {
-        super.onResume()
-        mascotView = findViewById(R.id.imageViewMascot)
-        mascotView.setImageResource(user.mascot.image)
-        listPromesse = user.getAllPromisesOfTheDay()
-        adapter = PromiseAdapter(listPromesse,
-                PromiseEventListener(listPromesse, this),
-                this,
-                false)
-        deleteListener.adapter = adapter
-        recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
-    }
-
-
-    /**
-     * Link the background to the time of day
+     * Permet de lier l'arrière-plan à l'heure du jour.
      *
      */
     private fun linkBackground() {
@@ -290,11 +342,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     /**
-     * On add button clicked
+     * On add button clicked called when addButton is clicked.
+     * It starts promiseManagerActivity.
      *
      * @param v
+     *
+     * Méthode appelée lorsque l'utilisateur clique sur le bouton
+     * d'ajout d'une promesse.
+     * Elle ouvre l'activité promiseManager.
      */
     fun onAddButtonClicked(v: View) {
         val intent = Intent(this, PromiseManagerActivity::class.java)
@@ -302,18 +358,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * On click mascot
+     * On click mascot called when user click on the mascot.
+     * It displays a message in a bubble that the mascot says.
      *
      * @param v
+     *
+     * Méthode appelée lorsque l'utilisateur clique sur la mascotte.
+     * Permet de faire parler la mascotte en affichant un message
+     * dans une bulle à côté d'elle.
      */
     fun onClickMascot(v: View) {
-        user.mascot.displayMascotMessage("Coucou c'est moi ${user.mascot.nom} !", findViewById(R.id.mascotBubbleTextView), this)
+        user.mascot.displayMascotMessage(
+            "Coucou c'est moi ${user.mascot.nom} !",
+            findViewById(R.id.mascotBubbleTextView),
+            this
+        )
     }
 
     /**
-     * On click search button
+     * On click search button called when searchButton is clicked.
+     * It open the searchActivity.
      *
      * @param v
+     *
+     * Méthode appelée quand l'utilisateur appuie sur le bouton de recherche.
+     * Elle ouvre l'activité de recherche.
      */
     fun onClickSearchButton(v: View) {
         val intent = Intent(this, SearchActivity::class.java)
@@ -321,9 +390,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * On click profile button
+     * On click profile button called when the profileButton is clicked.
+     * It starts profileActivity.
      *
      * @param v
+     *
+     * Méthode appelée quand l'utilisateur clique sur le bouton de profile.
+     * Elle ouvre l'activité du profile utilisateur.
      */
     fun onClickProfileButton(v: View) {
         val intent = Intent(this, ProfileActivity::class.java)
@@ -331,10 +404,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Is done
+     * Is done that set a promise to done.
      *
      * @param p
      * @param a
+     *
+     * Méthode qui met une promesse à l'état de terminée.
      */
     fun isDone(p: Promise, a: PromiseAdapter) {
         user.setToDone(p)
@@ -342,9 +417,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * On click calendar button
+     * On click calendar button called when the calendarButton is clicked.
+     * It starts calendarActivity.
      *
      * @param v
+     *
+     * Méthode appelée lorsque l'utilisateur clique sur le bouton calendrier.
+     * Elle ouvre l'activité du calendrier.
      */
     fun onClickCalendarButton(v: View) {
         val intent = Intent(this, CalendarActivity::class.java)
@@ -352,7 +431,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * On destroy
+     * On destroy called when the activity is finished.
+     * It destroys the thread that updates the background.
+     *
+     * Méthode appelée quand l'activité est terminée.
+     * Permet d'arrêter le thread qui lie le background
+     * à l'heure du jour afin qu'il ne tourne pas en arrière-plan.
      *
      */
     override fun onDestroy() {

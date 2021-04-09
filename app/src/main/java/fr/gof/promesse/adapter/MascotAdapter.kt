@@ -39,7 +39,7 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
      * @param position
      */
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.linearLayout.tag = position
+        if(isUpdate) holder.linearLayout?.tag = position
         holder.mascotView.setImageResource(listMascot[position].image_drawable)
         holder.name.text = (listMascot[position].nom)
     }
@@ -63,9 +63,10 @@ class MascotAdapter(var context: Context, var listMascot: List<Mascot>, val list
     inner class MyViewHolder(itemView: View) :  View.OnClickListener, RecyclerView.ViewHolder(itemView) {
         var mascotView: ImageView = itemView.findViewById(R.id.mascotView)
          var name: TextView = itemView.findViewById(R.id.mascotName)
-        var linearLayout: LinearLayout = itemView.findViewById(R.id.ll_item_mascot_update)
+        var linearLayout: LinearLayout? = null
 
          init {
+             if(isUpdate) linearLayout = itemView.findViewById(R.id.ll_item_mascot_update)
              itemView.setOnClickListener(this)
          }
 
