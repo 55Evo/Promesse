@@ -57,4 +57,5 @@ dependencies {
     implementation 'org.naishadhparmar.zcustomcalendar:zcustomcalendar:1.0.1'
     implementation 'com.r0adkll:slidableactivity:2.1.0'
     implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'com.github.adityagohad:HorizontalPicker:1.0.1'
 }

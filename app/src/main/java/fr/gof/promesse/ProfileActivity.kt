@@ -23,6 +23,11 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var slidr: SlidrInterface
     private lateinit var preferences: SharedPreferences
 
+    /**
+     * On create
+     *
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         slidr = Slidr.attach(this, utils.config);
@@ -33,7 +38,14 @@ class ProfileActivity : AppCompatActivity() {
         adapter = NotificationAdapter(this, user.getNotification(), promiseDataBase)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+    }
 
+    /**
+     * On resume
+     *
+     */
+    override fun onResume() {
+        super.onResume()
         val mascot : ImageView = findViewById(R.id.imageViewMascotProfile)
         val textViewName : TextView = findViewById(R.id.textViewName)
         val textViewEmail : TextView = findViewById(R.id.textViewEmail)
@@ -45,6 +57,11 @@ class ProfileActivity : AppCompatActivity() {
         mascot.setImageResource(user.mascot.image_drawable)
     }
 
+    /**
+     * On click logout
+     *
+     * @param v
+     */
     fun onClickLogout(v: View) {
         preferences.edit().clear().apply()
         val myIntent = Intent(this, SigninActivity::class.java)
@@ -52,6 +69,11 @@ class ProfileActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
+    /**
+     * On click edit info
+     *
+     * @param v
+     */
     fun onClickEditInfo(v: View) {
         val myIntent = Intent(this, EditInfoActivity::class.java)
         startActivity(myIntent)

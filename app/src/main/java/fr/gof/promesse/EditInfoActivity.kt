@@ -1,34 +1,44 @@
 package fr.gof.promesse
 
 import android.app.Activity
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.core.view.get
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import fr.gof.promesse.MainActivity.Companion.user
 import fr.gof.promesse.adapter.MascotAdapter
 import fr.gof.promesse.database.PromiseDataBase
 import fr.gof.promesse.listener.MascotListener
 import fr.gof.promesse.model.Mascot
 import fr.gof.promesse.model.User
+import travel.ithaka.android.horizontalpickerlib.PickerLayoutManager
+
 
 class EditInfoActivity : AppCompatActivity() {
     val promiseDataBase = PromiseDataBase(this)
-    lateinit var editTextName : TextInputEditText
-    lateinit var editUsername : TextInputEditText
-    lateinit var editTextNewPassword : TextInputEditText
-    lateinit var editTextOldPassword : TextInputEditText
-    lateinit var editTextConfirmPassword : TextInputEditText
+    lateinit var editTextName: TextInputEditText
+    lateinit var editUsername: TextInputEditText
+    lateinit var editTextNewPassword: TextInputEditText
+    lateinit var editTextOldPassword: TextInputEditText
+    lateinit var editTextConfirmPassword: TextInputEditText
+    var mascotPosition: Int = 0
 
-    lateinit var adapter : MascotAdapter
+    private lateinit var preferences: SharedPreferences
+
+    lateinit var adapter: MascotAdapter
     lateinit var recyclerView: RecyclerView
     private val listMascot: List<Mascot> = listOf(
         Mascot.JACOU,
@@ -36,32 +46,55 @@ class EditInfoActivity : AppCompatActivity() {
         Mascot.EUSTACHE
     )
 
-
-     override fun onCreate(savedInstanceState: Bundle?) {
+    /**
+     * On create
+     *
+     * @param savedInstanceState
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-         setContentView(R.layout.activity_edit_info)
+        setContentView(R.layout.activity_edit_info)
+        preferences = PreferenceManager.getDefaultSharedPreferences(this)
 
-         recyclerView= findViewById(R.id.recycler_mascot)
-         recyclerView.setHasFixedSize(true)
+        recyclerView = findViewById(R.id.recycler_mascot)
+        recyclerView.setHasFixedSize(true)
 
-         adapter = MascotAdapter(this, listMascot,
-             MascotListener(listMascot, this) , promiseDataBase, true)
-         recyclerView.adapter = adapter
-         recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
-         //for snap in center (magnetisme)
-         var helper : SnapHelper = LinearSnapHelper()
-         helper.attachToRecyclerView(recyclerView)
+        adapter = MascotAdapter(
+            this, listMascot,
+            MascotListener(listMascot, this), promiseDataBase, true
+        )
+        recyclerView.adapter = adapter
+        val pickerLayoutManager = PickerLayoutManager(this, PickerLayoutManager.HORIZONTAL, false)
+        pickerLayoutManager.isChangeAlpha = true
+        pickerLayoutManager.scaleDownBy = 0.30f
+        pickerLayoutManager.scaleDownDistance = 0.6f
+        recyclerView.layoutManager = pickerLayoutManager
+        pickerLayoutManager.setOnScrollStopListener { v ->
+            val linearLayout = v as LinearLayout
+            mascotPosition = linearLayout.tag as Int
+        }
+        //for snap in center (magnetisme)
+        var helper: SnapHelper = LinearSnapHelper()
+        helper.attachToRecyclerView(recyclerView)
 
-         editTextName = findViewById<TextInputEditText>(R.id.editTextName)
-         editUsername = findViewById<TextInputEditText>(R.id.editUsername)
-         editTextOldPassword = findViewById<TextInputEditText>(R.id.editTextOldPassword)
-         editTextNewPassword = findViewById<TextInputEditText>(R.id.editTextNewPassword)
-         editTextConfirmPassword = findViewById<TextInputEditText>(R.id.editTextConfirmPassword)
+        editTextName = findViewById(R.id.editTextName)
+        editUsername = findViewById(R.id.editUsername)
+        editTextOldPassword = findViewById(R.id.editTextOldPassword)
+        editTextNewPassword = findViewById(R.id.editTextNewPassword)
+        editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword)
 
-         editTextName.setText(user.name)
-         editUsername.setText(user.username)
+        editTextName.setText(user.name)
+        editUsername.setText(user.username)
+        mascotPosition = adapter.listMascot.lastIndexOf(user.mascot)
+        recyclerView.scrollToPosition(mascotPosition)
 
     }
+
+    /**
+     * Hide keyboard
+     *
+     * @param activity
+     */
     private fun hideKeyboard(activity: Activity) {
         val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         //Find the currently focused view, so we can grab the correct window token from it.
@@ -72,50 +105,73 @@ class EditInfoActivity : AppCompatActivity() {
         }
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
-    fun onClickUpdateName(v : View){
+
+    /**
+     * On click update name
+     *
+     * @param v
+     */
+    fun onClickUpdateName(v: View) {
         var err = false
-        if (editUsername.text.toString().isEmpty()){
-            editUsername.error = getString(R.string.errUsername)
-            err = true}
-        if (editTextName.text.toString().isEmpty()){
-            editTextName.error = getString(R.string.errName)
-            err = true}
+        if (editUsername.text.toString().isEmpty()) {
+            editUsername.error = getString(R.string.emptyField)
+            err = true
+        }
+        if (editTextName.text.toString().isEmpty()) {
+            editTextName.error = getString(R.string.emptyField)
+            err = true
+        }
 
-        if (user.isUsernameExist(editUsername.text.toString()) && user.username != editUsername.text.toString())  {
+        if (user.isUsernameExist(editUsername.text.toString()) && user.username != editUsername.text.toString()) {
             editUsername.error = getString(R.string.usernameAlreadyExist)
-            err = true}
+            err = true
+        }
 
-        if (!err){
-            var usr = User(user.email, editUsername.text.toString(),
-                editTextName.text.toString(), user.password, user.mascot)
+        if (!err) {
+            var usr = User(
+                user.email,
+                editUsername.text.toString(),
+                editTextName.text.toString(),
+                user.password,
+                listMascot[mascotPosition]
+            )
             user.updateUser(usr)
-            Toast.makeText(applicationContext, getString(R.string.updateMessage), Toast.LENGTH_LONG).show()
+            preferences.edit().clear().apply()
+            preferences.edit().putString("userEmail", user.username).apply()
             hideKeyboard(this)
+            finish()
         }
     }
-    fun onClickUpdatePassword(v : View){
-        Toast.makeText(applicationContext,"partie mise a jour de lutilisateur", Toast.LENGTH_LONG).show()
+
+    /**
+     * On click update password
+     *
+     * @param v
+     */
+    fun onClickUpdatePassword(v: View) {
+        Toast.makeText(applicationContext, "partie mise a jour de lutilisateur", Toast.LENGTH_LONG).show()
         //comparer les variable et basta
-        if (user.checkConnection(user.email, editTextOldPassword.text.toString())){
-            if (editTextNewPassword.text.toString().length<8){
+        if (user.checkConnection(user.email, editTextOldPassword.text.toString())) {
+            if (editTextNewPassword.text.toString().length < 8) {
                 editTextNewPassword.error = getString(R.string.passwordTooShort)
-            }
-            else {
+            } else {
                 if (editTextNewPassword.text.toString() == editTextConfirmPassword.text.toString()) {
-                    user.updateUser(User(user.email, user.username,
-                        user.name, editTextNewPassword.text.toString(), user.mascot))
-                    Toast.makeText(applicationContext,
-                        getString(R.string.updateMessage),
-                        Toast.LENGTH_LONG).show()
-                    //penser à rajouter le truc de paulinien
+                    user.updateUser(
+                        User(
+                            user.email,
+                            user.username,
+                            user.name,
+                            editTextNewPassword.text.toString(),
+                            user.mascot
+                        )
+                    )
+                    finish()
                 } else {
                     editTextConfirmPassword.error = getString(R.string.different_password)
-                    }
                 }
             }
-        else{
+        } else {
             editTextOldPassword.error = getString(R.string.bad_password)
         }
-
     }
 }

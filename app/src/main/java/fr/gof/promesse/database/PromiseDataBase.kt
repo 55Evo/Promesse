@@ -192,7 +192,10 @@ class PromiseDataBase (context : Context){
                 val curs2 = dbreadable.query("Subtask", arrayOf("Id_Subtask", "Title", "Done"), "Id_Promise = $id", null, null, null, null)
                 try {
                     while(curs2.moveToNext()) {
-                        subtasks.add(Subtask(curs2.getInt(curs2.getColumnIndexOrThrow("Id_Subtask")), curs2.getString(curs2.getColumnIndexOrThrow("Title")), curs2.getInt(curs2.getColumnIndexOrThrow("Done"))>0))
+                        subtasks.add(
+                                Subtask(curs2.getInt(curs2.getColumnIndexOrThrow("Id_Subtask")),
+                                        curs2.getString(curs2.getColumnIndexOrThrow("Title")),
+                                        curs2.getInt(curs2.getColumnIndexOrThrow("Done"))>0))
                     }
                 } finally {
                     curs2.close()
@@ -561,6 +564,7 @@ class PromiseDataBase (context : Context){
         values.put("Name", user.name)
         values.put("Username", user.username)
         values.put("Password", sha1(user.password))
+        values.put("Mascot", user.mascot.name)
 
         val valuesNotifications = ContentValues()
         valuesNotifications.put("Username", user.username)

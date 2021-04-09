@@ -58,6 +58,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mRunnable: Runnable
     private lateinit var del: FloatingActionButton
 
+    /**
+     * On create
+     *
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         slidr = Slidr.attach(this, config);
@@ -67,8 +72,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.setHasFixedSize(true)
         val llm = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.VERTICAL
-        mascotView = findViewById(R.id.imageViewMascot)
-        mascotView.setImageResource(user.mascot.image)
         recyclerView.layoutManager = llm
         layout = findViewById(R.id.ConstraintLayout)
         user.loadPromises(promiseDataBase)
@@ -85,12 +88,7 @@ class MainActivity : AppCompatActivity() {
         del.setOnClickListener(deleteListener)
         enableSwipeToDoneOrReport()
         notifications.scheduleJob(this, user)
-        val now = Calendar.getInstance()
-        if (now.get(Calendar.HOUR_OF_DAY) in 6..20) {
-            displayMascotMessage(getString(R.string.dayMascotMessage))
-        } else {
-            displayMascotMessage(getString(R.string.nightMascotMessage))
-        }
+        user.mascot.mascotWelcomeMessage(this, listPromesse, findViewById(R.id.mascotBubbleTextView))
     }
 
     /**
@@ -259,9 +257,14 @@ class MainActivity : AppCompatActivity() {
         itemReport.attachToRecyclerView(recyclerView)
     }
 
-
+    /**
+     * On resume
+     *
+     */
     override fun onResume() {
         super.onResume()
+        mascotView = findViewById(R.id.imageViewMascot)
+        mascotView.setImageResource(user.mascot.image)
         listPromesse = user.getAllPromisesOfTheDay()
         adapter = PromiseAdapter(listPromesse,
                 PromiseEventListener(listPromesse, this),
@@ -271,6 +274,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
     }
+
 
     /**
      * Link the background to the time of day
@@ -298,30 +302,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Display mascot message
-     *
-     * @param message to display
-     */
-    private fun displayMascotMessage(message: String){
-        var bubble: TextView = findViewById(R.id.mascotBubbleTextView)
-        bubble.text = message
-        bubble.setTextColor(getColor(R.color.black))
-        bubble.visibility = View.VISIBLE
-        bubble.animation = AnimationUtils.loadAnimation(this,
-            R.anim.displaybubble)
-        bubble.animate()
-        Handler().postDelayed({
-            bubble.visibility = View.GONE
-        }, 10000)
-    }
-
-    /**
      * On click mascot
      *
      * @param v
      */
     fun onClickMascot(v: View) {
-        displayMascotMessage("Coucou c'est moi ${user.mascot.nom} !")
+        user.mascot.displayMascotMessage("Coucou c'est moi ${user.mascot.nom} !", findViewById(R.id.mascotBubbleTextView), this)
     }
 
     /**
@@ -334,11 +320,22 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    /**
+     * On click profile button
+     *
+     * @param v
+     */
     fun onClickProfileButton(v: View) {
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
     }
 
+    /**
+     * Is done
+     *
+     * @param p
+     * @param a
+     */
     fun isDone(p: Promise, a: PromiseAdapter) {
         user.setToDone(p)
         a.notifyDataSetChanged()
@@ -354,6 +351,10 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    /**
+     * On destroy
+     *
+     */
     override fun onDestroy() {
         super.onDestroy()
         mHandler.removeCallbacks(mRunnable)

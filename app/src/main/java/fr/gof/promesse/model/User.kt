@@ -101,7 +101,9 @@ lateinit var db : PromiseDataBase
         dateTodayEvening.minutes = 59
         var res = TreeSet<Promise>()
         for (promise in listPromise) {
-            if (promise.dateTodo.before(dateTodayEvening) && promise.dateTodo.after(Date(dateTodayEvening.time-(86400000 * 4))) && promise.state != State.DONE) {
+            if (promise.dateTodo.before(dateTodayEvening) &&
+                    promise.dateTodo.after(Date(dateTodayEvening.time-(86400000 * 4))) &&
+                    promise.state != State.DONE) {
                 res.add(promise)
             }
         }
@@ -270,6 +272,7 @@ lateinit var db : PromiseDataBase
 
     fun updateUser(usr: User){
         var oldUsername = username
+        mascot = usr.mascot
         name = usr.name
         username = usr.username
         password = usr.password

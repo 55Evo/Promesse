@@ -84,7 +84,7 @@ class SignupActivity : AppCompatActivity() {
             error = true
         }
         if(promiseDataBase.usernameExist(username.text.toString())) {
-            username.error = getString(R.string.alreadyExist)
+            username.error = getString(R.string.usernameAlreadyExist)
             error = true
         }
         if ((!error) && confirmpassword?.text.toString() != password.text.toString()) {
@@ -93,7 +93,7 @@ class SignupActivity : AppCompatActivity() {
             error = true
         }
         if (error) {
-            return;
+            return
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email.text.toString()).matches()) {
             email?.error = getString(R.string.invalidFormat)
@@ -107,7 +107,7 @@ class SignupActivity : AppCompatActivity() {
             error = true
         }
         if (error) {
-            return;
+            return
         }
 
         val usr = User(email.text.toString(), username.text.toString(), nom.text.toString(), password.text.toString(), Mascot.JACOU)
