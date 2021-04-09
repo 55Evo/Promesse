@@ -33,7 +33,11 @@ import fr.gof.promesse.MainActivity.Companion.user
  *
  * @property promiseList
  * @property listener
- * @constructor Create empty Promise adapter
+ *
+ * On créé un adapter pour les promesses celui ci permet d'afficher toutes les vues de notre
+ * recycler view contenant les promesses
+ *
+ *
  */
 class PromiseAdapter(
     val promiseList: TreeSet<Promise>,
@@ -45,12 +49,13 @@ class PromiseAdapter(
     var inSelection = false
     var nbPromisesChecked = 0
     private var lastPosition = -1
+    // expérimental c'était dans le cas ou on voulait afficher les promesses de façon triées
+    // par catégorie mais cela n'est pas terminé ou concluant
     private var sortedCategory = false
-    var displayAnimation = false
 
     /**
      * Get item count
-     *
+     * retourne la taille de la liste des promesses de l'adapter
      */
     override fun getItemCount() = promiseList.size
 
@@ -60,6 +65,8 @@ class PromiseAdapter(
      *
      * @param holder
      * @param position
+     *
+     * cette fonction est appelé lors du refresh de l'adapter global
      */
     override fun onBindViewHolder(holder: PromiseViewHolder, position: Int) {
         //je récupère la promesse
@@ -75,6 +82,8 @@ class PromiseAdapter(
      * Set holders elements
      *
      * @param holder
+     *
+     * Fonction qui met à jour la vue d'une promesse
      */
     private fun setHoldersElements(holder: PromiseViewHolder) {
         if (holder.promise.isDescDeployed) holder.logo.layoutParams.width =
@@ -105,6 +114,9 @@ class PromiseAdapter(
      * Set animations
      *
      * @param holder
+     *
+     * Fonction qui permet d'animer le défilement des promesses lorsque celles ci ne sont pas déja chargées
+     * Cependant seulement les 3 premières déja chargées afin de réduire un peu les animations
      */
     private fun setAnimations(holder: PromiseViewHolder) {
         if (lastPosition < 3)
@@ -121,6 +133,7 @@ class PromiseAdapter(
      *
      * @param holder
      * @param position
+     * On affiche la date et mise à jouors des vues
      */
     private fun setViews(
         holder: PromiseViewHolder,
@@ -151,6 +164,7 @@ class PromiseAdapter(
      * State promise update
      *
      * @param holder
+     * Met à jour le statut d'une promesse il peut etre en inprogress quand
      */
     private fun statePromiseUpdate(holder: PromiseViewHolder) {
         when (holder.promise.state) {
@@ -565,7 +579,6 @@ class PromiseAdapter(
                                 R.id.buttonDone -> listener.onItemButtonDoneClick(posAdapter, this@PromiseAdapter)
                             }
                         } else {
-                            displayAnimation = true
                             listener.onItemClick(posAdapter, this@PromiseAdapter)
                         }
                     }
