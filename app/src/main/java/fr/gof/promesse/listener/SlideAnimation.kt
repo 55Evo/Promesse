@@ -12,7 +12,7 @@ import android.view.animation.Transformation
  * @property mview
  * Classe permettant le slide d'une promesse de haut en bas lors du clic (déploiement)
  */
-class SlideAnimation(var mview: View)  : Animation() {
+class SlideAnimation(var mview: View) : Animation() {
     /**
      * Expand
      *
@@ -20,10 +20,10 @@ class SlideAnimation(var mview: View)  : Animation() {
      * Fonction permettant d'agrandir ou de rétrécir la taille de la bulle contant la promesse
      * en faisant une animation en appelant la bonne fonction
      */
-    fun expand(choice : Boolean) {
-        val animation : Animation = if (choice){
+    fun expand(choice: Boolean) {
+        val animation: Animation = if (choice) {
             expandAction(mview)
-        } else{
+        } else {
             collapseView(mview)
         }
         animation.duration = 300
@@ -62,7 +62,7 @@ class SlideAnimation(var mview: View)  : Animation() {
      * @return
      * Fonction permettant le rétrécissement d'une promesse
      */
-    fun collapseView(view: View):Animation {
+    fun collapseView(view: View): Animation {
         val actualHeight = view.measuredHeight
         val animation: Animation = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {

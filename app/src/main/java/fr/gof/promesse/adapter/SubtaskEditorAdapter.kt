@@ -21,10 +21,10 @@ import java.util.*
  * Adapter appelé dans la classe PromiseManagerActivity permettant de gérer les sous-taches
  */
 class SubtaskEditorAdapter(
-        var subtaskList: MutableList<Subtask>,
-        val listener: OnItemClickListener,
-        val context: Context
-): RecyclerView.Adapter<SubtaskEditorAdapter.SubtaskViewHolder>() {
+    var subtaskList: MutableList<Subtask>,
+    val listener: OnItemClickListener,
+    val context: Context
+) : RecyclerView.Adapter<SubtaskEditorAdapter.SubtaskViewHolder>() {
 
     override fun getItemCount() = subtaskList.size
 
@@ -36,9 +36,11 @@ class SubtaskEditorAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtaskViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_subtaskeditor,
-                parent,
-                false)
+        val itemView = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_subtaskeditor,
+            parent,
+            false
+        )
         return SubtaskViewHolder(itemView)
     }
 
@@ -48,12 +50,13 @@ class SubtaskEditorAdapter(
      *
      * On récupère les éléments XML afin de pouvoir interragir avec eux
      */
-    inner class SubtaskViewHolder(view: View): RecyclerView.ViewHolder(view),
-            View.OnClickListener, TextWatcher {
-        lateinit var subtask:Subtask
-        var substask : EditText = view.findViewById(R.id.editTextSubtask)
-        var checkBox : CheckBox = view.findViewById(R.id.checkBoxDone)
-        var buttonDelete : ImageButton = view.findViewById(R.id.buttonDelete)
+    inner class SubtaskViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener, TextWatcher {
+        lateinit var subtask: Subtask
+        var substask: EditText = view.findViewById(R.id.editTextSubtask)
+        var checkBox: CheckBox = view.findViewById(R.id.checkBoxDone)
+        var buttonDelete: ImageButton = view.findViewById(R.id.buttonDelete)
+
         init {
             buttonDelete.setOnClickListener(this)
             checkBox.setOnClickListener(this)
@@ -69,7 +72,7 @@ class SubtaskEditorAdapter(
          * met le bon listener et idem si l'on veut la supprimer
          */
         override fun onClick(v: View?) {
-            if (v!=null) {
+            if (v != null) {
                 val position = adapterPosition
                 if (v is CheckBox) {
                     if (position != RecyclerView.NO_POSITION) {
@@ -116,7 +119,11 @@ class SubtaskEditorAdapter(
          * @param promiseAdapter
          */
         fun onItemCheckedChanged(position: Int, promiseAdapter: SubtaskEditorAdapter)
-        fun onItemTextChanged(position: Int, subtaskEditorAdapter: SubtaskEditorAdapter, text: String)
+        fun onItemTextChanged(
+            position: Int,
+            subtaskEditorAdapter: SubtaskEditorAdapter,
+            text: String
+        )
     }
 
 }

@@ -21,11 +21,11 @@ import fr.gof.promesse.model.Subtask
  * adapter des sous taches d'une promesse
  */
 class SubtaskAdapter(
-    var promise : Promise,
+    var promise: Promise,
     val context: Context,
     val listener: PromiseAdapter.OnItemClickListener,
     val promiseAdapter: PromiseAdapter
-): RecyclerView.Adapter<SubtaskAdapter.SubtaskViewHolder>() {
+) : RecyclerView.Adapter<SubtaskAdapter.SubtaskViewHolder>() {
     var subtaskList: MutableList<Subtask> = promise.subtasks
 
     /**
@@ -33,6 +33,7 @@ class SubtaskAdapter(
      *
      */
     override fun getItemCount() = subtaskList.size
+
     /**
      * On create view holder
      *
@@ -44,9 +45,11 @@ class SubtaskAdapter(
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.item_subtask,
             parent,
-            false)
+            false
+        )
         return SubtaskViewHolder(itemView)
     }
+
     /**
      * On bind view holder
      *
@@ -61,15 +64,17 @@ class SubtaskAdapter(
         holder.checkBox.isChecked = holder.subtask.done
         holder.checkBox.text = holder.subtask.title
     }
+
     /**
      * Promise view holder
      * @param view
      *
      * Permet de récupérer la vue de la checkbox correspondant à la sous tache
      */
-    inner class SubtaskViewHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class SubtaskViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener {
         lateinit var subtask: Subtask
-        var checkBox : CheckBox = view.findViewById(R.id.checkBox)
+        var checkBox: CheckBox = view.findViewById(R.id.checkBox)
 
         init {
             checkBox.setOnClickListener(this)
@@ -84,7 +89,12 @@ class SubtaskAdapter(
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                listener.onCheckSubtaskChanged(position,promise, this@SubtaskAdapter, promiseAdapter)
+                listener.onCheckSubtaskChanged(
+                    position,
+                    promise,
+                    this@SubtaskAdapter,
+                    promiseAdapter
+                )
             }
         }
     }
