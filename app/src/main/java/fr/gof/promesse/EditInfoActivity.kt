@@ -94,8 +94,24 @@ class EditInfoActivity : AppCompatActivity() {
         }
     }
     fun onClickUpdatePassword(v : View){
+        var err = false
         Toast.makeText(applicationContext,"partie mise a jour de lutilisateur", Toast.LENGTH_LONG).show()
         //comparer les variable et basta
+        if (user.checkConnection(user.email, editTextOldPassword.text.toString())){
+            if (editTextNewPassword.text.toString() == editTextConfirmPassword.text.toString()){
+                user.updateUser(User(user.email,user.username,
+                    user.name, editTextNewPassword.text.toString(), user.mascot))
+                    Toast.makeText(applicationContext, getString(R.string.updateMessage), Toast.LENGTH_LONG).show()
+                //penser à rajouter le truc de paulinien
+                }
+            else{
+                editTextConfirmPassword.error = getString(R.string.different_password)
+                err = true}
+            }
+        else{
+            editTextOldPassword.error = getString(R.string.bad_password)
+            err = true
+        }
 
     }
 }

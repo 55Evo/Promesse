@@ -132,7 +132,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/oldPassword"
-                        android:inputType="textEmailAddress"
+                        android:inputType="textPassword"
                         android:textColorHint="@color/colorAccent" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -150,7 +150,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/newPassword"
-                        android:inputType="textEmailAddress"
+                        android:inputType="textPassword"
                         android:textColorHint="@color/colorAccent" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -168,7 +168,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/confirmPassword"
-                        android:inputType="textEmailAddress"
+                        android:inputType="textPassword"
                         android:textColorHint="@color/colorAccent" />
                 </com.google.android.material.textfield.TextInputLayout>
 

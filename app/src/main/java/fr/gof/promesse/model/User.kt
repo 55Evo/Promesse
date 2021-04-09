@@ -266,6 +266,8 @@ lateinit var db : PromiseDataBase
     }
     fun isUsernameExist(username: String) = db.usernameExist(username)
 
+    fun checkConnection(mail: String , password: String) = db.check(email, password)
+
     fun updateUser(user: User){
         name = user.name
         username = user.username

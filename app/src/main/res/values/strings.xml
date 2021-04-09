@@ -85,4 +85,6 @@
     <string name="errName">\"merci de rentrer un nom\"</string>
     <string name="usernameAlreadyExist">\"ce nom d\'utilisateur existe déjà\"</string>
     <string name="updateMessage">\"Utilisateur mis à jour\"</string>
+    <string name="different_password">\"Les mdp doivent être identiques</string>
+    <string name="bad_password">mauvais mot de passe</string>
 </resources>
