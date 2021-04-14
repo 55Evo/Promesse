@@ -15,6 +15,6 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:backgroundTint="@android:color/transparent"
-        android:textColor="?android:attr/textColorSecondary" />
+        android:textColor="@color/textColorPromise" />
 
 </androidx.cardview.widget.CardView>

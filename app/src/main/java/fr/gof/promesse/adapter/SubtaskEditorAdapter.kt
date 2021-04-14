@@ -14,47 +14,63 @@ import java.util.*
 /**
  * Promise adapter
  *
- *
  * @property subtaskList
  * @property listener
- * @constructor Create empty Promise adapter
+ *
+ * "Adapter" appelé dans la classe PromiseManagerActivity permettant de gérer les sous-tâches
  */
 class SubtaskEditorAdapter(
-        var subtaskList: MutableList<Subtask>,
-        val listener: OnItemClickListener,
-        val context: Context
-): RecyclerView.Adapter<SubtaskEditorAdapter.SubtaskViewHolder>() {
+    var subtaskList: MutableList<Subtask>,
+    val listener: OnItemClickListener,
+    val context: Context
+) : RecyclerView.Adapter<SubtaskEditorAdapter.SubtaskViewHolder>() {
 
+    /**
+     * Get item count
+     *
+     */
     override fun getItemCount() = subtaskList.size
 
-    //Affichage d'un item (appelé quand la liste defile ou quand on notifie un changement)
+    /**
+     * On bind view holder
+     *
+     * @param holder
+     * @param position
+     */
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
         holder.subtask = subtaskList[position]
         holder.checkBox.isChecked = holder.subtask.done
         holder.substask.setText(holder.subtask.title)
     }
 
+    /**
+     * On create view holder
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtaskViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.subtaskeditor_item,
-                parent,
-                false)
+        val itemView = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_subtaskeditor,
+            parent,
+            false
+        )
         return SubtaskViewHolder(itemView)
     }
 
     /**
-     * Promise view holder
-     *
-     * @constructor
-     *
+     * Subtask view holder
      * @param view
-     */// HOLDER
-    inner class SubtaskViewHolder(view: View): RecyclerView.ViewHolder(view),
-            View.OnClickListener, TextWatcher {
-        lateinit var subtask:Subtask
-
-        var substask : EditText = view.findViewById(R.id.editTextSubtask)
-        var checkBox : CheckBox = view.findViewById(R.id.checkBoxDone)
-        var buttonDelete : ImageButton = view.findViewById(R.id.buttonDelete)
+     *
+     * On récupère les éléments XML afin de pouvoir interragir avec eux
+     */
+    inner class SubtaskViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener, TextWatcher {
+        lateinit var subtask: Subtask
+        var substask: EditText = view.findViewById(R.id.editTextSubtask)
+        var checkBox: CheckBox = view.findViewById(R.id.checkBoxDone)
+        private var buttonDelete: ImageButton = view.findViewById(R.id.buttonDelete)
 
         init {
             buttonDelete.setOnClickListener(this)
@@ -62,8 +78,16 @@ class SubtaskEditorAdapter(
             substask.addTextChangedListener(this)
         }
 
+        /**
+         * On click
+         *
+         * @param v
+         *
+         * Fonction appelée lors du clic sur une sous-tâche. Si on clique sur la checkbox on lui
+         * met le bon listener et idem si l'on veut la supprimer
+         */
         override fun onClick(v: View?) {
-            if (v!=null) {
+            if (v != null) {
                 val position = adapterPosition
                 if (v is CheckBox) {
                     if (position != RecyclerView.NO_POSITION) {
@@ -84,7 +108,6 @@ class SubtaskEditorAdapter(
             if (position != RecyclerView.NO_POSITION) {
                 listener.onItemTextChanged(position, this@SubtaskEditorAdapter, s.toString())
             }
-
         }
 
         override fun afterTextChanged(s: Editable?) {}
@@ -93,8 +116,7 @@ class SubtaskEditorAdapter(
     /**
      * On item click listener
      *
-     * @constructor Create empty On item click listener
-     *///Interface des events de la liste
+     */
     interface OnItemClickListener {
         /**
          * On item click
@@ -111,9 +133,11 @@ class SubtaskEditorAdapter(
          * @param promiseAdapter
          */
         fun onItemCheckedChanged(position: Int, promiseAdapter: SubtaskEditorAdapter)
-        fun onItemTextChanged(position: Int, subtaskEditorAdapter: SubtaskEditorAdapter, text: String)
+        fun onItemTextChanged(
+            position: Int,
+            subtaskEditorAdapter: SubtaskEditorAdapter,
+            text: String
+        )
     }
-
-
 
 }

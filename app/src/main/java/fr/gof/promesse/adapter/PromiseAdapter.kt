@@ -6,7 +6,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.util.Property
 import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
@@ -34,7 +33,11 @@ import fr.gof.promesse.MainActivity.Companion.user
  *
  * @property promiseList
  * @property listener
- * @constructor Create empty Promise adapter
+ *
+ * On créé un adapter pour les promesses celui ci permet d'afficher toutes les vues du
+ * recycler view contenant les promesses
+ *
+ *
  */
 class PromiseAdapter(
     val promiseList: TreeSet<Promise>,
@@ -46,43 +49,85 @@ class PromiseAdapter(
     var inSelection = false
     var nbPromisesChecked = 0
     private var lastPosition = -1
+
+    // expérimental c'était dans le cas ou on voulait afficher les promesses de façon triées
+    // par catégorie mais cela n'est pas terminé ou concluant
     private var sortedCategory = false
-    var displayAnimation = false
 
-
+    /**
+     * Get item count
+     * retourne la taille de la liste des promesses de l'adapter
+     */
     override fun getItemCount() = promiseList.size
 
-    //Affichage d'un item (appelé quand la liste defile ou quand on notifie un changement)
-    override fun onBindViewHolder(holder: PromiseViewHolder, position: Int) {
 
+    /**
+     * On bind view holder
+     *
+     * @param holder
+     * @param position
+     *
+     * cette fonction est appelé lors du refresh de l'adapter global
+     */
+    override fun onBindViewHolder(holder: PromiseViewHolder, position: Int) {
+        //je récupère la promesse
         holder.promise = promiseList.elementAt(position)
-        if (holder.promise.isDescDeployed) holder.logo.layoutParams.width = 250 else holder.logo.layoutParams.width = 150
-        if (holder.promise.isDescDeployed) holder.logo.layoutParams.height = 250 else holder.logo.layoutParams.height = 150
+        setHoldersElements(holder)
+        setAnimations(holder)
+        setViews(holder, position)
+
+
+    }
+
+    /**
+     * Set holders elements
+     *
+     * @param holder
+     *
+     * Fonction qui met à jour la vue d'une promesse
+     */
+    private fun setHoldersElements(holder: PromiseViewHolder) {
+        if (holder.promise.isDescDeployed) holder.logo.layoutParams.width =
+            utils.currentWidthEnd else holder.logo.layoutParams.width = utils.currentWidthStart
+        if (holder.promise.isDescDeployed) holder.logo.layoutParams.height =
+            utils.currentWidthEnd else holder.logo.layoutParams.height = utils.currentWidthStart
         holder.date.text = holder.promise.getDateToString()
         holder.titre.text = holder.promise.title
-        if (holder.promise.isDescDeployed) holder.titre.textSize = 25f else holder.titre.textSize =18f
+        if (holder.promise.recipient.isNotEmpty()) {
+            holder.recipient.visibility = View.VISIBLE
+            holder.recipient.text =
+                context.getString(R.string.recipient) + ": ${holder.promise.recipient}"
+        } else {
+            holder.recipient.visibility = View.GONE
+        }
+
+        if (holder.promise.isDescDeployed) holder.titre.textSize =
+            utils.endSize else holder.titre.textSize =
+            utils.startSize
         holder.description.text = holder.promise.description
         holder.logo.setImageResource(holder.promise.category.image_drawable)
         holder.imageViewCategoryGlobal.setImageResource(holder.promise.category.image_drawable)
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
-//        holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-//        holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
-       // holder.description.minLines = 3
-        val deployed = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-        holder.deployed.visibility = deployed
-        //holder.layoutButtonEdit.visibility = deployed
         holder.progressBar.max = holder.promise.subtasks.size
         holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
-
         statePromiseUpdate(holder)
-
         holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
         holder.rvSubtasks.setHasFixedSize(true)
         holder.rvSubtasks.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-       // holder.rvSubtasks.visibility = deployed
         holder.imageViewCategoryGlobal.setBackgroundResource(R.drawable.layout_bubble1)
+    }
+
+    /**
+     * Set animations
+     *
+     * @param holder
+     *
+     * Fonction qui permet d'animer le défilement des promesses lorsque celles ci ne sont pas déja chargées
+     * Cependant seulement les 3 premières sont déjà chargées afin de réduire un peu les animations
+     */
+    private fun setAnimations(holder: PromiseViewHolder) {
         if (lastPosition < 3)
             lastPosition = holder.adapterPosition
         else if (holder.adapterPosition > lastPosition) {
@@ -90,129 +135,183 @@ class PromiseAdapter(
             holder.startAnimation(animation)
             lastPosition = holder.adapterPosition
         }
+    }
+
+    /**
+     * Set views
+     *
+     * @param holder
+     * @param position
+     * On affiche la date et mise à jour des vues
+     */
+    private fun setViews(
+        holder: PromiseViewHolder,
+        position: Int
+    ) {
+        val deployed = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+        holder.deployed.visibility = deployed
+
         if (!displayDate)
             holder.date.visibility = View.GONE
-        //holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
 
-        if (sortedCategory) {
+        if (sortedCategory) { // ce code n'est jamais atteint car le booléen est a false
             holder.logo.visibility = View.GONE
 
             if ((position != 0) and (position != -1)) {
                 if (holder.promise.category.nom == promiseList.elementAt(position - 1).category.nom)
                     holder.imageViewCategoryGlobal.visibility = View.GONE
                 else {
-                    setMargins(holder.layout, 0, 0, 0, 0)
+                    setMargins(holder.layout)
                 }
             }
         } else {
             holder.imageViewCategoryGlobal.visibility = View.GONE
         }
-//        var choice = if (holder.promise.isDescDeployed) R.anim.zoomin else R.anim.zoomout
-//        if (holder.promise.isDescDeployed) {
-//            holder.logo.animation = AnimationUtils.loadAnimation(context, choice)
-//            holder.logo.startAnimation(holder.logo.animation)
-//        } else {
-//            holder.logo.animation = AnimationUtils.loadAnimation(context, choice)
-//            holder.logo.startAnimation(holder.logo.animation)
-//        }
-
     }
 
+    /**
+     * State promise update
+     *
+     * @param holder
+     * Met à jour le statut d'une promesse il peut etre en
+     * IN_PROGRESS quand la promesse est en cours de réalisation
+     * DONE quand la promesse a été réalisé
+     * TO DO quand la promesse n'a pas encore été réalisé
+     */
     private fun statePromiseUpdate(holder: PromiseViewHolder) {
         when (holder.promise.state) {
             State.IN_PROGRESS -> {
-                holder.buttonStart.visibility = View.GONE
-                holder.buttonStop.visibility = View.VISIBLE
-                holder.buttonDone.visibility = View.VISIBLE
-                holder.buttonRedo.visibility = View.GONE
-                holder.layout.setBackgroundResource(
-                        if (holder.promise.priority) {
-                            R.drawable.layout_border_important_inprogress
-                        } else {
-                            R.drawable.layout_border_inprogress
-                        }
-                )
-                holder.notifDisabled.visibility = if(holder.promise.priority) if (inSelection) View.GONE else View.VISIBLE else View.GONE
-                holder.textViewInprogress.visibility = View.VISIBLE
+                updateInProgress(holder)
             }
             State.DONE -> {
-                holder.buttonStart.visibility = View.GONE
-                holder.buttonStop.visibility = View.GONE
-                holder.buttonDone.visibility = View.GONE
-                holder.buttonRedo.visibility = View.VISIBLE
-                holder.layout.setBackgroundResource(
-                        if (holder.promise.priority) {
-                            R.drawable.layout_border_important_done
-                        } else {
-                            R.drawable.layout_border_done
-                        }
-                )
-                holder.textViewInprogress.visibility = View.GONE
-                holder.notifDisabled.visibility = View.GONE
+                updateDone(holder)
             }
             State.TODO -> {
-                holder.buttonStart.visibility = if (inSelection) View.GONE else View.VISIBLE
-                holder.buttonStop.visibility = View.GONE
-                holder.buttonDone.visibility = View.GONE
-                holder.buttonRedo.visibility = View.GONE
-                holder.layout.setBackgroundResource(
-                        if (holder.promise.priority) {
-                            R.drawable.layout_border_important
-                        } else {
-                            R.drawable.layout_border
-                        }
-                )
-                holder.textViewInprogress.visibility = View.GONE
-                holder.notifDisabled.visibility = View.GONE
+                updateTodo(holder)
             }
         }
     }
 
+    /**
+     * UpdateTodo
+     *
+     * @param holder
+     *
+     * on met  à jour la promesse quand elle est dans l'état TO DO
+     */
+    private fun updateTodo(holder: PromiseViewHolder) {
+        holder.buttonStart.visibility = if (inSelection) View.GONE else View.VISIBLE
+        holder.buttonStop.visibility = View.GONE
+        holder.buttonDone.visibility = View.GONE
+        holder.buttonRedo.visibility = View.GONE
+        holder.layout.setBackgroundResource(
+            if (holder.promise.priority) {
+                R.drawable.layout_border_important
+            } else {
+                R.drawable.layout_border
+            }
+        )
+        holder.textViewInProgress.visibility = View.GONE
+        holder.notifDisabled.visibility = View.GONE
+    }
+
+    /**
+     * Update done
+     *
+     * @param holder
+     * on met  à jour la promesse quand elle est dans l'état DONE
+     */
+    private fun updateDone(holder: PromiseViewHolder) {
+        holder.buttonStart.visibility = View.GONE
+        holder.buttonStop.visibility = View.GONE
+        holder.buttonDone.visibility = View.GONE
+        holder.buttonRedo.visibility = View.VISIBLE
+        holder.layout.setBackgroundResource(
+            if (holder.promise.priority) {
+                R.drawable.layout_border_important_done
+            } else {
+                R.drawable.layout_border_done
+            }
+        )
+        holder.textViewInProgress.visibility = View.GONE
+        holder.notifDisabled.visibility = View.GONE
+    }
+
+    /**
+     * Update in progress
+     *
+     * @param holder
+     * on met  à jour la promesse quand elle est dans l'état IN_PROGRESS
+     */
+    private fun updateInProgress(holder: PromiseViewHolder) {
+        holder.buttonStart.visibility = View.GONE
+        holder.buttonStop.visibility = View.VISIBLE
+        holder.buttonDone.visibility = View.VISIBLE
+        holder.buttonRedo.visibility = View.GONE
+        holder.layout.setBackgroundResource(
+            if (holder.promise.priority) {
+                R.drawable.layout_border_important_inprogress
+            } else {
+                R.drawable.layout_border_inprogress
+            }
+        )
+        holder.notifDisabled.visibility =
+            if (holder.promise.priority) if (inSelection) View.GONE else View.VISIBLE else View.GONE
+        holder.textViewInProgress.visibility = View.VISIBLE
+    }
+
+    /**
+     * On bind view holder
+     *
+     * @param holder
+     * @param position
+     * @param payloads
+     *
+     * Override de la fonction permettant de mettre à jour les vues
+     * On lui passe une payload ce qui lui permet de mettre à jour uniquement les éléments de
+     * la vue concernés par cette mise à jour
+     * On récupère des booléens en fonction de la clé passéé, on met à jour différemment
+     * en fonction de si l'on a effectué un clic sur une sous tache par exemple que lorsque l'on
+     * clique sur une promesse pour la déployer
+     */
     override fun onBindViewHolder(
         holder: PromiseViewHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
-        Log.d("_______________________________yyyyyyyyyyyyyyyyyyyyyyyyy__________________________________oooo",
-            "la")
-        if (payloads != null && payloads.isNotEmpty()) {
-            var bundle = payloads[0] as Bundle
-            var click: Boolean? = bundle.getBoolean("click")
-            var long: Boolean? = bundle.getBoolean("longclick")
-            var subtask: Boolean? = bundle.getBoolean("clicksubtask")
-            var changeState: Boolean? = bundle.getBoolean("changestate")
-            var lastPayload =
-                payloads[payloads.size - 1]
-            if (click as Boolean){
-                println("testeeee")
-                if (click){
-                    println("test<0")
-                    refreshPromise(holder, click)
-                }}
-            if (long as Boolean){
-                println("testeeee")
-                if (long){
-                    refreshDelete(holder, long)
+        if (payloads.isNotEmpty()) {
+            val bundle = payloads[0] as Bundle
+            val click: Boolean = bundle.getBoolean("click")
+            val long: Boolean = bundle.getBoolean("longclick")
+            val subtask: Boolean = bundle.getBoolean("clicksubtask")
+            val changeState: Boolean = bundle.getBoolean("changestate")
+
+            when {
+                click -> {
+                    refreshPromise(holder)
                 }
-            }
-            if (subtask as Boolean){
-                println("")
-                if (subtask){
-                    refreshSubtask(holder, subtask)
+                long -> {
+                    refreshDelete(holder)
                 }
-            }
-            if (changeState as Boolean){
-                println("")
-                if (changeState){
+                subtask -> {
+                    refreshSubtask(holder)
+                }
+                changeState -> {
                     refreshState(holder)
                 }
             }
-
         } else
             onBindViewHolder(holder, position)
     }
 
-    fun refreshSubtask(holder: PromiseViewHolder, fold: Boolean){
+    /**
+     * Refresh subtask
+     *
+     * @param holder
+     * Dans le cas du refresh de la sous tâche on met uniquement la vue concernant la progress bar
+     * à jour afin de n'impacter que le visuel de l'interface uniquement sur la vue de la progress bar
+     */
+    private fun refreshSubtask(holder: PromiseViewHolder) {
         holder.progressBar.max = holder.promise.subtasks.size
         holder.progressBar.setProgress(holder.promise.getNbStDone(), true)
         holder.rvSubtasks.adapter = SubtaskAdapter(holder.promise, context, listener, this)
@@ -221,168 +320,218 @@ class PromiseAdapter(
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-
-    fun showOffDdelete(){
-        val deleteButton : FloatingActionButton = (context as Activity).findViewById(R.id.deleteButton)
+    /**
+     * Show off ddelete
+     *
+     * On met à jour le bouton delete et on le remplace par le bouton d'ajout d'une promesse
+     */
+    fun showOffDdelete() {
+        val deleteButton: FloatingActionButton =
+            (context as Activity).findViewById(R.id.deleteButton)
         deleteButton.visibility = View.GONE
         if (context is MainActivity) {
-            val addButton : FloatingActionButton = context.findViewById(R.id.buttonAdd)
+            val addButton: FloatingActionButton = context.findViewById(R.id.buttonAdd)
             addButton.visibility = View.VISIBLE
         }
     }
-    fun refreshDelete(holder: PromiseViewHolder, fold: Boolean) {
+
+    /**
+     * Refresh delete
+     *
+     * @param holder
+     *
+     * On décoche toutes les checkbox
+     */
+    private fun refreshDelete(holder: PromiseViewHolder) {
         holder.promise = promiseList.elementAt(holder.adapterPosition)
         holder.checkBox.isChecked = holder.promise.isChecked
         holder.checkBox.isVisible = inSelection
-        refreshState(holder)
-        //holder.promise = promiseList[position]
     }
-    fun refreshState(holder: PromiseViewHolder) {
+
+    /**
+     * Refresh state
+     *
+     * @param holder
+     * Je refresh la promesse en fonction de son état pour le background de la promesse
+     */
+    private fun refreshState(holder: PromiseViewHolder) {
         holder.promise = promiseList.elementAt(holder.adapterPosition)
         statePromiseUpdate(holder)
     }
-    private fun refreshPromise(holder: PromiseViewHolder, fold: Boolean) {
 
+    /**
+     * Refresh promise
+     *
+     * @param holder
+     *
+     * Mise à jour de la promesse en fonction du déploiement ou non de la promesse
+     * Dans le cas ou l'on déploie la promesse on anime le logo, le titre de la promesse et on
+     * étire la promesse alors que dans l'autre cas on on lui fait retrouver sa forme originelle
+     */
+    private fun refreshPromise(holder: PromiseViewHolder) {
         holder.promise = promiseList.elementAt(holder.adapterPosition)
-        var isdepl = holder.promise.isDescDeployed
-//        var choice = if (isdepl) R.anim.zoomin else R.anim.zoomout
-        val currentWidth: Int = 100
-        val currentWidthEnd =250
-        val currentWidthStart = 150
-        if (holder.promise.isDescDeployed) holder.titre.textSize = 22f else holder.titre.textSize = 18f
-
-        if (holder.promise.isDescDeployed) {
-                        val animator1: ObjectAnimator =
-                ObjectAnimator.ofInt(holder.logo, WidthProperty(), currentWidthStart, currentWidthEnd)
-            animator1.duration = 300
-            animator1.interpolator = DecelerateInterpolator()
-            animator1.start()
-            } else {
-            val animator1: ObjectAnimator =
-                ObjectAnimator.ofInt(holder.logo, WidthProperty(), currentWidthEnd, currentWidthStart)
-            animator1.duration = 300
-            animator1.interpolator = DecelerateInterpolator()
-            animator1.start()
-            }
-        if (!isdepl){
-
-            var animation = SlideAnimation(holder.deployed)
-            var animation1 = SlideAnimation(holder.description)
-//            animation1.expand(holder.promise.isDescDeployed)
-            animation.expand(holder.promise.isDescDeployed)
-            val tv = holder.titre
-            val endSize = 18f
-            val startSize = 25f
-            val animationDuration = 300 // Animation duration in ms
-            val animator: ValueAnimator = ObjectAnimator.ofFloat(tv, "textSize", startSize, endSize)
-            animator.duration = animationDuration.toLong()
-            animator.start()
-            Log.d("-------------------------------------------------------------- :::::::: ",currentWidth.toString())
-            holder.titre.animate()
-            Handler().postDelayed({
-                holder.deployed.visibility =
-                    if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-
-            }, 300)
+        val isdepl = holder.promise.isDescDeployed
+        if (holder.promise.isDescDeployed) holder.titre.textSize =
+            utils.endSize else holder.titre.textSize = utils.startSize
+        improoveWidthLogo(holder)
+        if (!isdepl) {
+            undeployAnimation(holder)
+        } else {
+            deployAnimation(holder)
         }
-        else{
-            //holder.description.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-            //holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
-            var animation1 = SlideAnimation(holder.description)
-//            animation1.expand(holder.promise.isDescDeployed)
-            var animation = SlideAnimation(holder.deployed)
-            animation.expand(holder.promise.isDescDeployed)
-            holder.titre.animate()
-            holder.deployed.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-            holder.layoutButtonEdit.animation = AnimationUtils.loadAnimation(context,
-                R.anim.deployed_item)
-            holder.progressBar.animation = AnimationUtils.loadAnimation(context,
-                R.anim.deployed_item)
+    }
 
-            holder.rvSubtasks.animation = AnimationUtils.loadAnimation(context,
-                R.anim.deployed_item)
+    /**
+     * Deploy animation
+     *
+     * @param holder
+     *
+     * Animation de déploiement
+     */
+    private fun deployAnimation(holder: PromiseViewHolder) {
+        val animation = SlideAnimation(holder.deployed)
+        animation.expand(holder.promise.isDescDeployed)
+        holder.titre.animate()
+        holder.deployed.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+        holder.layoutButtonEdit.animation = AnimationUtils.loadAnimation(
+            context,
+            R.anim.deployed_item
+        )
+        holder.progressBar.animation = AnimationUtils.loadAnimation(
+            context,
+            R.anim.deployed_item
+        )
+        holder.rvSubtasks.animation = AnimationUtils.loadAnimation(
+            context,
+            R.anim.deployed_item
+        )
         holder.layoutButtonEdit.animate()
         holder.progressBar.animate()
         holder.rvSubtasks.animate()
+        val tv = holder.titre
 
-            val tv = holder.titre
-
-            val endSize = 25f
-            val startSize = 18f
-            val animationDuration = 300 // Animation duration in ms
-
-
-            val animator: ValueAnimator = ObjectAnimator.ofFloat(tv, "textSize", startSize, endSize)
-            animator.duration = animationDuration.toLong()
-
-            animator.start()
-
-        }
-//        if (holder.promise.isDescDeployed) holder.titre.textSize = 22f else holder.titre.textSize = 18f
-        //holder.description.maxLines = if (holder.promise.isDescDeployed) 10 else 2
-        //holder.description.minLines = 3
-
-//        Handler().postDelayed({
-//            holder.deployed.visibility = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-////            holder.description.visibility =
-////                if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-////            val deployed = if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
-////            holder.layoutButtonEdit.visibility = deployed
-//            holder.layoutButtonEdit.animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
-//            holder.progressBar.animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
-//
-//            holder.rvSubtasks.animation = AnimationUtils.loadAnimation(context, R.anim.deployed_item)
-////            holder.progressBar.visibility = deployed
-////            holder.rvSubtasks.visibility = deployed
-//        }, 700)
-
-//        holder.layoutButtonEdit.animate()
-//        holder.progressBar.animate()
-//        holder.rvSubtasks.animate()
-
-//        var animation = SlideAnimation(holder.deployed)
-//        animation.expand(holder.promise.isDescDeployed)
-
-// this interpolator only speeds up as it keeps going
-
-// this interpolator only speeds up as it keeps going
-//        animation.interpolator = AccelerateInterpolator()
-        //animation.duration = 3000
-//        messageView.setAnimation(animation)
-//        messageView.startAnimation(animation)
-
-
-       // holder.layout.animation = animation
-        //holder.layout.startAnimation(animation)
+        val animationDuration = 300 // Animation duration in ms
+        val animator: ValueAnimator =
+            ObjectAnimator.ofFloat(tv, "textSize", utils.startSize, utils.endSize)
+        animator.duration = animationDuration.toLong()
+        animator.start()
     }
 
+    /**
+     * Undeploy animation
+     *
+     * @param holder
+     * Animation lorsque l'on rétrécie la promesse
+     */
+    private fun undeployAnimation(holder: PromiseViewHolder) {
+        val animation = SlideAnimation(holder.deployed)
+        animation.expand(holder.promise.isDescDeployed)
+        val tv = holder.titre
+        val animationDuration = 300 // Animation duration in ms
+        val animator: ValueAnimator =
+            ObjectAnimator.ofFloat(tv, "textSize", utils.endSize, utils.startSize)
+        animator.duration = animationDuration.toLong()
+        animator.start()
+        holder.titre.animate()
+        Handler().postDelayed({
+            holder.deployed.visibility =
+                if (holder.promise.isDescDeployed) View.VISIBLE else View.GONE
+        }, 300)
+    }
+
+    /**
+     * Improove width logo
+     *
+     * @param holder
+     * Augmentation de la taille du logo afin de le rendre animé
+     */
+    private fun improoveWidthLogo(
+        holder: PromiseViewHolder
+    ) {
+        if (holder.promise.isDescDeployed) {
+            val animator1: ObjectAnimator = ObjectAnimator.ofInt(
+                holder.logo,
+                WidthProperty(),
+                utils.currentWidthStart,
+                utils.currentWidthEnd
+            )
+            animator1.duration = 300
+            animator1.interpolator = DecelerateInterpolator()
+            animator1.start()
+        } else {
+            val animator1: ObjectAnimator = ObjectAnimator.ofInt(
+                holder.logo,
+                WidthProperty(),
+                utils.currentWidthEnd,
+                utils.currentWidthStart
+            )
+            animator1.duration = 300
+            animator1.interpolator = DecelerateInterpolator()
+            animator1.start()
+        }
+    }
+
+    /**
+     * On create view holder
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromiseViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.promise_item,
+        val itemView = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_promise,
             parent,
-            false)
+            false
+        )
         return PromiseViewHolder(itemView)
     }
 
-    private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
+    /**
+     * Set margins
+     *
+     * @param view
+     *
+     * Fonction pas au point présente dans le cas ou l'on souhaite affiher les promesses triées
+     * por catégorie
+     */
+    private fun setMargins(view: View) {
         if (view.layoutParams is MarginLayoutParams) {
             val p = view.layoutParams as MarginLayoutParams
-            p.setMargins(left, top, right, bottom)
+            p.setMargins(0, 0, 0, 0)
             view.requestLayout()
         }
     }
 
-    fun restoreItem(promise: Promise, position: Int, dataBase: PromiseDataBase) {
+    /**
+     * Restore item
+     *
+     * @param promise
+     * @param dataBase
+     *
+     * Fonction qui permet la restoration d'un item
+     * on le rajoute à la liste des promesses ainsi qu'à la base de donnée
+     */
+    fun restoreItem(promise: Promise, dataBase: PromiseDataBase) {
         promiseList.add(promise)
         dataBase.updateDate(promise)
     }
 
+    /**
+     * On item move
+     *
+     * @param fromPosition
+     * @param toPosition
+     * Fonction appelée lorsque l'on bouge une promesse à l'aide du drag and drop
+     *On échange les deux éléments de place, on les supprime et les rajoute à la liste des promesses
+     * de l'utilisateur ainsi qu'à la base de données
+     */
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        //Collections.swap(promiseList.toMutableList(), fromPosition, toPosition)
-        var save = promiseList.elementAt(fromPosition).dateTodo
+        val save = promiseList.elementAt(fromPosition).dateTodo
         promiseList.elementAt(fromPosition).dateTodo = promiseList.elementAt(toPosition).dateTodo
         promiseList.elementAt(toPosition).dateTodo = save
-        var fromPos = promiseList.elementAt(fromPosition)
-        var toPos = promiseList.elementAt(toPosition)
+        val fromPos = promiseList.elementAt(fromPosition)
+        val toPos = promiseList.elementAt(toPosition)
         promiseList.remove(fromPos)
         promiseList.remove(toPos)
         promiseList.add(fromPos)
@@ -390,10 +539,15 @@ class PromiseAdapter(
         user.updatePromise(fromPos)
         user.updatePromise(toPos)
         notifyItemMoved(fromPosition, toPosition)
-
-
     }
 
+    /**
+     * On item dismiss
+     *
+     * @param position
+     *
+     * onItemDismiss supprime la promesse de la liste des promesses
+     */
     override fun onItemDismiss(position: Int) {
         promiseList.remove(promiseList.elementAt(position))
         notifyItemRemoved(position)
@@ -402,34 +556,35 @@ class PromiseAdapter(
     /**
      * Promise view holder
      *
-     * @constructor
-     *
      * @param view
-     */// HOLDER
+     * classe interne qui permet de relier toute la vue
+     * On trouve tout les éléments présent XML dans l'affichage d'une promesse
+     */
     inner class PromiseViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener,
         View.OnLongClickListener {
         lateinit var promise: Promise
-        lateinit var savePromise: Promise
         var titre: TextView = view.findViewById(R.id.title)
+        var recipient: TextView = view.findViewById(R.id.textViewUsernameRecipient)
         var logo: ImageView = view.findViewById(R.id.logo)
         var imageViewCategoryGlobal: ImageView = view.findViewById(R.id.imageViewCategoryGlobal)
         var date: TextView = view.findViewById(R.id.date)
-        var description: TextView = view.findViewById(R.id.description)
+        var description: TextView = view.findViewById(R.id.desc)
         var checkBox: CheckBox = view.findViewById(R.id.delCheckBox)
         var layout: LinearLayout = view.findViewById(R.id.linearlayoutitem)
         var layoutButtonEdit: ConstraintLayout = view.findViewById(R.id.layoutButtonEdit)
-        var buttonEdit: Button = view.findViewById(R.id.buttonEdit)
+        private var buttonEdit: Button = view.findViewById(R.id.buttonEdit)
         var buttonStart: Button = view.findViewById(R.id.buttonStart)
         var buttonRedo: Button = view.findViewById(R.id.buttonRedo)
         var buttonStop: Button = view.findViewById(R.id.buttonStop)
         var buttonDone: Button = view.findViewById(R.id.buttonDone)
-        var textViewInprogress: TextView = view.findViewById(R.id.textViewInProgress)
+        var textViewInProgress: TextView = view.findViewById(R.id.textViewInProgress)
         var progressBar: ProgressBar = view.findViewById(R.id.progressBar)
         var rvSubtasks: RecyclerView = view.findViewById(R.id.recyclerViewSubtask)
-        var deployed : LinearLayout = view.findViewById(R.id.deployedLayout)
-        var notifDisabled : ImageView = view.findViewById(R.id.notifDisabled)
-        var posAdapter: Int = 0
+        var deployed: LinearLayout = view.findViewById(R.id.deployedLayout)
+        var notifDisabled: ImageView = view.findViewById(R.id.notifDisabled)
+        private var posAdapter: Int = 0
+
         init {
             view.setOnClickListener(this)
             view.setOnLongClickListener(this)
@@ -441,6 +596,14 @@ class PromiseAdapter(
             checkBox.setOnClickListener(this)
         }
 
+        /**
+         * On click
+         *
+         * @param v
+         *
+         * Fonction qui est appelée dans le cas ou l'on clique sur une promesse
+         * Celle ci dispatche l'évènement en fonction de l'élément cliqué
+         */
         override fun onClick(v: View?) {
             if (v != null) {
                 posAdapter = adapterPosition
@@ -448,19 +611,32 @@ class PromiseAdapter(
                     if (posAdapter != RecyclerView.NO_POSITION) {
                         listener.onItemCheckedChanged(posAdapter, this@PromiseAdapter)
                     }
-
                 } else {
                     if (posAdapter != RecyclerView.NO_POSITION) {
                         if (v is Button) {
                             when (v.id) {
-                                R.id.buttonEdit -> listener.onItemButtonEditClick(posAdapter, this@PromiseAdapter)
-                                R.id.buttonStart -> listener.onItemButtonStartClick(posAdapter, this@PromiseAdapter)
-                                R.id.buttonStop -> listener.onItemButtonStopClick(posAdapter, this@PromiseAdapter)
-                                R.id.buttonRedo -> listener.onItemButtonRedoClick(posAdapter, this@PromiseAdapter)
-                                R.id.buttonDone -> listener.onItemButtonDoneClick(posAdapter, this@PromiseAdapter)
+                                R.id.buttonEdit -> listener.onItemButtonEditClick(
+                                    posAdapter,
+                                    this@PromiseAdapter
+                                )
+                                R.id.buttonStart -> listener.onItemButtonStartClick(
+                                    posAdapter,
+                                    this@PromiseAdapter
+                                )
+                                R.id.buttonStop -> listener.onItemButtonStopClick(
+                                    posAdapter,
+                                    this@PromiseAdapter
+                                )
+                                R.id.buttonRedo -> listener.onItemButtonRedoClick(
+                                    posAdapter,
+                                    this@PromiseAdapter
+                                )
+                                R.id.buttonDone -> listener.onItemButtonDoneClick(
+                                    posAdapter,
+                                    this@PromiseAdapter
+                                )
                             }
                         } else {
-                            displayAnimation = true
                             listener.onItemClick(posAdapter, this@PromiseAdapter)
                         }
                     }
@@ -468,6 +644,14 @@ class PromiseAdapter(
             }
         }
 
+        /**
+         * On long click
+         *
+         * @param v
+         * @return
+         *
+         * Fonction appelée lors d'un appui long sur une promesse
+         */
         override fun onLongClick(v: View?): Boolean {
             posAdapter = adapterPosition
             if (posAdapter != RecyclerView.NO_POSITION) {
@@ -476,6 +660,11 @@ class PromiseAdapter(
             return true
         }
 
+        /**
+         * Start animation
+         *
+         * @param animation
+         */
         fun startAnimation(animation: Animation) {
             super.itemView.startAnimation(animation)
         }
@@ -484,8 +673,8 @@ class PromiseAdapter(
     /**
      * On item click listener
      *
-     * @constructor Create empty On item click listener
-     *///Interface des events de la liste
+     * Interface des events de la liste
+     */
     interface OnItemClickListener {
         /**
          * On item click
@@ -523,15 +712,26 @@ class PromiseAdapter(
         fun onItemButtonRedoClick(posAdapter: Int, promiseAdapter: PromiseAdapter)
         fun onItemButtonDoneClick(posAdapter: Int, promiseAdapter: PromiseAdapter)
     }
-    internal class WidthProperty : Property<View, Int>(Int::class.java, "width") {
 
+    /**
+     * Width property
+     *
+     * Classe interne permettant de modifier la width du logo d'une promesse
+     */
+    internal class WidthProperty : Property<View, Int>(Int::class.java, "width") {
         override fun get(view: View): Int {
             return view.width
         }
 
+        /**
+         * Set
+         *
+         * @param view
+         * @param value
+         */
         override fun set(view: View, value: Int?) {
             view.layoutParams.width = value!!
-            view.layoutParams.height= value!!
+            view.layoutParams.height = value
             view.layoutParams = view.layoutParams
         }
     }

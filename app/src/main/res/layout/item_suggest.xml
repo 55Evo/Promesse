@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_weight="0"
-        app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+        app:tint="@color/textColorPrimary"
+        app:srcCompat="@drawable/ic_baseline_search_24" />
 
     <TextView
         android:id="@+id/textSuggest"
@@ -18,7 +19,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:gravity="fill_vertical"
-        android:text="TextView"
+        android:textColor="@color/textColorPrimary"
         android:textSize="18sp" />
 
 </LinearLayout>

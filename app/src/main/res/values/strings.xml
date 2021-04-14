@@ -1,67 +1,101 @@
 <resources>
-    <string name="app_name">Promesse</string>
-    <string name="searchBarInt">Nom promesse...</string>
-    <string-array name="sortPromise">
-        <item>Date</item>
-        <item>Priorité</item>
-        <item>Nom</item>
+<string name="app_name">Promesse</string>
+<string name="searchBarInt">Name of promise...</string>
+    <string-array name="shortDay">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
     </string-array>
-    <string name="textViewTitle">Titre</string>
-    <string name="editTextTitleHint">Titre de la promesse</string>
-    <string name="textViewDuration">Durée</string>
-    <string name="editTextDurationHint" >En jours</string>
-    <string name="textViewDate">Date</string>
-    <string name="editTextDateHint">Sélectionnez la date</string>
-    <string name="textViewPriority">Prioritaire</string>
-    <string name="textViewProfessionnal">Professionnelle</string>
-    <string name="textViewDescription">Description</string>
-    <string name="editTextDescriptionHint">Entrez une description ...</string>
-    <string name="cancel">Annuler</string>
-    <string name="buttonValidate">Valider</string>
-    <string name="emptyField">Veuillez remplir ce champ</string>
-    <string name="titleEditPromise">Modifier la promesse</string>
-    <string name="titleCreatePromise">Créer une promesse</string>
-    <string name="searchbarPlaceholder">Bonjour %1$s !</string>
-    <string name="titleMascotSelection">Selectionnez votre mascotte</string>
-    <string name="channel_name">notification channel</string>
-    <string name="channel_description">notification channel description</string>
-    <string name="notificationTitle">Promesses à faire !</string>
-    <string name="notificationContent">Attention vous devez faire les promesses</string>
-    <string name="titleSignup">S\'inscrire</string>
-    <string name="confirmPassword">Confirmation mot de passe</string>
-    <string name="password">Mot de passe</string>
-    <string name="email">Email</string>
-    <string name="pawordDoesntMatch">Les mots de passe de correspondent pas</string>
-    <string name="name">Nom</string>
-    <string name="alreadyExist">Cet email existe déjà !</string>
-    <string name="alreadyAnAcount">Vous avez déjà un compte ?</string>
-    <string name="titleSignin">Se connecter</string>
-    <string name="iHaveNoAccount">Je n\'ai pas de compte</string>
-    <string name="unknownEmail">Cet email n\'existe pas</string>
-    <string name="wrongPassword">Mot de passe incorrect</string>
-    <string name="invalidFormat">Format invalide</string>
-    <string name="passwordTooShort">Le mot de passe est trop court</string>
-    <string name="promiseDone">Promesse terminée !</string>
-    <string name="promisePostponed">Promesse reportée à demain !</string>
-    <string name="calendar_legend_third">plus de 4 \npromesses</string>
-    <string name="calendar_legend_second">3 à 4 \npromesses</string>
-    <string name="calendar_legend_first">1 à 2 \npromesses</string>
-    <string name="calendar_legend_img_1">Image color of a blue day</string>
-    <string name="calendar_legend_img_2">Image color of a green day</string>
-    <string name="calendar_legend_img_3">Image color of an orange day</string>
-    <string name="subtaskName">Nom de la sous-tâche</string>
-    <string name="subtaskTitle">Sous-tâches</string>
-    <string name="start">Démarrer</string>
-    <string name="edit">Modifier</string>
-    <string name="stop">Abandonner</string>
-    <string name="redo">Refaire</string>
-    <string name="done">Finir</string>
-    <string name="inprogress">En cours</string>
-    <string name="permissionRequired">Demande de permission</string>
-    <string name="permissionRequiredMessage">
-        Désirez-vous permettre à l\'application Promesse de bloquer les notifications pendant la réalisation des promesses prioritaires ?
-        Si c\'est le cas, activez Promesse dans la liste qui s\'ouvrira après avoir cliqué sur Autoriser
-    </string>
-    <string name="allow">Autoriser</string>
-    <string name="deny">Refuser</string>
+<string-array name="sortPromise">
+    <item>Date</item>
+    <item>Property</item>
+    <item>Name</item>
+</string-array>
+<string name="textViewTitle">Title</string>
+<string name="editTextTitleHint">Title of the promise</string>
+<string name="textViewDuration">Duration</string>
+<string name="editTextDurationHint" >In days</string>
+<string name="textViewDate">Date</string>
+<string name="editTextDateHint">Select the date</string>
+<string name="textViewPriority">Priority</string>
+<string name="textViewProfessionnal">Professional</string>
+<string name="textViewDescription">Description</string>
+<string name="editTextDescriptionHint">Enter a description ...</string>
+<string name="cancel">Cancel</string>
+<string name="buttonValidate">Validate</string>
+<string name="emptyField">Please fill in this field</string>
+<string name="titleEditPromise">Modifier la promesse</string>
+<string name="titleCreatePromise">Changing the promise</string>
+<string name="searchbarPlaceholder">Hello %1$s !</string>
+<string name="titleMascotSelection">Select your mascot</string>
+<string name="channel_name">notification channel</string>
+<string name="channel_description">notification channel description</string>
+<string name="notificationTitle">Promises to be made!</string>
+<string name="notificationContent">Beware you must make the promises</string>
+<string name="titleSignup">Sign up</string>
+<string name="confirmPassword">Password confirmation</string>
+<string name="password">Password</string>
+<string name="email">Email</string>
+<string name="email_or_username">Email / Pseudonym</string>
+<string name="username">Pseudonym</string>
+<string name="pawordDoesntMatch">Passwords do not match</string>
+<string name="name">Name</string>
+<string name="alreadyExist">This email already exists!</string>
+<string name="tooMuchCharacters">There are too many characters!</string>
+<string name="usernameDoesntContainsAt">There should be no arobase!</string>
+<string name="alreadyAnAcount">already have an account?</string>
+<string name="titleSignin">Log in</string>
+<string name="iHaveNoAccount">I don\'t have an account</string>
+<string name="unknownEmail">This email or pseudonym does not exist</string>
+<string name="wrongPassword">Incorrect password</string>
+<string name="invalidFormat">Invalid format</string>
+<string name="passwordTooShort">The password is too short</string>
+<string name="promiseDone">Promise completed!</string>
+<string name="promisePostponed">Promise postponed until tomorrow!</string>
+<string name="calendar_legend_third">more than 4 \npromises</string>
+<string name="calendar_legend_second">3 to 4 \npromises</string>
+<string name="calendar_legend_first">1 to 2 \npromises</string>
+<string name="calendar_legend_img_1">Image color of a blue day</string>
+<string name="calendar_legend_img_2">Image color of a green day</string>
+<string name="calendar_legend_img_3">Image color of an orange day</string>
+<string name="subtaskName">Name of the subtask</string>
+<string name="subtaskTitle">Subtask</string>
+<string name="start">Start</string>
+<string name="edit">Edit</string>
+<string name="stop">Give up</string>
+<string name="recipient">Recipient</string>
+<string name="parameters">Settings</string>
+<string name="redo">Redo</string>
+<string name="done">Finish</string>
+<string name="inprogress">In progress</string>
+<string name="permissionRequired">Request for permission</string>
+<string name="permissionRequiredMessage">
+        Do you want to allow the Promise application to block notifications while priority promises are being made?
+        If so, enable Promise in the list that opens after clicking Allow </string>
+<string name="allow">Authorize</string>
+<string name="deny">Refuse</string>
+<string name="dayMascotMessage">Hello, I hope you are well!</string>
+<string name="nightMascotMessage">Good evening, you\'re here late! Or early, depending on your point of view.</string>
+<string name="oldPassword">Old password</string>
+<string name="newPassword">New password</string>
+<string name="EditInfo">Edit Information</string>
+<string name="notifification">Notification</string>
+<string name="profil">My profile</string>
+<string name="changeMascot">Changing the mascot</string>
+<string name="realisedAPromise">" has made a promise to you".</string>
+<string name="notificationListTitle">List of promises made for you</string>
+<string name="by">"By "</string>
+<string name="usernameAlreadyExist">This username already exists</string>
+<string name="updateMessage">Updated user</string>
+<string name="different_password">Passwords must be identical</string>
+<string name="bad_password">wrong password</string>
+<string name="welcomeMascotMessageMassPromises">Good luck, you have %1$s promises to keep!</string>
+<string name="welcomeMascotMessageNoPromise">Great! You have no promises to keep!</string>
+<string name="welcomeMascotMessageLowPromises">Great! You only have only %1$s promises to keep!</string>
+<string name="save">Save</string>
+    <string name="clicMessageMascot">Hello it\'s me %1$s !</string>
 </resources>

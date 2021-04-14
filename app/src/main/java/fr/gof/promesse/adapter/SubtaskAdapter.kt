@@ -10,51 +10,91 @@ import fr.gof.promesse.R
 import fr.gof.promesse.model.Promise
 import fr.gof.promesse.model.Subtask
 
+/**
+ * Subtask adapter
+ *
+ * @property promise
+ * @property context
+ * @property listener
+ * @property promiseAdapter
+ *
+ * "adapter" des sous tâches d'une promesse
+ */
 class SubtaskAdapter(
-    var promise : Promise,
+    var promise: Promise,
     val context: Context,
     val listener: PromiseAdapter.OnItemClickListener,
     val promiseAdapter: PromiseAdapter
-): RecyclerView.Adapter<SubtaskAdapter.SubtaskViewHolder>() {
+) : RecyclerView.Adapter<SubtaskAdapter.SubtaskViewHolder>() {
     var subtaskList: MutableList<Subtask> = promise.subtasks
+
+    /**
+     * Get item count
+     *
+     */
     override fun getItemCount() = subtaskList.size
 
+    /**
+     * On create view holder
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtaskViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_subtask,
+            parent,
+            false
+        )
+        return SubtaskViewHolder(itemView)
+    }
+
+    /**
+     * On bind view holder
+     *
+     * @param holder
+     * @param position
+     *
+     * Fonction permettant la mise à jour de la vue des sous tâches le titre et je la coche si
+     * la promesse a été réalisée
+     */
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
         holder.subtask = subtaskList[position]
         holder.checkBox.isChecked = holder.subtask.done
         holder.checkBox.text = holder.subtask.title
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtaskViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(
-            R.layout.subtask_item,
-            parent,
-            false)
-        return SubtaskViewHolder(itemView)
-    }
-
-
     /**
      * Promise view holder
-     *
-     * @constructor
-     *
      * @param view
-     */// HOLDER
-    inner class SubtaskViewHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
-
+     *
+     * Permet de récupérer la vue de la checkbox correspondante à la sous-tâche
+     */
+    inner class SubtaskViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener {
         lateinit var subtask: Subtask
-        var checkBox : CheckBox = view.findViewById(R.id.checkBox)
+        var checkBox: CheckBox = view.findViewById(R.id.checkBox)
 
         init {
-
             checkBox.setOnClickListener(this)
         }
 
+        /**
+         * On click
+         *
+         * @param v
+         * Fonction appelée lors du clic sur une sous-tâche
+         */
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                listener.onCheckSubtaskChanged(position,promise, this@SubtaskAdapter, promiseAdapter)
+                listener.onCheckSubtaskChanged(
+                    position,
+                    promise,
+                    this@SubtaskAdapter,
+                    promiseAdapter
+                )
             }
         }
     }

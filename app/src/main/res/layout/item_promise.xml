@@ -72,6 +72,7 @@
                         android:gravity="center_vertical"
                         android:text="Promesse 1"
                         android:textAllCaps="true"
+                        android:textColor="@color/textColorPromise"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -87,6 +88,7 @@
                             android:layout_gravity="center_vertical|start"
                             android:layout_marginLeft="10dp"
                             android:text="11-01-21"
+                            android:textColor="@color/textColorPromise"
                             android:textStyle="italic" />
 
                         <TextView
@@ -95,7 +97,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:layout_weight="1"
-                            android:text="@string/inprogress" />
+                            android:text="@string/inprogress"
+                            android:textColor="@color/textColorPromise" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -108,13 +111,14 @@
                     android:textColor="?android:attr/textColorSecondary"
                     android:visibility="visible"
                     app:icon="@android:drawable/ic_media_play"
-                    app:iconTint="?android:attr/textColorSecondary" />
+                    app:iconTint="@color/textColorPromise" />
 
                 <ImageView
                     android:id="@+id/notifDisabled"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    app:tint="@color/textColorPromise"
                     app:srcCompat="@drawable/ic_baseline_notifications_off_24" />
 
                 <CheckBox
@@ -132,12 +136,22 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/description"
+                    android:id="@+id/textViewUsernameRecipient"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|start"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/textColorPromise"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_marginLeft="10dp"
                     android:text="ceci est une description"
+                    android:textColor="@color/textColorPromise"
                     android:textStyle="italic" />
 
                 <ProgressBar
@@ -167,11 +181,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/stop"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:textColor="@color/textColorPromise"
                         android:textSize="12dp"
                         android:visibility="visible"
                         app:icon="@drawable/ic_baseline_stop_24"
-                        app:iconTint="?android:attr/textColorSecondary"
+                        app:iconTint="@color/textColorPromise"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -199,11 +213,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/done"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:textColor="@color/textColorPromise"
                         android:textSize="12dp"
                         android:visibility="visible"
                         app:icon="@drawable/ic_baseline_check_24"
-                        app:iconTint="?android:attr/textColorSecondary"
+                        app:iconTint="@color/textColorPromise"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
                         app:layout_constraintStart_toEndOf="@id/buttonStop"
@@ -215,10 +229,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/edit"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:textColor="@color/textColorPromise"
                         android:textSize="12dp"
                         app:icon="@drawable/ic_baseline_edit_24"
-                        app:iconTint="?android:attr/textColorSecondary"
+                        app:iconTint="@color/textColorPromise"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#0d0d0d</color>
+    <color name="menubar">#202020</color>
+    <color name="searchbar">#202020</color>
+    <color name="div">#171717</color>
+    <color name="textColorPrimary">#D8D8D8</color>
+    <color name="textColorSecondary">#9A9A9A</color>
+    <color name="textColorMenuBar">#D8D8D8</color>
+</resources>

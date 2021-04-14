@@ -5,7 +5,7 @@
     android:id="@+id/ConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_grey"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context=".SearchActivity">
 
@@ -39,9 +39,17 @@
         app:layout_constraintEnd_toEndOf="@+id/relativeLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:mt_backIconTint="@color/textColorPrimary"
         app:mt_hint="@string/searchBarInt"
+        app:mt_hintColor="@color/textColorSecondary"
         app:mt_maxSuggestionsCount="10"
-        app:mt_speechMode="false" />
+        app:mt_menuIconTint="@color/textColorPrimary"
+        app:mt_navIconTint="@color/textColorPrimary"
+        app:mt_placeholderColor="@color/textColorPrimary"
+        app:mt_searchBarColor="@color/searchbar"
+        app:mt_searchIconTint="@color/textColorPrimary"
+        app:mt_speechMode="false"
+        app:mt_textColor="@color/textColorPrimary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/deleteButton"

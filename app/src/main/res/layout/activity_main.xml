@@ -16,10 +16,12 @@
         android:layout_marginBottom="20dp"
         android:clickable="true"
         android:onClick="onAddButtonClicked"
-        app:backgroundTint="@color/bubble_border"
+        android:scrollbarThumbVertical="@color/textColorPrimary"
+        app:tint="@color/textColorPrimary"
+        app:backgroundTint="@color/div"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/recyclerViewPromesse"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/deleteButton"
@@ -29,6 +31,8 @@
         android:layout_marginBottom="20dp"
         android:clickable="true"
         android:visibility="gone"
+        app:tint="@color/textColorPrimary"
+        app:backgroundTint="@color/div"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_delete" />
@@ -67,10 +71,12 @@
     <TextView
         android:id="@+id/mascotBubbleTextView"
         android:layout_width="169dp"
-        android:layout_height="68dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/layout_bubble"
         android:gravity="center"
-        android:visibility="gone"
+        android:text="Message de la mascotte"
+        android:textColor="@color/textColorPrimary"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewPromesse"
         app:layout_constraintEnd_toStartOf="@+id/imageViewMascot"
         app:layout_constraintTop_toTopOf="parent" />
@@ -102,14 +108,26 @@
         android:id="@+id/dateDayView"
         android:layout_width="221dp"
         android:layout_height="75dp"
-        android:layout_marginTop="176dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="casual"
         android:text="2021\nLundi 3 mars"
-        android:textColor="#FFFCFC"
+        android:textColor="@color/white"
         android:textSize="25sp"
-        app:layout_constraintEnd_toEndOf="@+id/searchButton"
-        app:layout_constraintHorizontal_bias="0.041"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/divider4"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:onClick="onClickProfileButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_account_circle_24"
+        app:tint="@color/bubble" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

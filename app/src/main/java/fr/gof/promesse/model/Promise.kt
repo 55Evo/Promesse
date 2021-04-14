@@ -19,11 +19,11 @@ import java.util.*
  * @property subtasks
  * @property isChecked
  * @property isDescDeployed
- * @constructor Create empty Promise
  */
 data class Promise(
     var id: Int,
     var title: String,
+    var recipient: String,
     var category: Category,
     var duration: Int?,
     var state: State,
@@ -37,53 +37,91 @@ data class Promise(
     var isDescDeployed: Boolean = false
 ) : Serializable, Comparable<Promise> {
 
-    private var focus = false
-    val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"))
-
-
+    /**
+     * Equals to remove / add promise of a TreeSet.
+     *
+     * @param other
+     * @return
+     *
+     * Pour pouvoir ajouter un retirer une promesse d'un TreeSet.
+     */
     override fun equals(other: Any?): Boolean {
-        if( other is Promise){
+        if (other is Promise) {
             return other.id == this.id
         }
         return false
     }
+
+    /**
+     * To string.
+     *
+     * @return string
+     */
     override fun toString(): String {
         return title
     }
-    val dfl = DateFormat.getDateInstance(DateFormat.FULL);
 
     /**
-     * Get date to do to string
-     *
+     * Dfl is a dateFormatter to format dateToDo and dateCreation.
      */
-    fun getDateToDoToString() = dfl.format(dateTodo)
+    private val dfl: DateFormat = DateFormat.getDateInstance(DateFormat.FULL)
 
     /**
-     * Get date creation to string
+     * Get date to do to string at the good format.
      *
      */
-    fun getDateToString()= dfl.format(dateTodo)
+    fun getDateToDoToString(): String = dfl.format(dateTodo)
 
+    /**
+     * Get date creation to string at the good format.
+     *
+     */
+    fun getDateToString(): String = dfl.format(dateTodo)
+
+    /**
+     * Compare to that is used by the TreeSet.
+     *
+     * @param other
+     * @return
+     */
     override fun compareTo(other: Promise): Int {
-        return if (this.id==other.id) return 0 else return compare(other)
+        return if (this.id == other.id) 0 else compare(other)
     }
 
-    private fun compare(other : Promise) : Int{
-        if (this.dateTodo.before(other.dateTodo)) return -1 else return 1
+    /**
+     * Compare that is used by the TreeSet.
+     *
+     * @param other
+     * @return
+     */
+    private fun compare(other: Promise): Int {
+        return if (this.dateTodo.before(other.dateTodo)) -1 else 1
     }
+
+    /**
+     * Hash code for HashSet.
+     *
+     * @return
+     */
     override fun hashCode(): Int {
         return id.hashCode()
     }
 
+    /**
+     * Get nb st done.
+     *
+     * @return the number of subtasks done.
+     *
+     * Retourne le nombre de sous-tâches finies.
+     */
     fun getNbStDone(): Int {
         var nbDone = 0
         for (st: Subtask in this.subtasks) {
             if (st.done) {
-                nbDone ++
+                nbDone++
             }
         }
         return nbDone
     }
-
 
 }

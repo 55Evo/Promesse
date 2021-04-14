@@ -14,6 +14,7 @@ import fr.gof.promesse.model.Promise
 class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var promises: MutableList<Promise>
+
     /**
      * This method is called when the BroadcastReceiver is receiving an Intent
      * broadcast.  During this time you can use the other methods on
@@ -53,7 +54,7 @@ class NotificationReceiver : BroadcastReceiver() {
      */
     override fun onReceive(context: Context?, intent: Intent?) {
         updateListPromises()
-        var notificationManager: NotificationManager =
+        val notificationManager: NotificationManager =
             context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val repeatingIntent = Intent(context, MainActivity::class.java)
         repeatingIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -61,12 +62,14 @@ class NotificationReceiver : BroadcastReceiver() {
             context,
             100,
             repeatingIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
         var titles = ""
-        for(promise : Promise in promises){
-            titles+=promise.title+" "
+        for (promise: Promise in promises) {
+            titles += promise.title + " "
         }
-        val notifContent = context.getString(R.string.notificationContent) + " $titles" + "aujourd'hui !"
+        val notifContent =
+            context.getString(R.string.notificationContent) + " $titles" + "aujourd'hui !"
 
         val builder = NotificationCompat.Builder(context, utils.NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.notification_icon)
@@ -74,16 +77,16 @@ class NotificationReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                .bigText(notifContent))
+                    .bigText(notifContent)
+            )
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
         if (intent?.action.equals("MY_NOTIFICATION_MESSAGE")) {
             notificationManager.notify(100, builder.build())
         }
-//        notificationManager.notify(100, builder.build())
     }
 
-    private fun updateListPromises(){
+    private fun updateListPromises() {
         promises = user.getAllPromisesOfTheDay().toMutableList()
     }
 }
