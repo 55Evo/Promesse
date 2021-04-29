@@ -180,7 +180,8 @@ class EditInfoActivity : AppCompatActivity() {
                             user.name,
                             editTextNewPassword.text.toString(),
                             user.mascot
-                        )
+                        ),
+                            true
                     )
                     finish()
                 } else {

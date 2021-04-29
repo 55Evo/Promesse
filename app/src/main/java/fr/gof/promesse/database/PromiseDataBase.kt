@@ -609,7 +609,7 @@ class PromiseDataBase(context: Context) {
     private fun getUserByEmail(email: String): User {
         val dbreadable: SQLiteDatabase = this.database.readableDatabase
         //Execution requête
-        val col = arrayOf("Email", "Username", "Name", "Mascot")
+        val col = arrayOf("Email", "Username", "Name", "Mascot", "Password")
         val select = arrayOf(email)
         val curs: Cursor = dbreadable.query(
             "Account", col,
@@ -622,7 +622,7 @@ class PromiseDataBase(context: Context) {
             curs.getString(curs.getColumnIndexOrThrow("Email")),
             curs.getString(curs.getColumnIndexOrThrow("Username")),
             curs.getString(curs.getColumnIndexOrThrow("Name")),
-            "",
+            curs.getString(curs.getColumnIndexOrThrow("Password")),
             Mascot.valueOf(curs.getString(curs.getColumnIndexOrThrow("Mascot")))
         )
         curs.close()
@@ -640,7 +640,7 @@ class PromiseDataBase(context: Context) {
     private fun getUserByUsername(username: String): User {
         val dbreadable: SQLiteDatabase = this.database.readableDatabase
         //Execution requête
-        val col = arrayOf("Email", "Username", "Name", "Mascot")
+        val col = arrayOf("Email", "Username", "Name", "Mascot", "Password")
         val select = arrayOf(username)
         val curs: Cursor = dbreadable.query(
             "Account", col,
@@ -653,7 +653,7 @@ class PromiseDataBase(context: Context) {
             curs.getString(curs.getColumnIndexOrThrow("Email")),
             curs.getString(curs.getColumnIndexOrThrow("Username")),
             curs.getString(curs.getColumnIndexOrThrow("Name")),
-            "",
+            curs.getString(curs.getColumnIndexOrThrow("Password")),
             Mascot.valueOf(curs.getString(curs.getColumnIndexOrThrow("Mascot")))
         )
         curs.close()
@@ -766,12 +766,17 @@ class PromiseDataBase(context: Context) {
      * aussi la table Notification afin de changer le destinataire d'une promesse avec le nouvel username
      *
      */
-    fun updateUser(oldUsername: String) {
+    fun updateUser(oldUsername: String, isPasswordChanged: Boolean = false) {
         val dbwritable: SQLiteDatabase = this.database.writableDatabase
         val values = ContentValues()
         values.put("Name", user.name)
         values.put("Username", user.username)
-        values.put("Password", sha1(user.password))
+        if(isPasswordChanged){
+            values.put("Password", sha1(user.password))
+        }
+        else{
+            values.put("Password", user.password)
+        }
         values.put("Mascot", user.mascot.name)
         val valuesNotifications = ContentValues()
         valuesNotifications.put("Username", user.username)
