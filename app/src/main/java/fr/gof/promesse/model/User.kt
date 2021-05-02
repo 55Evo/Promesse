@@ -291,13 +291,13 @@ data class User(
      *
      * @param usr
      */
-    fun updateUser(usr: User) {
+    fun updateUser(usr: User, isPasswordChanged: Boolean = false) {
         val oldUsername = username
         mascot = usr.mascot
         name = usr.name
         username = usr.username
         password = usr.password
-        db.updateUser(oldUsername)
+        db.updateUser(oldUsername, isPasswordChanged)
     }
 
     /**
